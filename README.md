@@ -12,7 +12,7 @@ This repository is a release candidate for independent evaluation. The core scen
 
 Prerequisites:
 
-- Node.js 22.12 or newer
+- Node.js 22.13 or newer
 - Corepack, included with supported Node.js 22 distributions
 
 ```bash

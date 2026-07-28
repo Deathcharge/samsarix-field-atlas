@@ -175,7 +175,7 @@ Sustainability should begin as a portfolio and developer-education surface that 
 
 ## Final verification record
 
-Verified locally on Windows on July 28, 2026. The declared toolchain was Node `v24.12.0` (within the supported `>=22.12.0` range) and pnpm `11.17.0` through Corepack.
+Verified locally on Windows on July 28, 2026. The declared toolchain was Node `v24.12.0` (within the supported `>=22.13.0` range) and pnpm `11.17.0` through Corepack.
 
 | Command or check                               | Result                                                                                                                                                |
 | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
