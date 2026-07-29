@@ -178,7 +178,7 @@ function Home() {
           <a href="#protocol">Protocol</a>
           <a
             className="nav-github"
-            href="https://github.com/Deathcharge/Helix-Collective-Web"
+            href="https://github.com/Deathcharge/samsarix-field-atlas"
             rel="noreferrer"
             target="_blank"
           >
@@ -587,7 +587,7 @@ function Home() {
           </p>
           <a
             className="button button-primary"
-            href="https://github.com/Deathcharge/Helix-Collective-Web"
+            href="https://github.com/Deathcharge/samsarix-field-atlas"
             rel="noreferrer"
             target="_blank"
           >

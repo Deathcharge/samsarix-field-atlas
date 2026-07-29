@@ -11,10 +11,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Deathcharge/Helix-Collective-Web.git"
+    "url": "https://github.com/Deathcharge/samsarix-field-atlas.git"
   },
   "bugs": {
-    "url": "https://github.com/Deathcharge/Helix-Collective-Web/issues"
+    "url": "https://github.com/Deathcharge/samsarix-field-atlas/issues"
   },
   "engines": {
     "node": ">=22.13.0"
