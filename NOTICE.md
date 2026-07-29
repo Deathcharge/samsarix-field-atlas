@@ -1,31 +1,19 @@
-# PROPRIETARY SOFTWARE - CONFIDENTIAL
+# Notices
 
-## ⚠️ IMPORTANT NOTICE
+Samsarix Field Atlas
 
-This repository contains **proprietary and confidential** software owned by Andrew John Ward.
+Copyright © 2025 Andrew John Ward
+Copyright © 2026 Samsarix LLC
 
-### 🔒 Access Restrictions
+This software is licensed to the public under the GNU Affero General Public License, version 3 only (`AGPL-3.0-only`). See [LICENSE](LICENSE).
 
-- **Private Development**: This software is currently in private development
-- **No Public Use**: This software is NOT available for public use, modification, or distribution
-- **Personal Data**: This repository may contain personal data and confidential information
-- **All Rights Reserved**: All intellectual property rights are reserved by the owner
+The public software license does not grant permission to use the Samsarix name, logos, or other brand assets except as reasonably necessary to describe the origin of an unmodified copy. See [TRADEMARKS.md](TRADEMARKS.md).
 
-### 📜 Legal Notice
+Third-party packages and assets remain subject to their respective copyright and license terms.
 
-Any unauthorized access, use, copying, modification, or distribution of this software or its contents is **strictly prohibited** and may result in legal action.
+- General and commercial licensing: [contact@samsarix.com](mailto:contact@samsarix.com)
+- Support and private security reports: [support@samsarix.com](mailto:support@samsarix.com)
 
-### 🚀 Future Release
+Except as expressly provided by an applicable license or signed agreement, all rights are reserved by their respective owners.
 
-This software may be released under an open-source license in the future at the sole discretion of the owner. Until such time, all rights remain reserved.
-
-### 📧 Contact
-
-For licensing inquiries or permission requests, please contact the repository owner.
-
----
-
-**Copyright © 2025 Andrew John Ward. All Rights Reserved.**
-
-*Last Updated: October 24, 2025*
-
+Last updated: July 28, 2026

@@ -1,5 +1,8 @@
 dist
 node_modules
 .git
+LICENSE
+LICENSE.PROPRIETARY
+NOTICE.md
 *.min.js
 *.min.css
