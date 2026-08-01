@@ -228,6 +228,7 @@
         "requiresHumanApprovalAt": {
           "type": "array",
           "uniqueItems": true,
+          "maxItems": 128,
           "items": {
             "type": "integer",
             "minimum": 1

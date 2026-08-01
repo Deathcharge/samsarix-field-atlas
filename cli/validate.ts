@@ -22,99 +22,102 @@ function terminalText(value: string): string {
   }).join("");
 }
 
-function failUsage(message: string): never {
+function failUsage(message: string): number {
   console.error(terminalText(message));
   console.error(
     "Usage: pnpm blueprint:validate <blueprint.json> [--strict] [--json]"
   );
-  process.exit(2);
+  return 2;
 }
 
-if (unknownFlags.length > 0) {
-  failUsage(`Unknown option: ${unknownFlags.join(", ")}`);
-}
-if (inputFiles.length !== 1) {
-  failUsage("Supply exactly one blueprint JSON file.");
-}
-
-const inputFile = inputFiles[0];
-if (!inputFile) {
-  failUsage("Supply a blueprint JSON file.");
-}
-
-const absolutePath = resolve(inputFile);
-let value: unknown;
-
-try {
-  if (statSync(absolutePath).size > maximumBlueprintBytes) {
-    throw new Error("Blueprint files must be 1 MiB or smaller.");
+function main(): number {
+  if (unknownFlags.length > 0) {
+    return failUsage(`Unknown option: ${unknownFlags.join(", ")}`);
   }
-  value = JSON.parse(readFileSync(absolutePath, "utf8")) as unknown;
-} catch (error) {
-  const message = error instanceof Error ? error.message : "Unknown read error";
+  if (inputFiles.length !== 1) {
+    return failUsage("Supply exactly one blueprint JSON file.");
+  }
+
+  const inputFile = inputFiles[0];
+  if (!inputFile) {
+    return failUsage("Supply a blueprint JSON file.");
+  }
+
+  const absolutePath = resolve(inputFile);
+  let value: unknown;
+
+  try {
+    if (statSync(absolutePath).size > maximumBlueprintBytes) {
+      throw new Error("Blueprint files must be 1 MiB or smaller.");
+    }
+    value = JSON.parse(readFileSync(absolutePath, "utf8")) as unknown;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown read error";
+    if (jsonOutput) {
+      console.log(
+        JSON.stringify(
+          {
+            status: "invalid",
+            file: absolutePath,
+            counts: { error: 1, warning: 0, pass: 0 },
+            findings: [
+              {
+                severity: "error",
+                code: "IMPORT_FAILED",
+                path: "$",
+                message,
+              },
+            ],
+          },
+          null,
+          2
+        )
+      );
+    } else {
+      console.error(`INVALID ${terminalText(absolutePath)}`);
+      console.error(`ERROR IMPORT_FAILED $ ${terminalText(message)}`);
+    }
+    return 1;
+  }
+
+  const analysis = validateBlueprint(value);
+  const strictFailure = strict && analysis.counts.warning > 0;
+
   if (jsonOutput) {
     console.log(
       JSON.stringify(
         {
-          status: "invalid",
+          status:
+            strictFailure && analysis.status === "review"
+              ? "invalid"
+              : analysis.status,
           file: absolutePath,
-          counts: { error: 1, warning: 0, pass: 0 },
-          findings: [
-            {
-              severity: "error",
-              code: "IMPORT_FAILED",
-              path: "$",
-              message,
-            },
-          ],
+          strict,
+          counts: analysis.counts,
+          metrics: analysis.metrics,
+          findings: analysis.findings,
         },
         null,
         2
       )
     );
   } else {
-    console.error(`INVALID ${terminalText(absolutePath)}`);
-    console.error(`ERROR IMPORT_FAILED $ ${message}`);
-  }
-  process.exit(1);
-}
-
-const analysis = validateBlueprint(value);
-const strictFailure = strict && analysis.counts.warning > 0;
-
-if (jsonOutput) {
-  console.log(
-    JSON.stringify(
-      {
-        status:
-          strictFailure && analysis.status === "review"
-            ? "invalid"
-            : analysis.status,
-        file: absolutePath,
-        strict,
-        counts: analysis.counts,
-        metrics: analysis.metrics,
-        findings: analysis.findings,
-      },
-      null,
-      2
-    )
-  );
-} else {
-  const displayStatus = strictFailure
-    ? "INVALID (strict warnings)"
-    : analysis.status.toUpperCase();
-  console.log(`${displayStatus} ${terminalText(absolutePath)}`);
-  console.log(
-    `${analysis.counts.error} errors · ${analysis.counts.warning} warnings · ${analysis.counts.pass} passed checks`
-  );
-  for (const finding of analysis.findings) {
+    const displayStatus = strictFailure
+      ? "INVALID (strict warnings)"
+      : analysis.status.toUpperCase();
+    console.log(`${displayStatus} ${terminalText(absolutePath)}`);
     console.log(
-      `${finding.severity.toUpperCase()} ${finding.code} ${terminalText(finding.path)} ${terminalText(finding.message)}`
+      `${analysis.counts.error} errors · ${analysis.counts.warning} warnings · ${analysis.counts.pass} passed checks`
     );
+    for (const finding of analysis.findings) {
+      console.log(
+        `${finding.severity.toUpperCase()} ${finding.code} ${terminalText(finding.path)} ${terminalText(finding.message)}`
+      );
+    }
   }
+
+  return analysis.status === "invalid" || strictFailure ? 1 : 0;
 }
 
-if (analysis.status === "invalid" || strictFailure) {
-  process.exitCode = 1;
-}
+process.exitCode = main();

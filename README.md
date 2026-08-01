@@ -63,18 +63,18 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 
 ## Development commands
 
-| Command                          | Purpose                                                      |
-| -------------------------------- | ------------------------------------------------------------ |
-| `pnpm dev`                       | Start the local Vite development server on `127.0.0.1:3000`  |
-| `pnpm lint`                      | Run ESLint across TypeScript and React code                  |
-| `pnpm format:check`              | Check repository formatting with Prettier                    |
-| `pnpm check`                     | Run the strict TypeScript compiler check                     |
-| `pnpm test`                      | Run model, component, and server tests once                  |
-| `pnpm test:coverage`             | Run tests with enforced coverage thresholds                  |
-| `pnpm build`                     | Build static assets and the optional Node release server     |
-| `pnpm blueprint:validate <file>` | Validate a v1 blueprint with optional `--strict` or `--json` |
-| `pnpm start`                     | Serve the completed build on `127.0.0.1:3000`                |
-| `pnpm verify`                    | Run lint, formatting, types, coverage, and build in CI order |
+| Command                          | Purpose                                                                                 |
+| -------------------------------- | --------------------------------------------------------------------------------------- |
+| `pnpm dev`                       | Start the local Vite development server on `127.0.0.1:3000`                             |
+| `pnpm lint`                      | Run ESLint across TypeScript and React code                                             |
+| `pnpm format:check`              | Check repository formatting with Prettier                                               |
+| `pnpm check`                     | Run the strict TypeScript compiler check                                                |
+| `pnpm test`                      | Run model, component, and server tests once                                             |
+| `pnpm test:coverage`             | Run tests with enforced coverage thresholds                                             |
+| `pnpm build`                     | Build static assets and the optional Node release server                                |
+| `pnpm blueprint:validate <file>` | Validate a v1 blueprint with optional `--strict` or `--json`                            |
+| `pnpm start`                     | Serve the completed build on `127.0.0.1:3000`                                           |
+| `pnpm verify`                    | Run lint, formatting, types, coverage, strict fixture validation, and build in CI order |
 
 ## Production build and distribution
 

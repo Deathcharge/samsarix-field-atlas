@@ -94,7 +94,7 @@ const indicatorKeys: Array<keyof BlueprintIndicators> = [
 ];
 const identifierPattern = /^[a-z][a-z0-9-]*$/;
 const isoTimestampPattern =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/;
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 const markdownMetacharacters = /([\\`*_[\]{}()<>#+!|])/g;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -110,9 +110,11 @@ function isNonEmptyString(value: unknown, maximum = 2_000): value is string {
 }
 
 function sameNumbers(left: number[], right: number[]): boolean {
+  const sortedLeft = [...left].sort((first, second) => first - second);
+  const sortedRight = [...right].sort((first, second) => first - second);
   return (
-    left.length === right.length &&
-    left.every((value, index) => value === right[index])
+    sortedLeft.length === sortedRight.length &&
+    sortedLeft.every((value, index) => value === sortedRight[index])
   );
 }
 
@@ -566,6 +568,7 @@ export function validateBlueprint(value: unknown): BlueprintAnalysis {
     } else {
       const values = runtime.requiresHumanApprovalAt;
       if (
+        values.length > 128 ||
         values.some(value => !Number.isInteger(value) || value < 1) ||
         new Set(values).size !== values.length
       ) {
@@ -574,7 +577,7 @@ export function validateBlueprint(value: unknown): BlueprintAnalysis {
           "error",
           "INVALID_APPROVALS",
           "$.runtime.requiresHumanApprovalAt",
-          "Approval positions must be unique positive integers."
+          "Expected no more than 128 unique positive integer approval positions."
         );
       } else {
         declaredHumanGates = values as number[];
@@ -685,6 +688,12 @@ export function blueprintToMarkdown(
   blueprint: Blueprint,
   analysis = validateBlueprint(blueprint)
 ): string {
+  if (analysis.status === "invalid") {
+    throw new Error(
+      "Cannot generate a review packet for an invalid blueprint."
+    );
+  }
+
   const humanGates = blueprint.runtime.requiresHumanApprovalAt;
   const agentsById = new Map(
     blueprint.agents.map(agent => [agent.id, agent] as const)
@@ -697,10 +706,10 @@ export function blueprintToMarkdown(
     "## Contract",
     "",
     `- Schema: \`${blueprint.schemaVersion}\``,
-    `- Generated: ${blueprint.generatedAt}`,
-    `- Risk: **${blueprint.scenario.risk}**`,
+    `- Generated: ${markdownText(String(blueprint.generatedAt))}`,
+    `- Risk: **${markdownText(String(blueprint.scenario.risk))}**`,
     `- Conformance: **${analysis.status}** (${analysis.counts.error} errors, ${analysis.counts.warning} warnings)`,
-    `- Human approval gates: ${humanGates.length > 0 ? humanGates.join(", ") : "none declared"}`,
+    `- Human approval gates: ${humanGates.length > 0 ? humanGates.map(gate => markdownText(String(gate))).join(", ") : "none declared"}`,
     "",
     "## Objective",
     "",
@@ -718,7 +727,7 @@ export function blueprintToMarkdown(
     "| ---: | --- | --- | --- | --- |",
     ...blueprint.trace.map(step => {
       const agent = agentsById.get(step.agentId);
-      return `| ${step.order} | ${markdownText(agent?.name ?? step.agentId)} | ${step.boundary ?? "none"} | ${markdownText(step.action)} | ${markdownText(step.evidence)} |`;
+      return `| ${markdownText(String(step.order))} | ${markdownText(agent?.name ?? step.agentId)} | ${markdownText(String(step.boundary ?? "none"))} | ${markdownText(step.action)} | ${markdownText(step.evidence)} |`;
     }),
     "",
     "## Runtime disclosure",

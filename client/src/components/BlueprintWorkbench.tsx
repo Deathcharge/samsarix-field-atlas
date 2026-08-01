@@ -221,7 +221,11 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
                 </span>
               </div>
 
-              <div className="result-counts" aria-label="Conformance summary">
+              <div
+                aria-label="Conformance summary"
+                className="result-counts"
+                role="group"
+              >
                 <div>
                   <strong>{analysis.counts.error}</strong>
                   <span>Errors</span>

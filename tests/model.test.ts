@@ -109,6 +109,25 @@ describe("Samsarix reference model", () => {
     );
   });
 
+  it("accepts RFC 3339 timestamps with extended fractional precision", () => {
+    const blueprint = createBlueprint(
+      "incident",
+      "2026-08-01T12:00:00.123456Z"
+    );
+
+    expect(validateBlueprint(blueprint).status).toBe("ready");
+  });
+
+  it("compares declared human gates without imposing array order", () => {
+    const blueprint = createBlueprint(
+      "breaking-change",
+      "2026-08-01T12:00:00.000Z"
+    );
+    blueprint.runtime.requiresHumanApprovalAt = [7, 5];
+
+    expect(validateBlueprint(blueprint).status).toBe("ready");
+  });
+
   it("preserves forward-compatible fields as explicit review warnings", () => {
     const blueprint = {
       ...createBlueprint("ambiguous-request", "2026-08-01T12:00:00.000Z"),
@@ -156,6 +175,13 @@ describe("Samsarix reference model", () => {
 
     expect(review).not.toContain("![remote image](");
     expect(review).toContain("\\!\\[remote image\\]\\(");
+  });
+
+  it("refuses to render a review packet for an invalid blueprint", () => {
+    const blueprint = createBlueprint("incident", "2026-08-01T12:00:00.000Z");
+    blueprint.generatedAt = "![remote](https://example.invalid/pixel)";
+
+    expect(() => blueprintToMarkdown(blueprint)).toThrow(/invalid blueprint/i);
   });
 
   it("falls back safely when a scenario identifier is unsupported", () => {

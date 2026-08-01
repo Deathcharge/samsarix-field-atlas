@@ -218,14 +218,16 @@ On August 1, 2026, the product expanded from a one-way simulator/exporter into a
 
 Local release evidence on Windows with Node `v24.12.0` and the declared pnpm `11.17.0` available through Corepack:
 
+This is local verification only, not completion of the release milestone. Release status remains pending until an exact commit, artifact digest, consumer or deployment confirmation, and rollback path are recorded together.
+
 | Command or check        | Result                                                                                                                    |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm lint`             | Passed; a non-blocking freshness notice came from `baseline-browser-mapping`.                                             |
 | `pnpm format:check`     | Passed across the repository.                                                                                             |
 | `pnpm check`            | Passed strict TypeScript.                                                                                                 |
-| `pnpm test:coverage`    | Passed all 22 tests; 81.70% statements, 73.86% branches, 88.42% functions, and 82.38% lines.                              |
+| `pnpm test:coverage`    | Passed all 25 tests; 81.97% statements, 73.96% branches, 88.65% functions, and 82.56% lines.                              |
 | `pnpm validate:example` | Passed the eight-stage incident fixture in strict mode with zero errors, zero warnings, and four semantic checks.         |
-| `pnpm build`            | Passed; client JS was 232.36 kB / 72.84 kB gzip, CSS was 24.12 kB / 5.57 kB gzip, server was 4.2 kB, and CLI was 17.2 kB. |
+| `pnpm build`            | Passed; client JS was 232.62 kB / 72.91 kB gzip, CSS was 24.10 kB / 5.56 kB gzip, server was 4.2 kB, and CLI was 17.6 kB. |
 | `pnpm audit --prod`     | Passed with no known production vulnerabilities.                                                                          |
 
 No deployment was performed. Publication remains an explicit owner action.
