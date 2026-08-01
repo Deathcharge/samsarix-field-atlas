@@ -4,6 +4,8 @@
 
 This document describes the `samsarix-field-atlas/1` illustrative blueprint. It is a stable evaluation contract for this repository, not a universal multi-agent standard and not an execution protocol.
 
+The complete machine-readable shape is [`schema/samsarix-field-atlas.v1.schema.json`](../schema/samsarix-field-atlas.v1.schema.json). Cross-field semantics and CLI behavior are documented in [Blueprint conformance](BLUEPRINT_CONFORMANCE.md).
+
 ## Roles and layers
 
 The model groups 13 responsibilities into three layers:
@@ -41,7 +43,9 @@ The bundled scenarios use five values from 0 to 1 to make the intended direction
 
 These are fixture values. They are not scientific measurements, runtime observations, performance claims, or a scoring system for people.
 
-## Minimal example
+## Contract shape
+
+The following excerpt is intentionally abridged. Use the complete, strict-valid [`examples/incident.blueprint.json`](../examples/incident.blueprint.json) as an implementation fixture.
 
 ```json
 {
@@ -50,6 +54,7 @@ These are fixture values. They are not scientific measurements, runtime observat
   "generatedAt": "2026-07-28T12:00:00.000Z",
   "scenario": {
     "id": "breaking-change",
+    "title": "Ship a breaking change",
     "risk": "high"
   },
   "trace": [
@@ -71,6 +76,6 @@ These are fixture values. They are not scientific measurements, runtime observat
 
 ## Compatibility
 
-Consumers should reject unknown major schema versions and ignore unknown additive fields within version 1. They must treat every string as untrusted data, validate array sizes, and never evaluate or execute exported content.
+Consumers should reject unknown major schema versions and tolerate unknown additive fields within version 1. The reference validator reports additive fields as warnings so an owner can confirm their meaning. Consumers must treat every string as untrusted data, validate array sizes, and never evaluate or execute exported content.
 
-The canonical TypeScript definitions and serializer live in `client/src/model.ts` and are protected by `tests/model.test.ts`.
+The canonical serializer lives in `client/src/model.ts`; the shared TypeScript definitions, semantic validator, and review-packet generator live in `client/src/blueprint.ts`. They are protected by the model and application test suites.

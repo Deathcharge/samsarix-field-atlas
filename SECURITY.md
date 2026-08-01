@@ -2,7 +2,7 @@
 
 ## Supported surface
 
-Security reports are accepted for the current `main` branch. The product is a static local-first simulator plus an optional Node.js static server.
+Security reports are accepted for the current `main` branch. The product is a static local-first simulator and blueprint conformance workbench plus an optional Node.js static server.
 
 ## Reporting
 
@@ -13,6 +13,8 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 ## Trust boundaries
 
 - Scenario definitions are repository-authored fixtures, not untrusted runtime input.
+- Imported JSON is untrusted local input. The browser limits files to 1 MiB, parses them as data, validates bounded structures, and renders strings through React text nodes without persistence or execution.
+- Markdown review packets escape imported metacharacters so blueprint strings cannot directly create links or remote images in the generated artifact.
 - The browser stores only a scenario identifier in `localStorage`.
 - JSON exports are produced locally and are not uploaded.
 - External GitHub links are user-initiated navigation only.
@@ -24,7 +26,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Keep the default loopback bind for local evaluation.
 - If binding `HOST=0.0.0.0`, place the server behind an owner-approved TLS and network boundary.
 - Run `pnpm install --frozen-lockfile`, `pnpm audit --prod`, and `pnpm verify` before release.
-- Treat exported blueprints as user-controlled files when another system imports them; validate the schema and never execute their strings as code or shell commands.
+- Treat every blueprint as user-controlled data when another system imports it; enforce a size limit, validate the schema and cross-field semantics, and never execute its strings as code or shell commands.
 - Do not add secrets to `VITE_*` variables: Vite exposes those values to every browser.
 
 ## Data and cost posture

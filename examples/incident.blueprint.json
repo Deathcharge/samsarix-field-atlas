@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "samsarix-field-atlas/1",
+  "mode": "illustrative-reference",
+  "generatedAt": "2026-08-01T12:00:00.000Z",
+  "scenario": {
+    "id": "incident",
+    "title": "Triage a production incident",
+    "risk": "high",
+    "objective": "Restore a degraded service without turning uncertainty into unsafe or unaudited action.",
+    "successCriteria": [
+      "Symptoms and confirmed facts remain separate",
+      "Containment is reversible",
+      "Every production action has an owner",
+      "The post-incident record captures proof gaps"
+    ]
+  },
+  "indicators": {
+    "note": "Illustrative coordination indicators, not telemetry.",
+    "baseline": {
+      "harmony": 0.42,
+      "resilience": 0.55,
+      "prana": 0.81,
+      "drishti": 0.38,
+      "klesha": 0.62
+    },
+    "outcome": {
+      "harmony": 0.78,
+      "resilience": 0.91,
+      "prana": 0.72,
+      "drishti": 0.89,
+      "klesha": 0.16
+    }
+  },
+  "agents": [
+    {
+      "id": "aether",
+      "name": "Aether",
+      "layer": "consciousness",
+      "role": "Flow dynamics",
+      "responsibility": "Shapes an ordered flow and spots coordination friction."
+    },
+    {
+      "id": "vega",
+      "name": "Vega",
+      "layer": "consciousness",
+      "role": "Safety integration",
+      "responsibility": "Checks stop conditions, reversibility, and safe release gates."
+    },
+    {
+      "id": "grok",
+      "name": "Grok",
+      "layer": "operational",
+      "role": "Pattern recognition",
+      "responsibility": "Connects evidence, anomalies, and likely failure modes."
+    },
+    {
+      "id": "manus",
+      "name": "Manus",
+      "layer": "operational",
+      "role": "Operational core",
+      "responsibility": "Turns an approved plan into bounded, reversible actions."
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "layer": "operational",
+      "role": "Scout",
+      "responsibility": "Collects external context and labels the quality of evidence."
+    },
+    {
+      "id": "shadow",
+      "name": "Shadow",
+      "layer": "integration",
+      "role": "Memory archive",
+      "responsibility": "Preserves context, deferred work, and reusable lessons."
+    },
+    {
+      "id": "blackbox",
+      "name": "Blackbox",
+      "layer": "integration",
+      "role": "Data integrity",
+      "responsibility": "Records the decision, evidence, gates, and observed outcome."
+    },
+    {
+      "id": "entityx",
+      "name": "EntityX",
+      "layer": "integration",
+      "role": "Introspective companion",
+      "responsibility": "Surfaces assumptions and asks what the system may have missed."
+    }
+  ],
+  "trace": [
+    {
+      "order": 1,
+      "agentId": "aether",
+      "title": "Stabilize the response flow",
+      "action": "Define incident roles, a shared clock, stop conditions, and the next evidence checkpoint.",
+      "boundary": "policy",
+      "evidence": "Response frame"
+    },
+    {
+      "order": 2,
+      "agentId": "gemini",
+      "title": "Gather bounded observations",
+      "action": "Collect symptoms, recent changes, health signals, and user impact without inferring a cause.",
+      "boundary": "tool",
+      "evidence": "Timestamped observations"
+    },
+    {
+      "order": 3,
+      "agentId": "grok",
+      "title": "Rank plausible causes",
+      "action": "Correlate signals into testable hypotheses and state what evidence would falsify each one.",
+      "boundary": null,
+      "evidence": "Hypothesis ledger"
+    },
+    {
+      "order": 4,
+      "agentId": "manus",
+      "title": "Prepare the smallest containment",
+      "action": "Choose a reversible action with a named owner, expected signal, and abort threshold.",
+      "boundary": "tool",
+      "evidence": "Containment proposal"
+    },
+    {
+      "order": 5,
+      "agentId": "vega",
+      "title": "Hold the production gate",
+      "action": "Require human approval before the containment action crosses into production.",
+      "boundary": "human",
+      "evidence": "Approval + stop conditions"
+    },
+    {
+      "order": 6,
+      "agentId": "blackbox",
+      "title": "Record actions as they happen",
+      "action": "Preserve timestamps, owners, commands, observations, and reversals without storing secrets.",
+      "boundary": "memory",
+      "evidence": "Incident action log"
+    },
+    {
+      "order": 7,
+      "agentId": "shadow",
+      "title": "Archive verified learning",
+      "action": "Carry forward only confirmed causes, effective controls, and explicitly unresolved questions.",
+      "boundary": "memory",
+      "evidence": "Reusable incident memory"
+    },
+    {
+      "order": 8,
+      "agentId": "entityx",
+      "title": "Challenge the closure",
+      "action": "Ask which assumptions survived untested and what would make the same incident recur.",
+      "boundary": null,
+      "evidence": "Post-incident proof gaps"
+    }
+  ],
+  "runtime": {
+    "executesAgents": false,
+    "callsExternalServices": false,
+    "storesRemoteData": false,
+    "requiresHumanApprovalAt": [5]
+  }
+}

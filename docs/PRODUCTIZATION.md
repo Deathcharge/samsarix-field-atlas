@@ -1,6 +1,6 @@
 # Productization record
 
-Last updated: July 28, 2026
+Last updated: August 1, 2026
 
 ## Repository assessment
 
@@ -36,11 +36,11 @@ A developer, technical evaluator, or collaborator who wants to understand or dis
 
 ### Primary use case and journey
 
-The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, inspects the exact human/policy/tool/memory boundaries, and exports an implementation-neutral JSON blueprint.
+The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, inspects the exact human/policy/tool/memory boundaries, and exports an implementation-neutral JSON blueprint. The user can then import that contract, receive a semantic readiness decision, enforce it in CI, and export a readable Markdown review packet.
 
 ### Independent reason to exist
 
-This repository is a lightweight explanatory and evaluation surface rather than a runtime ecosystem. It can be hosted statically, works offline after load, costs nothing in API usage, and has no undocumented Samsarix dependency.
+This repository is a lightweight design, conformance, and evaluation surface rather than a runtime ecosystem. It can be hosted statically, works offline after load, costs nothing in API usage, and has no undocumented Samsarix dependency. Its independent workflow is useful before a team commits to a provider or exposes production authority.
 
 ### Deliberate non-goals
 
@@ -52,13 +52,15 @@ This repository is a lightweight explanatory and evaluation surface rather than 
 
 ## Current ecosystem position
 
-Bounded research used primary documentation current on July 28, 2026:
+Bounded research used primary documentation current on August 1, 2026:
 
 - [AutoGen Studio](https://microsoft.github.io/autogen/stable/user-guide/autogenstudio-user-guide/usage.html) provides a visual team builder, playground, and JSON export for actual agent components and model-backed runs.
 - [LangSmith Studio](https://docs.langchain.com/oss/python/langgraph/studio) connects to locally running LangGraph agents for interactive debugging and inspection.
 - [OpenAI Agents SDK tracing](https://openai.github.io/openai-agents-js/guides/tracing/) records real generations, tool calls, handoffs, and guardrails, with explicit sensitive-data controls.
+- [Agent2Agent Protocol 1.0](https://github.com/a2aproject/A2A/blob/main/docs/specification.md) standardizes discovery, messages, tasks, and artifacts across independent agent systems.
+- [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) provides a governance frame for managing AI risks, with a Generative AI Profile and continuing work on human oversight in critical infrastructure.
 
-Those products build or inspect executable agent systems. Field Atlas deliberately occupies the smaller pre-runtime wedge: an account-free, provider-neutral coordination explainer and blueprint fixture. It does not compete as a team builder or observability service.
+The execution products build or inspect running agent systems; the emerging standards make portable declarations and governance evidence increasingly relevant across runtimes. Field Atlas occupies the pre-runtime wedge: an account-free, provider-neutral coordination designer, semantic contract checker, and review-artifact generator. It does not compete as a model runner or observability service.
 
 ## Architecture decisions
 
@@ -69,6 +71,7 @@ Those products build or inspect executable agent systems. Field Atlas deliberate
 5. Retain an optional Express release server for local/container evaluation, but keep static hosting as the simplest distribution path.
 6. Remove analytics, remote fonts, remote runtime calls, placeholder authentication, and unused UI code.
 7. Make scope truth part of the interface, export contract, README, and tests.
+8. Keep one semantic validator shared by browser and CLI so interactive and CI decisions cannot drift.
 
 ## Assumptions
 
@@ -118,7 +121,7 @@ Final command evidence is appended after implementation verification.
 ### P2 — valuable follow-up
 
 - [ ] Add user-authored scenarios through a schema-validated local editor.
-- [ ] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
+- [x] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
 - [ ] Add translations after the English information architecture stabilizes.
 - [ ] Add a printer-friendly trace view if evaluators request it.
 
@@ -143,6 +146,8 @@ Final command evidence is appended after implementation verification.
 - Added an accessible interactive trace with explicit evidence and authority boundaries.
 - Added the complete 13-role, three-layer reference inventory.
 - Added honest local-only runtime disclosure in product copy and exports.
+- Added a local blueprint workbench with file import, readiness states, governance findings, metrics, and Markdown review-packet export.
+- Added a shared semantic validator, strict/JSON CLI modes, versioned JSON Schema, and a complete incident fixture enforced by `pnpm verify`.
 - Removed misleading status, deployment, authentication, analytics, and integration claims.
 - Replaced the generated UI kit with purpose-built semantic React and CSS.
 - Added the optional hardened release server and meaningful automated tests.
@@ -150,16 +155,15 @@ Final command evidence is appended after implementation verification.
 
 ## Deferred work and rationale
 
-- User-authored scenarios and blueprint import are deferred until real evaluator demand justifies the additional validation and file-handling surface.
+- User-authored scenarios remain deferred until real evaluator demand justifies the additional editing and migration surface.
 - Live runtime integration is out of scope because it would make this repository dependent on credentials and flagship infrastructure.
 - Internationalization is deferred until product language is validated.
 
 ## Owner-, legal-, and production-blocked work
 
 1. **Public hosting:** choose a hosting account/domain, set the correct `BASE_PATH`, and authorize deployment.
-2. **Repository rename:** rename the legacy GitHub repository slug when redirects, Pages settings, and dependent links can be reviewed together.
-3. **Rights paperwork:** keep a signed assignment or license from Andrew John Ward to Samsarix LLC for pre-company work, and adopt a lawyer-reviewed contributor agreement before commercial relicensing of outside contributions.
-4. **Brand review:** confirm that all named-role presentation and Samsarix marks are cleared for public distribution.
+2. **Rights paperwork:** keep a signed assignment or license from Andrew John Ward to Samsarix LLC for pre-company work, and adopt a lawyer-reviewed contributor agreement before commercial relicensing of outside contributions.
+3. **Brand review:** confirm that all named-role presentation and Samsarix marks are cleared for public distribution.
 
 ## Known risks
 
@@ -207,3 +211,21 @@ The generated `1731×909` social preview and the product favicon were inspected 
 On July 28, 2026, the current product and company surfaces were renamed from Helix to Samsarix at the owner's request. Runtime identifiers, export filenames, the JSON schema namespace, metadata, tests, health output, documentation, support channels, favicon, and social preview were updated together. Historical Helix text remains isolated in `CONTEXT.md` and provenance notes.
 
 The conflicting BSL/proprietary files were replaced with the canonical AGPL-3.0-only text, a clear separately negotiated commercial path, preserved authorship notices, and a standalone trademark policy. This is a repository implementation decision, not legal advice; rights paperwork and final counsel review remain company governance work.
+
+## Blueprint conformance increment
+
+On August 1, 2026, the product expanded from a one-way simulator/exporter into a provider-neutral blueprint workbench. Browser import, semantic readiness analysis, CI validation, a public JSON Schema, a complete incident fixture, and Markdown review-packet export now form one end-to-end workflow. The browser and CLI deliberately share the same validation code.
+
+Local release evidence on Windows with Node `v24.12.0` and the declared pnpm `11.17.0` available through Corepack:
+
+| Command or check        | Result                                                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm lint`             | Passed; a non-blocking freshness notice came from `baseline-browser-mapping`.                                             |
+| `pnpm format:check`     | Passed across the repository.                                                                                             |
+| `pnpm check`            | Passed strict TypeScript.                                                                                                 |
+| `pnpm test:coverage`    | Passed all 22 tests; 81.70% statements, 73.86% branches, 88.42% functions, and 82.38% lines.                              |
+| `pnpm validate:example` | Passed the eight-stage incident fixture in strict mode with zero errors, zero warnings, and four semantic checks.         |
+| `pnpm build`            | Passed; client JS was 232.36 kB / 72.84 kB gzip, CSS was 24.12 kB / 5.57 kB gzip, server was 4.2 kB, and CLI was 17.2 kB. |
+| `pnpm audit --prod`     | Passed with no known production vulnerabilities.                                                                          |
+
+No deployment was performed. Publication remains an explicit owner action.

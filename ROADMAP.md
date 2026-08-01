@@ -5,9 +5,9 @@ This roadmap separates four gates: merge, release, publication, and flagship ado
 ## Product boundary
 
 Portfolio role: **reference implementation**. Keep this as a bounded reference implementation unless a real consumer proves a stronger role. Avoid turning it into a second canonical backend or user-facing platform.
-Planned repository identity: `Deathcharge/samsarix-field-atlas` (ready).
+Repository identity: `Deathcharge/samsarix-field-atlas` (complete).
 
-Current disposition: Merge the productization branch after exact-head verification and rollback-ref creation; release and adoption remain separate decisions.
+Current disposition: Grow the provider-neutral conformance workflow through evidence-backed consumer use cases; release, publication, and flagship adoption remain separate decisions.
 
 ## Stabilize the productized default
 
@@ -19,8 +19,15 @@ Current disposition: Merge the productization branch after exact-head verificati
 ## Release candidate
 
 - Tag a reproducible reference snapshot with truthful support status.
-- Add one end-to-end example that runs from the distributed artifact.
+- [x] Add one end-to-end strict-valid incident example checked by the distributed CLI artifact.
 - Freeze feature growth unless a named consumer adopts the contract.
+
+## Blueprint workbench
+
+- [x] Share semantic validation across browser import and the CI-capable CLI.
+- [x] Publish a v1 JSON Schema, complete example, governance findings, and Markdown review packet.
+- Add a schema-validated local scenario editor only after an evaluator proves the authoring need.
+- Map the portable contract to one external runtime or interoperability standard without making that runtime canonical.
 
 ## Samsarix adoption
 
