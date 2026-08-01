@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { useEffect, useMemo, useState } from "react";
 
+import BlueprintWorkbench from "../components/BlueprintWorkbench";
 import {
   agents,
   createBlueprint,
@@ -174,6 +175,7 @@ function Home() {
         </a>
         <nav className="primary-nav" aria-label="Primary navigation">
           <a href="#lab">Field lab</a>
+          <a href="#workbench">Workbench</a>
           <a href="#model">Role model</a>
           <a href="#protocol">Protocol</a>
           <a
@@ -449,6 +451,8 @@ function Home() {
             </div>
           </div>
         </section>
+
+        <BlueprintWorkbench scenarioId={scenario.id} />
 
         <section className="section role-model" id="model">
           <div className="section-heading">

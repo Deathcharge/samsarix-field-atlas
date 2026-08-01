@@ -21,9 +21,11 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run build:client && pnpm run build:server",
+    "build": "pnpm run build:client && pnpm run build:server && pnpm run build:cli",
     "build:client": "vite build",
     "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "build:cli": "esbuild cli/validate.ts --platform=node --bundle --format=esm --outfile=dist/atlas-validate.js",
+    "blueprint:validate": "pnpm run build:cli && node dist/atlas-validate.js",
     "start": "node dist/index.js",
     "preview": "vite preview",
     "check": "tsc --noEmit",
@@ -33,7 +35,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run build"
+    "validate:example": "pnpm blueprint:validate examples/incident.blueprint.json --strict",
+    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run build"
   },
   "dependencies": {
     "express": "^5.2.1",

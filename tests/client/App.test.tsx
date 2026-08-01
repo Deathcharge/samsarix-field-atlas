@@ -85,6 +85,43 @@ describe("Samsarix Field Atlas", () => {
     expect(screen.getByRole("button", { name: /export json/i })).toBeDisabled();
   });
 
+  it("checks a blueprint locally and exports a readable review packet", () => {
+    const createObjectUrl = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:samsarix-review");
+    const revokeObjectUrl = vi
+      .spyOn(URL, "revokeObjectURL")
+      .mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+      () => undefined
+    );
+    render(<App />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /check current scenario/i })
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: /blueprint is internally consistent/i,
+      })
+    ).toBeVisible();
+    expect(screen.getByText("Passed checks")).toBeVisible();
+    expect(screen.getByText("AUTHORITY ALIGNED")).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /export review packet/i })
+    ).toBeEnabled();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /export review packet/i })
+    );
+    expect(
+      screen.getByText(/review packet exported as markdown/i)
+    ).toBeVisible();
+    expect(createObjectUrl).toHaveBeenCalledOnce();
+    expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-review");
+  });
+
   it("fails safely when a render error reaches the boundary", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 

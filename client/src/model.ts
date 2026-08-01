@@ -1,3 +1,5 @@
+import { blueprintSchemaVersion, type Blueprint } from "./blueprint";
+
 export type AgentLayer = "consciousness" | "operational" | "integration";
 
 export type Boundary = "human" | "policy" | "tool" | "memory";
@@ -542,12 +544,12 @@ export function indicatorsAtProgress(
 export function createBlueprint(
   scenarioId: string,
   completedAt: string
-): Record<string, unknown> {
+): Blueprint {
   const scenario = findScenario(scenarioId);
   const activeAgentIds = new Set(scenario.steps.map(step => step.agentId));
 
   return {
-    schemaVersion: "samsarix-field-atlas/1",
+    schemaVersion: blueprintSchemaVersion,
     mode: "illustrative-reference",
     generatedAt: completedAt,
     scenario: {
