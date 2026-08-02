@@ -1,0 +1,166 @@
+{
+  "reviewOwner": "Synthetic Implementation Review",
+  "decisionOwner": "Synthetic Release Authority",
+  "implementationRevision": "8b1d0c6e9050d88b71c43e1c40267b807e2d67f4",
+  "decision": "rejected",
+  "decidedAt": "2026-08-01T14:05:00.000Z",
+  "decisionRationale": "Reject this synthetic fixture because one blocking authentication case is rejected.",
+  "caseReviews": [
+    {
+      "caseId": "a2a-discovery-card",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:a2a-discovery-card"],
+      "rationale": null
+    },
+    {
+      "caseId": "a2a-version-negotiation",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:a2a-version-negotiation"],
+      "rationale": null
+    },
+    {
+      "caseId": "a2a-media-validation",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:a2a-media-validation"],
+      "rationale": null
+    },
+    {
+      "caseId": "a2a-authentication",
+      "outcome": "rejected",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:a2a-authentication"],
+      "rationale": "Synthetic fixture demonstrates a blocking authentication challenge that was not satisfied."
+    },
+    {
+      "caseId": "a2a-resource-authorization",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:a2a-resource-authorization"],
+      "rationale": null
+    },
+    {
+      "caseId": "a2a-validation-errors",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:a2a-validation-errors"],
+      "rationale": null
+    },
+    {
+      "caseId": "owner-request-limit",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:owner-request-limit"],
+      "rationale": null
+    },
+    {
+      "caseId": "owner-response-deadline",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:owner-response-deadline"],
+      "rationale": null
+    },
+    {
+      "caseId": "owner-concurrency-limit",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:owner-concurrency-limit"],
+      "rationale": null
+    },
+    {
+      "caseId": "a2a-transient-failure",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:a2a-transient-failure"],
+      "rationale": null
+    },
+    {
+      "caseId": "a2a-official-tck",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": [
+        "urn:sha256:efb0998b9bb08646f4013d1f01058a2fa66e5c2757d953539d83c27abf3417ab"
+      ],
+      "rationale": null
+    },
+    {
+      "caseId": "privacy-secret-handling",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:privacy-secret-handling"],
+      "rationale": null
+    },
+    {
+      "caseId": "privacy-retention",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:privacy-retention"],
+      "rationale": null
+    },
+    {
+      "caseId": "governance-human-approval-5",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:governance-human-approval-5"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-1",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-1"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-2",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-2"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-3",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-3"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-4",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-4"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-5",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-5"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-6",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-6"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-7",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-7"],
+      "rationale": null
+    },
+    {
+      "caseId": "evidence-stage-8",
+      "outcome": "accepted",
+      "reviewedAt": "2026-08-01T14:00:00.000Z",
+      "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-8"],
+      "rationale": null
+    }
+  ]
+}

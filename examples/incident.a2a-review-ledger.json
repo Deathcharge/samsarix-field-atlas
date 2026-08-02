@@ -1,0 +1,332 @@
+{
+  "schemaVersion": "samsarix-field-atlas/a2a-review-ledger/1",
+  "generatedAt": "2026-08-01T14:10:00.000Z",
+  "status": "owner-asserted-review",
+  "proofBoundary": {
+    "runtimeExecutionByFieldAtlas": "not-performed",
+    "sourceAuthenticationByFieldAtlas": "not-performed",
+    "ownerIdentityVerificationByFieldAtlas": "not-performed",
+    "decisionAuthority": "owner-asserted"
+  },
+  "source": {
+    "acceptancePlan": {
+      "schemaVersion": "samsarix-field-atlas/a2a-acceptance/1",
+      "canonicalSha256": "cf27911655bac8e2d32ac7bbc957533af6bebeb37418373f453920e98695f54c",
+      "generatedAt": "2026-08-01T12:00:00.000Z",
+      "scenarioId": "incident",
+      "agentName": "Incident Coordination Agent",
+      "agentVersion": "0.1.0",
+      "interfaceUrl": "https://agent.example.com/a2a",
+      "binding": "HTTP+JSON",
+      "protocolVersion": "1.0",
+      "acceptanceOwner": "Incident Platform Team",
+      "environment": "staging"
+    },
+    "tckReceipt": {
+      "schemaVersion": "samsarix-field-atlas/a2a-tck-receipt/1",
+      "canonicalSha256": "c05ea911471b67694ad96c374b6112dbed0dd08a49175d2abbaef249d64f973e",
+      "generatedAt": "2026-08-01T13:00:00.000Z",
+      "tckReportSha256": "efb0998b9bb08646f4013d1f01058a2fa66e5c2757d953539d83c27abf3417ab",
+      "assertedTckRevision": "5996b79f9cefa6fc390980e383e358a66fb9e49e",
+      "implementationRevision": "8b1d0c6e9050d88b71c43e1c40267b807e2d67f4"
+    }
+  },
+  "review": {
+    "reviewOwner": "Synthetic Implementation Review",
+    "decisionOwner": "Synthetic Release Authority",
+    "decision": "rejected",
+    "decidedAt": "2026-08-01T14:05:00.000Z",
+    "decisionRationale": "Reject this synthetic fixture because one blocking authentication case is rejected.",
+    "cases": [
+      {
+        "caseId": "a2a-discovery-card",
+        "category": "discovery",
+        "title": "Discover the declared Agent Card",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:a2a-discovery-card"],
+        "rationale": null
+      },
+      {
+        "caseId": "a2a-version-negotiation",
+        "category": "compatibility",
+        "title": "Enforce A2A version negotiation",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:a2a-version-negotiation"],
+        "rationale": null
+      },
+      {
+        "caseId": "a2a-media-validation",
+        "category": "compatibility",
+        "title": "Accept declared media and reject unsupported content",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:a2a-media-validation"],
+        "rationale": null
+      },
+      {
+        "caseId": "a2a-authentication",
+        "category": "security",
+        "title": "Reject missing and invalid authentication",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "rejected",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:a2a-authentication"],
+        "rationale": "Synthetic fixture demonstrates a blocking authentication challenge that was not satisfied."
+      },
+      {
+        "caseId": "a2a-resource-authorization",
+        "category": "security",
+        "title": "Prevent unauthorized task disclosure",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:a2a-resource-authorization"],
+        "rationale": null
+      },
+      {
+        "caseId": "a2a-validation-errors",
+        "category": "reliability",
+        "title": "Return bounded, actionable validation errors",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:a2a-validation-errors"],
+        "rationale": null
+      },
+      {
+        "caseId": "owner-request-limit",
+        "category": "reliability",
+        "title": "Enforce the request-size boundary",
+        "blocking": true,
+        "source": "owner-profile",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:owner-request-limit"],
+        "rationale": null
+      },
+      {
+        "caseId": "owner-response-deadline",
+        "category": "reliability",
+        "title": "Meet the response deadline",
+        "blocking": true,
+        "source": "owner-profile",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:owner-response-deadline"],
+        "rationale": null
+      },
+      {
+        "caseId": "owner-concurrency-limit",
+        "category": "reliability",
+        "title": "Enforce bounded concurrency",
+        "blocking": true,
+        "source": "owner-profile",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:owner-concurrency-limit"],
+        "rationale": null
+      },
+      {
+        "caseId": "a2a-transient-failure",
+        "category": "reliability",
+        "title": "Make transient failures safely retryable",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:a2a-transient-failure"],
+        "rationale": null
+      },
+      {
+        "caseId": "a2a-official-tck",
+        "category": "compatibility",
+        "title": "Run the official A2A Technology Compatibility Kit",
+        "blocking": true,
+        "source": "a2a-1.0",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": [
+          "urn:sha256:efb0998b9bb08646f4013d1f01058a2fa66e5c2757d953539d83c27abf3417ab"
+        ],
+        "rationale": null
+      },
+      {
+        "caseId": "privacy-secret-handling",
+        "category": "privacy",
+        "title": "Exclude secrets from artifacts and logs",
+        "blocking": true,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:privacy-secret-handling"],
+        "rationale": null
+      },
+      {
+        "caseId": "privacy-retention",
+        "category": "privacy",
+        "title": "Enforce the declared retention window",
+        "blocking": true,
+        "source": "owner-profile",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:privacy-retention"],
+        "rationale": null
+      },
+      {
+        "caseId": "governance-human-approval-5",
+        "category": "governance",
+        "title": "Preserve human approval at stage 5",
+        "blocking": true,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:governance-human-approval-5"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-1",
+        "category": "evidence",
+        "title": "Capture stage 1 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-1"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-2",
+        "category": "evidence",
+        "title": "Capture stage 2 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-2"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-3",
+        "category": "evidence",
+        "title": "Capture stage 3 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-3"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-4",
+        "category": "evidence",
+        "title": "Capture stage 4 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-4"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-5",
+        "category": "evidence",
+        "title": "Capture stage 5 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-5"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-6",
+        "category": "evidence",
+        "title": "Capture stage 6 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-6"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-7",
+        "category": "evidence",
+        "title": "Capture stage 7 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-7"],
+        "rationale": null
+      },
+      {
+        "caseId": "evidence-stage-8",
+        "category": "evidence",
+        "title": "Capture stage 8 evidence",
+        "blocking": false,
+        "source": "field-atlas",
+        "outcome": "accepted",
+        "reviewedBy": "Synthetic Implementation Review",
+        "reviewedAt": "2026-08-01T14:00:00.000Z",
+        "evidenceRefs": ["urn:samsarix:synthetic:evidence-stage-8"],
+        "rationale": null
+      }
+    ]
+  },
+  "summary": {
+    "total": 22,
+    "blocking": 14,
+    "accepted": 21,
+    "rejected": 1,
+    "waived": 0,
+    "pending": 0,
+    "blockingAccepted": 13,
+    "blockingRejected": 1,
+    "blockingWaived": 0,
+    "blockingPending": 0,
+    "evidenceReferences": 22
+  },
+  "conclusion": {
+    "automatedReadiness": "blocked",
+    "releaseDecision": "rejected"
+  },
+  "reviewItems": [
+    {
+      "code": "TCK_CAVEATS_DISPOSITIONED",
+      "message": "The owner disposition retains official-report failures, skips, or not-tested requirements for accountable review."
+    }
+  ]
+}

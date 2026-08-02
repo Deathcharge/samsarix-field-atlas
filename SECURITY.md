@@ -20,6 +20,8 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - A2A acceptance profiles, Agent Cards, and generated manifests are untrusted local data. Each CLI input is limited to a 1 MiB regular file, browser strings render as text, and Markdown exports escape imported metacharacters.
 - Acceptance artifacts always remain `plan-not-run`; named evidence is a future requirement rather than proof that a test, approval, or TCK run occurred.
 - TCK evidence receipts hash exact report bytes, omit raw errors/test IDs/embedded card contents, and reject likely secret-bearing run commands. Asserted revisions are not remotely verified, and receipt claims remain `not-determined` / `not-made` until accountable owner review.
+- A2A review profiles are limited to 1 MiB and remain local. Evidence references accept bounded credential-free HTTPS URLs or URNs; HTTPS user information, queries, and fragments are rejected to reduce accidental credential and signed-URL capture.
+- Review ledgers bind canonical plan/receipt JSON and the receipt's exact TCK-report digest, but they are not signatures. Named reviewers, decision owners, case outcomes, waivers, evidence references, and release decisions remain unauthenticated owner assertions.
 - The browser stores only a scenario identifier in `localStorage`.
 - JSON exports are produced locally and are not uploaded.
 - External GitHub links are user-initiated navigation only.
@@ -34,6 +36,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Treat every blueprint as user-controlled data when another system imports it; enforce a size limit, validate the schema and cross-field semantics, and never execute its strings as code or shell commands.
 - Treat every Agent Card as untrusted input in downstream systems. Do not interpolate card strings into prompts, HTML, logs, shell commands, or network policy without context-appropriate validation and escaping.
 - Treat acceptance manifests and attached runtime evidence as untrusted. Keep credentials and live payloads out of fixtures, redact reports, and bind any eventual signoff to exact implementation and test-tool revisions.
+- Treat review profiles, ledgers, and Markdown packets as untrusted assertions. Verify referenced evidence, artifact digests, identities, decision authority, and signatures in an owner-controlled system before acting on a release decision.
 - Never place a token, password, cookie, API key, authorization header, or signed URL in a Field Atlas A2A profile or generated card.
 - Do not add secrets to `VITE_*` variables: Vite exposes those values to every browser.
 

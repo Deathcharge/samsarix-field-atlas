@@ -2,11 +2,11 @@
 
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
-The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench validates that blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, and binds an externally generated official A2A TCK report to a review receipt without inventing a pass or release decision.
+The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench validates that blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, binds an externally generated official A2A TCK report to a review receipt, and records case-by-case owner dispositions without authenticating them or inventing authority.
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, and TCK evidence handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, accountable signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, authenticated signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
 
 ## Fastest successful path
 
@@ -39,8 +39,10 @@ No environment variables, API keys, accounts, databases, or companion repositori
 10. Complete the acceptance-owner profile with environment, limits, retention, classification, and processor decisions.
 11. Export the `plan-not-run` JSON manifest and Markdown execution checklist.
 12. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit.
-13. Import the TCK `compatibility.json`, supply immutable run provenance, and export an `owner-review-required` evidence receipt.
-14. Preserve the original reports and complete every non-TCK case in an owner-controlled signoff record.
+13. Import the TCK `compatibility.json`, supply owner-asserted full revision provenance, and export an `owner-review-required` evidence receipt.
+14. In **Record owner dispositions**, review every planned case or import a bounded review profile.
+15. Record accepted, rejected, waived, or pending outcomes with credential-free evidence references and required exception rationale.
+16. Export the JSON review ledger and Markdown packet. Treat the named owners and decision as assertions until an external authority authenticates them.
 
 The selected scenario is remembered in device-local browser storage. It contains no personal content and never leaves the device.
 
@@ -105,6 +107,22 @@ pnpm validate:tck-evidence-example
 
 The receipt never becomes a pass result: `protocolConformance` remains `not-determined`, `releaseDecision` remains `not-made`, and all non-TCK acceptance cases remain unresolved. It explicitly counts failures, skips, and not-tested requirements even when the official summary says `100.0%`. The committed TCK report is a synthetic official-format fixture, not evidence that any service ran. See [A2A TCK evidence receipt](docs/A2A_TCK_EVIDENCE.md).
 
+## Record acceptance dispositions
+
+The review ledger closes the plan's bookkeeping gap without becoming a runtime or identity system. It binds the Field Atlas canonical JSON for the acceptance plan and TCK receipt, requires exactly one row for every planned case, constrains evidence references to credential-free HTTPS or URN identifiers, computes blocking readiness, and records an optional owner release decision:
+
+```bash
+pnpm --silent blueprint:review \
+  examples/incident.a2a-acceptance.json \
+  --tck-receipt examples/incident.a2a-tck-receipt.json \
+  --profile examples/incident.a2a-review-profile.json \
+  --generated-at 2026-08-01T14:10:00.000Z
+
+pnpm validate:review-example
+```
+
+An approval is rejected when a blocking case is pending or rejected. Blocking waivers, non-blocking exceptions, and TCK failures/skips/not-tested requirements remain visible review items. The committed example is deliberately synthetic and rejected because its blocking authentication case is rejected. `owner-asserted-review` means Field Atlas did not authenticate the source artifacts, named owners, or decision authority. See [A2A acceptance review ledger](docs/A2A_REVIEW_LEDGER.md).
+
 ## Validate a blueprint in CI
 
 The CLI uses the same semantic validator as the browser workbench:
@@ -127,7 +145,7 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 | `pnpm check`                         | Run the strict TypeScript compiler check                                              |
 | `pnpm test`                          | Run model, component, and server tests once                                           |
 | `pnpm test:coverage`                 | Run tests with enforced coverage thresholds                                           |
-| `pnpm build`                         | Build static assets, the optional Node release server, and all four CLIs              |
+| `pnpm build`                         | Build static assets, the optional Node release server, and all five CLIs              |
 | `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional `--strict` or `--json`                          |
 | `pnpm blueprint:a2a <file> ...`      | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
 | `pnpm validate:a2a-example`          | Check the deterministic incident Agent Card mapping against its committed fixture     |
@@ -135,6 +153,8 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 | `pnpm validate:acceptance-example`   | Check the incident acceptance plan against its complete committed fixture             |
 | `pnpm blueprint:tck-evidence ...`    | Bind an official-format TCK JSON report to a deterministic owner-review receipt       |
 | `pnpm validate:tck-evidence-example` | Check the incident TCK receipt against its complete committed fixture                 |
+| `pnpm blueprint:review ...`          | Bind plan, receipt, case dispositions, and owner decision into a review ledger        |
+| `pnpm validate:review-example`       | Check the synthetic blocked review ledger against its complete committed fixture      |
 | `pnpm start`                         | Serve the completed build on `127.0.0.1:3000`                                         |
 | `pnpm verify`                        | Run lint, formatting, types, coverage, all fixture validations, and build in CI order |
 
@@ -153,6 +173,7 @@ The build produces:
 - `dist/atlas-a2a.js`: the bundled, dependency-free A2A draft generation and fixture-check CLI.
 - `dist/atlas-acceptance.js`: the bundled, dependency-free A2A acceptance-plan and fixture-check CLI.
 - `dist/atlas-tck-evidence.js`: the bundled, dependency-free A2A TCK evidence receipt and fixture-check CLI.
+- `dist/atlas-review.js`: the bundled, dependency-free A2A acceptance review and fixture-check CLI.
 
 The server accepts optional `HOST` and `PORT` process variables. It defaults to `127.0.0.1:3000`; set `HOST=0.0.0.0` only when an external deployment boundary is intentional and protected.
 
@@ -183,8 +204,10 @@ client/src/a2a.ts           Owner profile checks + draft card/checklist mapping
 client/src/acceptance.ts    Owner limits + deterministic plan/checklist mapping
               ↓
 client/src/evidence.ts      TCK report semantics + exact-byte evidence receipt
+              ↓
+client/src/review.ts        Case dispositions + blocking readiness + owner decision
        ↙             ↘
-React workbench       CLI tools ───────────→ four bundled CLI artifacts
+React workbench       CLI tools ───────────→ five bundled CLI artifacts
        ↓                    ↑
 Vite static build     schemas/ + examples/
        ↓
@@ -203,6 +226,7 @@ The product intentionally has no authentication, database, analytics, remote API
 - A2A owner-profile values are local-only, rendered as text, and never used to probe an endpoint; no credential field exists.
 - Acceptance profiles and manifests remain local-only, are bounded in the CLI, and make no test-result claim.
 - TCK JSON imports are limited to 5 MiB and hashed locally; receipts omit raw errors, test IDs, and embedded Agent Card contents, reject likely secret-bearing commands, and never claim conformance or release approval.
+- Review profiles are limited to 1 MiB, stay local, require one bounded row per planned case, and reject credential-bearing URLs. Ledgers store evidence references rather than evidence bodies and identify every owner and decision as unauthenticated assertions.
 - The validator rejects oversized collections, malformed references, unsupported major versions, and reference-mode runtime contradictions.
 - The release server disables framework disclosure, denies framing, restricts browser capabilities, and serves a narrow health contract.
 - Public links open with `rel="noreferrer"`.
@@ -217,6 +241,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - A generated A2A Agent Card is a draft declaration, not proof of endpoint reachability, authentication, signature validity, or protocol compatibility.
 - A generated acceptance manifest is a not-yet-run consumer plan, not an official extension, TCK report, pass result, or accountable release signoff.
 - A generated TCK evidence receipt validates report structure and binds asserted provenance; it does not prove that the run occurred, authenticate the source revisions, make a conformance decision, complete non-TCK cases, or approve a release.
+- A generated review ledger can reject contradictory approvals and make missing/waived work visible, but it does not verify evidence contents, signatures, identities, authority, or the truth of an owner disposition.
 - The three bundled scenarios are representative rather than exhaustive.
 - No hosted URL is guaranteed by this repository.
 
@@ -227,6 +252,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - [A2A 1.0 deployment handoff and proof boundary](docs/A2A_HANDOFF.md)
 - [A2A implementation acceptance contract](docs/A2A_ACCEPTANCE.md)
 - [A2A TCK evidence receipt and owner-review boundary](docs/A2A_TCK_EVIDENCE.md)
+- [A2A acceptance review ledger and assertion boundary](docs/A2A_REVIEW_LEDGER.md)
 - [Historical pre-Samsarix context](CONTEXT.md) — preserved as non-normative source material
 - [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)

@@ -82,7 +82,7 @@ The exported plan is ready for execution elsewhere only after the profile is str
 2. run the cases under deployment-like conditions using synthetic or explicitly approved data;
 3. attach redacted evidence without editing `plan-not-run` into a result claim; for official TCK JSON, create the separate Field Atlas evidence receipt and retain the original report;
 4. disposition TCK failures, skips, and inapplicable cases;
-5. record the release decision, date, unresolved risk, and rollback path in a separate accountable record.
+5. use the separate [Field Atlas acceptance review ledger](A2A_REVIEW_LEDGER.md) to bind one disposition to every planned case, then authenticate the decision, identities, evidence, and authority in an owner-controlled system.
 
 High-risk production plans produce an independent-signoff warning. Restricted data combined with external processors produces a processor, transfer, and redaction review warning.
 
