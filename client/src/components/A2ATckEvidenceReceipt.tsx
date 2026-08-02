@@ -208,7 +208,7 @@ function A2ATckEvidenceReceipt({
               </label>
 
               <label>
-                <span>Implementation revision</span>
+                <span>TCK implementation revision</span>
                 <input
                   autoCapitalize="none"
                   maxLength={64}

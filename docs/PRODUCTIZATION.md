@@ -322,11 +322,11 @@ Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.
 
 | Command or check               | Result                                                                                                                                                                         |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `corepack pnpm verify`         | Passed lint, formatting, strict types, 80 tests, coverage thresholds, all five committed fixture checks, and client/server/five-CLI production builds.                         |
-| Coverage                       | 81.58% statements, 79.71% branches, 82.84% functions, and 82.71% lines; `review.ts` reached 84.92% statements, 85.82% branches, and 100% functions.                            |
+| `corepack pnpm verify`         | Passed lint, formatting, strict types, 81 tests, coverage thresholds, all five committed fixture checks, and client/server/five-CLI production builds.                         |
+| Coverage                       | 81.55% statements, 79.92% branches, 82.89% functions, and 82.62% lines; `review.ts` reached 85.03% statements, 86.51% branches, and 100% functions.                            |
 | `pnpm validate:review-example` | Bound all 22 planned cases, retained the synthetic TCK caveat, computed one blocking rejection, and exactly matched the committed rejected-decision ledger.                    |
-| `pnpm build`                   | Passed; client JS was 335.54 kB / 98.72 kB gzip, CSS was 32.80 kB / 6.93 kB gzip, server was 4.2 kB, and review CLI was 36,131 bytes.                                          |
-| Review CLI artifact            | `dist/atlas-review.js` SHA-256 was `d4ac03991aaa84ea8bb60afd4e26e081238571cb274f621542aa6ea22c5be159`.                                                                         |
+| `pnpm build`                   | Passed; client JS was 335.56 kB / 98.75 kB gzip, CSS was 32.80 kB / 6.93 kB gzip, server was 4.2 kB, and review CLI was 36,213 bytes.                                          |
+| Review CLI artifact            | `dist/atlas-review.js` SHA-256 was `e7c0a0ee01a57bdcb6ca7ed9b9ef27f7be1c5538bda3b20a46eeb510b7955599`.                                                                         |
 | Review fixture artifacts       | Profile SHA-256 was `e4e28b2c7725e8d197fa1f4271c6e88b0e6a56c6e78a11a65153d8b4d0e986a2`; ledger SHA-256 was `d090ee5f14f698a1720969d800c68d6261e08e42115d88165e6149d81b6e3c9f`. |
 | `corepack pnpm audit --prod`   | Passed with no known production vulnerabilities.                                                                                                                               |
 | React best-practices review    | Passed applicable component-boundary, derived-state, controlled-input, async-race, stable-key, accessibility, rendering, and bundle-scope checks.                              |

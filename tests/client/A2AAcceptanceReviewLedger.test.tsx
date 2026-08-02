@@ -107,7 +107,7 @@ describe("A2A acceptance review browser workflow", () => {
         })
       ).toBeVisible()
     );
-    expect(screen.getByText(/21/, { selector: "dd" })).toBeVisible();
+    expect(screen.getByText(/^21$/, { selector: "dd" })).toBeVisible();
     expect(screen.getByText(/TCK caveats dispositioned/i)).toBeVisible();
     expect(
       screen.getByRole("button", { name: /export review ledger/i })

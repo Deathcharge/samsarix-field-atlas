@@ -176,6 +176,21 @@ describe("A2A acceptance review ledger", () => {
     );
   });
 
+  it("rejects evidence references that duplicate after trimming", async () => {
+    const { plan, receipt, profile } = fixtures();
+    profile.caseReviews[0]!.evidenceRefs = [
+      "https://evidence.example.com/run/artifact.json",
+      " https://evidence.example.com/run/artifact.json ",
+    ];
+    const analysis = await analyze(plan, receipt, profile);
+
+    expect(analysis.status).toBe("invalid");
+    expect(analysis.ledger).toBeUndefined();
+    expect(analysis.findings.map(finding => finding.code)).toContain(
+      "INVALID_CASE_REVIEW"
+    );
+  });
+
   it("rejects approval while a blocking case is rejected", async () => {
     const { plan, receipt, profile } = fixtures();
     profile.decision = "approved";

@@ -725,6 +725,12 @@ function validateProfile(
     for (let index = 0; index < caseReviews.length; index += 1) {
       const review = caseReviews[index];
       const path = `$.profile.caseReviews[${index}]`;
+      const evidenceRefs =
+        isRecord(review) &&
+        Array.isArray(review.evidenceRefs) &&
+        review.evidenceRefs.every(reference => typeof reference === "string")
+          ? review.evidenceRefs.map(reference => reference.trim())
+          : null;
       if (
         !isRecord(review) ||
         !nonEmptyString(review.caseId, 240) ||
@@ -732,10 +738,10 @@ function validateProfile(
         acceptedReviews.has(String(review.caseId)) ||
         typeof review.outcome !== "string" ||
         !outcomes.has(review.outcome as A2AReviewOutcome) ||
-        !Array.isArray(review.evidenceRefs) ||
-        review.evidenceRefs.length > 8 ||
-        !review.evidenceRefs.every(safeEvidenceReference) ||
-        new Set(review.evidenceRefs).size !== review.evidenceRefs.length ||
+        !evidenceRefs ||
+        evidenceRefs.length > 8 ||
+        !evidenceRefs.every(safeEvidenceReference) ||
+        new Set(evidenceRefs).size !== evidenceRefs.length ||
         !nullableString(review.rationale, 2_000)
       ) {
         addFinding(
@@ -755,7 +761,7 @@ function validateProfile(
       if (
         outcome === "pending" &&
         (review.reviewedAt !== null ||
-          review.evidenceRefs.length !== 0 ||
+          evidenceRefs.length !== 0 ||
           review.rationale !== null)
       ) {
         addFinding(
@@ -767,10 +773,7 @@ function validateProfile(
         );
         continue;
       }
-      if (
-        outcome !== "pending" &&
-        (!reviewedAt || review.evidenceRefs.length === 0)
-      ) {
+      if (outcome !== "pending" && (!reviewedAt || evidenceRefs.length === 0)) {
         addFinding(
           findings,
           "error",
@@ -811,9 +814,7 @@ function validateProfile(
         caseId: review.caseId as string,
         outcome,
         reviewedAt,
-        evidenceRefs: (review.evidenceRefs as string[]).map(reference =>
-          reference.trim()
-        ),
+        evidenceRefs,
         rationale:
           review.rationale === null
             ? null

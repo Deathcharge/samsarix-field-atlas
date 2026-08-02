@@ -339,8 +339,11 @@ function A2AAcceptanceReviewLedger({
       );
       const parsed = JSON.parse(text) as unknown;
       const candidate = importedProfile(parsed);
-      if (!candidate) throw new Error("invalid profile");
       if (sequence !== importSequence.current) return;
+      if (!candidate) {
+        setNotice(`${file.name} does not match the review profile structure.`);
+        return;
+      }
       const now = new Date().toISOString();
       if (
         !acceptanceManifest ||
@@ -380,7 +383,7 @@ function A2AAcceptanceReviewLedger({
       );
     } catch {
       if (sequence !== importSequence.current) return;
-      setNotice(`${file.name} is not a valid UTF-8 review profile.`);
+      setNotice(`${file.name} is not valid UTF-8 JSON.`);
     }
   }
 
@@ -484,7 +487,7 @@ function A2AAcceptanceReviewLedger({
               </label>
 
               <label>
-                <span>Implementation revision</span>
+                <span>Reviewed implementation revision</span>
                 <input
                   autoCapitalize="none"
                   maxLength={64}
@@ -641,7 +644,9 @@ function A2AAcceptanceReviewLedger({
                                       .filter(Boolean),
                                   }))
                                 }
-                                placeholder="https://evidence.example.com/run/artifact.json\nurn:sha256:..."
+                                placeholder={
+                                  "https://evidence.example.com/run/artifact.json\nurn:sha256:..."
+                                }
                                 rows={3}
                                 spellCheck={false}
                                 value={review.evidenceRefs.join("\n")}
