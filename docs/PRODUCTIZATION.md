@@ -159,7 +159,7 @@ Final command evidence is appended after implementation verification.
 - Added a shared semantic validator, strict/JSON CLI modes, versioned JSON Schema, and a complete incident fixture enforced by `pnpm verify`.
 - Added a shared A2A 1.0 handoff validator, browser profile, draft Agent Card/checklist exports, deterministic CLI mapping, and committed incident card fixture.
 - Added a shared A2A implementation acceptance validator, browser owner profile, JSON/Markdown plan exports, public schema, deterministic CLI, and committed incident fixtures.
-- Added a shared A2A TCK evidence validator, bounded browser import, exact-byte SHA-256, immutable provenance profile, public receipt schema, deterministic CLI, and synthetic omission-focused incident fixtures.
+- Added a shared A2A TCK evidence validator, bounded browser import, exact-byte SHA-256, owner-asserted provenance profile, public receipt schema, deterministic CLI, and synthetic omission-focused incident fixtures.
 - Removed misleading status, deployment, authentication, analytics, and integration claims.
 - Replaced the generated UI kit with purpose-built semantic React and CSS.
 - Added the optional hardened release server and meaningful automated tests.
@@ -296,11 +296,11 @@ Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.
 | Command or check                          | Result                                                                                                                                                       |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `corepack pnpm install --frozen-lockfile` | Passed from the committed lockfile with pnpm 11.17.0.                                                                                                        |
-| `corepack pnpm verify`                    | Passed lint, formatting, strict types, 62 tests, coverage thresholds, all four committed fixture checks, and client/server/four-CLI production builds.       |
-| Coverage                                  | 82.61% statements, 78.22% branches, 83.80% functions, and 83.43% lines.                                                                                      |
+| `corepack pnpm verify`                    | Passed lint, formatting, strict types, 65 tests, coverage thresholds, all four committed fixture checks, and client/server/four-CLI production builds.       |
+| Coverage                                  | 83.08% statements, 78.56% branches, 84.21% functions, and 83.82% lines.                                                                                      |
 | `pnpm validate:tck-evidence-example`      | Recomputed the synthetic report, surfaced its blank spec version plus one skipped and one not-tested requirement, and exactly matched the committed receipt. |
-| `pnpm build`                              | Passed; client JS was 302.40 kB / 91.20 kB gzip, CSS was 29.93 kB / 6.55 kB gzip, server was 4.2 kB, and TCK evidence CLI was 35,149 bytes.                  |
-| TCK evidence CLI artifact                 | `dist/atlas-tck-evidence.js` SHA-256 was `317e019712521fc8ebd3d9fec1ee9bd6f3b7e635dd5dab17df06403a1c02741e`.                                                 |
+| `pnpm build`                              | Passed; client JS was 302.40 kB / 91.20 kB gzip, CSS was 29.93 kB / 6.55 kB gzip, server was 4.2 kB, and TCK evidence CLI was 35,129 bytes.                  |
+| TCK evidence CLI artifact                 | `dist/atlas-tck-evidence.js` SHA-256 was `fc648627c0d73b2486423a03805bc30a0d82fcc93432064d185db6d8b672b8d0`.                                                 |
 | Synthetic report fixture                  | Exact-byte SHA-256 was `efb0998b9bb08646f4013d1f01058a2fa66e5c2757d953539d83c27abf3417ab`, matching the receipt.                                             |
 | `pnpm audit --prod`                       | Passed with no known production vulnerabilities.                                                                                                             |
 | React best-practices review               | Passed the applicable component-boundary, local/derived-state, async race, controlled-input, accessibility, rendering, and bundle-scope checklist.           |

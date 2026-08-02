@@ -984,7 +984,8 @@ function addEvidenceReviewFindings(
         "$.tckReport.agent_card",
         "The embedded Agent Card lacks a bounded name or version; compare the served discovery document separately."
       );
-    } else if (
+    }
+    if (
       report.embeddedAgentName !== undefined &&
       report.embeddedAgentName !== plan.manifest.source.agentCard.name
     ) {
@@ -1022,10 +1023,7 @@ export function defaultA2ATckEvidenceProfile(): A2ATckEvidenceProfile {
 
 export async function sha256Hex(bytes: Uint8Array): Promise<string> {
   const stableBytes = Uint8Array.from(bytes);
-  const digest = await globalThis.crypto.subtle.digest(
-    "SHA-256",
-    stableBytes.buffer
-  );
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", stableBytes);
   return Array.from(new Uint8Array(digest), byte =>
     byte.toString(16).padStart(2, "0")
   ).join("");

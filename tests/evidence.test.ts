@@ -15,6 +15,7 @@ import {
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const generatedAt = "2026-08-01T13:00:00.000Z";
+const reportFixturePath = "examples/incident.a2a-tck-compatibility.json";
 
 interface TckRequirementFixture {
   level: "MUST" | "SHOULD" | "MAY";
@@ -56,9 +57,7 @@ function fixtures(): {
     plan: readFixture<A2AAcceptanceManifest>(
       "examples/incident.a2a-acceptance.json"
     ),
-    report: readFixture<TckReportFixture>(
-      "examples/incident.a2a-tck-compatibility.json"
-    ),
+    report: readFixture<TckReportFixture>(reportFixturePath),
     profile: readFixture<A2ATckEvidenceProfile>(
       "examples/incident.a2a-tck-evidence-profile.json"
     ),
@@ -72,7 +71,7 @@ describe("A2A TCK evidence receipt", () => {
   it("binds exact report bytes while keeping 100% omissions visible", async () => {
     const { plan, report, profile, expected } = fixtures();
     const reportBytes = readFileSync(
-      resolve(repositoryRoot, "examples/incident.a2a-tck-compatibility.json")
+      resolve(repositoryRoot, reportFixturePath)
     );
     const digest = await sha256Hex(reportBytes);
     const first = validateA2ATckEvidence(
@@ -131,9 +130,7 @@ describe("A2A TCK evidence receipt", () => {
     addFormats(ajv);
     const conforms = ajv.compile(schema);
     const digest = await sha256Hex(
-      readFileSync(
-        resolve(repositoryRoot, "examples/incident.a2a-tck-compatibility.json")
-      )
+      readFileSync(resolve(repositoryRoot, reportFixturePath))
     );
     const analysis = validateA2ATckEvidence(
       plan,
@@ -281,8 +278,76 @@ describe("A2A TCK evidence receipt", () => {
     );
   });
 
+  it("rejects duplicate acceptance-plan case IDs", () => {
+    const { plan, report, profile } = fixtures();
+    plan.testCases[1]!.id = plan.testCases[0]!.id;
+    const analysis = validateA2ATckEvidence(
+      plan,
+      report,
+      profile,
+      generatedAt,
+      "e".repeat(64)
+    );
+
+    expect(analysis.status).toBe("invalid");
+    expect(analysis.receipt).toBeUndefined();
+    expect(analysis.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "INVALID_PLAN_CASE" }),
+      ])
+    );
+  });
+
+  it("rejects an acceptance plan without an official TCK case", () => {
+    const { plan, report, profile } = fixtures();
+    plan.testCases = plan.testCases.filter(
+      testCase => testCase.id !== "a2a-official-tck"
+    );
+    plan.summary.testCases = plan.testCases.length;
+    plan.summary.blockingCases = plan.testCases.filter(
+      testCase => testCase.blocking
+    ).length;
+    plan.summary.officialTckCases = 0;
+    const analysis = validateA2ATckEvidence(
+      plan,
+      report,
+      profile,
+      generatedAt,
+      "e".repeat(64)
+    );
+
+    expect(analysis.status).toBe("invalid");
+    expect(analysis.receipt).toBeUndefined();
+    expect(analysis.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "INCONSISTENT_PLAN_SUMMARY" }),
+      ])
+    );
+  });
+
+  it("rejects acceptance-plan blocking summary drift", () => {
+    const { plan, report, profile } = fixtures();
+    plan.summary.blockingCases -= 1;
+    const analysis = validateA2ATckEvidence(
+      plan,
+      report,
+      profile,
+      generatedAt,
+      "e".repeat(64)
+    );
+
+    expect(analysis.status).toBe("invalid");
+    expect(analysis.receipt).toBeUndefined();
+    expect(analysis.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "INCONSISTENT_PLAN_SUMMARY" }),
+      ])
+    );
+  });
+
   it("flags an embedded card whose bounded identity is incomplete", () => {
     const { plan, report, profile } = fixtures();
+    report.agent_card!.name = "Different Agent";
     delete report.agent_card!.version;
     const analysis = validateA2ATckEvidence(
       plan,
@@ -297,6 +362,7 @@ describe("A2A TCK evidence receipt", () => {
     expect(analysis.findings).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ code: "TCK_AGENT_IDENTITY_INCOMPLETE" }),
+        expect.objectContaining({ code: "TCK_AGENT_NAME_MISMATCH" }),
       ])
     );
   });
