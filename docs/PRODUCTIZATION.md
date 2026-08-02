@@ -1,6 +1,6 @@
 # Productization record
 
-Last updated: August 1, 2026
+Last updated: August 2, 2026
 
 ## Repository assessment
 
@@ -36,7 +36,7 @@ A developer, technical evaluator, or collaborator who wants to understand or dis
 
 ### Primary use case and journey
 
-The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, inspects the exact human/policy/tool/memory boundaries, and exports an implementation-neutral JSON blueprint. The user can then import that contract, receive a semantic readiness decision, enforce it in CI, prepare an A2A deployment and acceptance handoff, bind an externally generated official TCK report to an owner-review receipt, and record one explicit disposition per planned case in an owner-asserted review ledger.
+The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, and inspects the exact human/policy/tool/memory boundaries. They can adapt that route in a guided local editor or export it directly as an implementation-neutral JSON blueprint. The user can then receive a semantic readiness decision, enforce the contract in CI, prepare an A2A deployment and acceptance handoff, bind an externally generated official TCK report to an owner-review receipt, and record one explicit disposition per planned case in an owner-asserted review ledger.
 
 ### Independent reason to exist
 
@@ -64,6 +64,9 @@ Bounded research used primary documentation current on August 1, 2026:
 - [NIST TEVV](https://www.nist.gov/ai-test-evaluation-validation-and-verification-tevv) and the [AI RMF Core](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/) call for documented, repeatable evaluation under deployment-like conditions with defined human oversight.
 - [LangSmith annotation queues](https://docs.langchain.com/langsmith/annotation-queues) organize human review with rubrics, assigned reviewers, and explicit completion states.
 - [Braintrust human review](https://www.braintrust.dev/docs/annotate/human-review) combines structured case scores, assignments, comments, and completed-review tracking with automated evaluation.
+- [LangSmith dataset management](https://docs.langchain.com/langsmith/manage-datasets-in-application) makes from-scratch examples, inline editing, file import, and optional schema validation part of the evaluation workflow.
+- [Braintrust datasets](https://www.braintrust.dev/docs/annotate/datasets) make user-owned test cases versioned, editable, importable, and reusable across evaluations.
+- [Promptfoo test cases](https://www.promptfoo.dev/docs/configuration/test-cases/) support portable, user-authored scenario variables and assertions across inline and external test-set formats.
 
 The execution products build or inspect running agent systems; the emerging standards make portable declarations and governance evidence increasingly relevant across runtimes. Field Atlas occupies the pre-runtime wedge: an account-free, provider-neutral coordination designer, semantic contract checker, and review-artifact generator. It does not compete as a model runner or observability service.
 
@@ -81,6 +84,7 @@ The execution products build or inspect running agent systems; the emerging stan
 10. Keep consumer acceptance semantics in a separate `plan-not-run` artifact: the official A2A TCK owns core compatibility, while Field Atlas preserves owner limits, privacy choices, human gates, and evidence requirements without extending the Agent Card.
 11. Treat external TCK JSON as untrusted evidence: hash exact bytes, recompute report semantics, omit raw diagnostics, bind asserted provenance, and keep conformance and release decisions explicitly undetermined.
 12. Keep final dispositions in a separate owner-asserted ledger: bind canonical source artifacts, require complete case coverage and explicit exceptions, compute blocking readiness, reject contradictory approvals, and state that identities and authority were not authenticated.
+13. Keep guided scenario authoring local and bounded: start from a known route, select only reference-catalog roles, derive bookkeeping fields, validate live with the shared semantic checker, and snapshot before downstream handoff.
 
 ## Assumptions
 
@@ -129,7 +133,7 @@ Final command evidence is appended after implementation verification.
 
 ### P2 — valuable follow-up
 
-- [ ] Add user-authored scenarios through a schema-validated local editor.
+- [x] Add user-authored scenarios through a schema-validated local editor.
 - [x] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
 - [x] Add deterministic browser and CLI SARIF 2.1.0 reporting for blueprint conformance findings.
 - [x] Map a validated blueprint to an owner-completed draft A2A 1.0 Agent Card and implementation checklist.
@@ -161,6 +165,7 @@ Final command evidence is appended after implementation verification.
 - Added the complete 13-role, three-layer reference inventory.
 - Added honest local-only runtime disclosure in product copy and exports.
 - Added a local blueprint workbench with file import, readiness states, governance findings, metrics, and Markdown review-packet export.
+- Added Scenario Studio with guided local scenario, criteria, trace, boundary, evidence, and indicator authoring; derived role/order/approval/runtime fields; live shared validation; deliberate draft replacement; and immutable workbench snapshots.
 - Added a shared semantic validator, strict/JSON CLI modes, versioned JSON Schema, and a complete incident fixture enforced by `pnpm verify`.
 - Added a shared A2A 1.0 handoff validator, browser profile, draft Agent Card/checklist exports, deterministic CLI mapping, and committed incident card fixture.
 - Added a shared A2A implementation acceptance validator, browser owner profile, JSON/Markdown plan exports, public schema, deterministic CLI, and committed incident fixtures.
@@ -173,7 +178,7 @@ Final command evidence is appended after implementation verification.
 
 ## Deferred work and rationale
 
-- User-authored scenarios remain deferred until real evaluator demand justifies the additional editing and migration surface.
+- Persistent draft history, blank-canvas authoring, and custom-role editing remain deferred until consumer evidence justifies a storage/migration model beyond the bounded reference workflow.
 - Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, genuine compatibility evidence, authenticated signoff, and ongoing support commitment. The A2A handoff, acceptance plan, evidence receipt, and owner-asserted review ledger make those next steps explicit without taking the dependency or claiming the synthetic fixture ran.
 - Internationalization is deferred until product language is validated.
 
@@ -355,3 +360,25 @@ Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.
 | `corepack pnpm audit --prod`      | Passed with no known production vulnerabilities and no new runtime dependency.                                                                           |
 
 This is formatter, fixture, test, and build evidence—not proof that any external SARIF consumer accepted an upload. The report describes blueprint structure and governance findings, not source-code vulnerabilities, runtime behavior, evidence truth, or authenticated approval. No upload permission, code-scanning configuration, deployment, or external write was added.
+
+## Scenario Studio increment
+
+Field Atlas now supports user-owned scenarios without requiring hand-edited JSON or a hosted dataset service. Scenario Studio clones a bundled route, exposes the scenario contract, success criteria, ordered handoffs, boundaries, evidence declarations, and illustrative indicators, and keeps every draft in browser memory. It derives active role declarations, contiguous stage order, exact human-approval positions, and the reference product's no-runtime claims before using the shared semantic validator.
+
+Current evaluation-product workflows support this authoring need: LangSmith exposes from-scratch and inline dataset examples with optional schema validation, Braintrust treats editable/importable versioned test cases as the input to repeatable evaluations, and Promptfoo makes portable scenario variables and expectations first-class test data. Field Atlas retains a smaller wedge: one account-free provider-neutral coordination contract, with no production trace capture, model generation, cloud persistence, or runtime execution.
+
+The editor preserves a dirty draft when the Field Lab selection changes, requires a deliberate second click before replacing the entire draft, and sends an immutable validated snapshot into the existing workbench/A2A chain. Stable draft-only row identifiers preserve keyboard focus when criteria or stages are reordered. Blueprint imports also now use fatal UTF-8 decoding, aligning browser behavior with the documented trust boundary.
+
+Local evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.0`:
+
+| Command or check             | Result                                                                                                                                                                              |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `corepack pnpm run verify`   | Passed lint, formatting, strict types, 12 test files / 93 tests, coverage thresholds, all six fixture checks, and client/server/five-CLI production builds.                         |
+| Coverage                     | 81.20% statements, 79.73% branches, 79.31% functions, and 82.93% lines; `scenario-editor.ts` reached 95.65% statements, 90% branches, and 100% functions/lines.                     |
+| Focused editor/browser tests | Passed six model and browser tests plus the existing app suite, including live invalid/valid transitions, immutable handoff, dirty-draft preservation, export, and UTF-8 rejection. |
+| Production build             | Client JS was 351.69 kB / 102.94 kB gzip, CSS was 40.91 kB / 8.16 kB gzip, server was 4.2 kB, and all five CLI artifacts built successfully.                                        |
+| Client artifact digests      | JS SHA-256 was `73eb9da2ca489a9b55f4099ea7eacd78c9c874d5f613de88f536382adf1f72be`; CSS SHA-256 was `fb66f82a5c7089aa2ae9b686057c728865b19cc7506f30bf5554d721bf26d5d0`.              |
+| `corepack pnpm audit --prod` | Passed with no known production vulnerabilities and no new runtime dependency.                                                                                                      |
+| React best-practices review  | Passed applicable component-boundary, derived-state, functional-update, controlled-input, stable-key, accessibility, long-list rendering, and bundle-scope checks.                  |
+
+This is local authoring, validation, test, and build evidence. It does not establish evaluator adoption, hosted availability, collaborative persistence, custom-role migration, or the truth of any authored evidence or approval. No deployment, account system, database, analytics, model call, or external write was added.

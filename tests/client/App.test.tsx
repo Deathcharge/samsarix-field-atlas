@@ -133,6 +133,34 @@ describe("Samsarix Field Atlas", () => {
     );
   });
 
+  it("rejects a blueprint import that is not valid UTF-8 JSON", async () => {
+    render(<App />);
+    const bytes = Uint8Array.from([0xff, 0xfe, 0x7b, 0x7d]);
+    const file = new File([bytes], "invalid-encoding.json", {
+      type: "application/json",
+    });
+    Object.defineProperty(file, "arrayBuffer", {
+      configurable: true,
+      value: async () => Uint8Array.from(bytes).buffer,
+    });
+
+    fireEvent.change(screen.getByLabelText(/import json/i), {
+      target: { files: [file] },
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(/could not be parsed as UTF-8 JSON/i)
+      ).toBeVisible()
+    );
+    expect(screen.getByText("IMPORT FAILED")).toBeVisible();
+    expect(
+      screen.getByRole("heading", {
+        name: /contract is not safe to rely on yet/i,
+      })
+    ).toBeVisible();
+  });
+
   it("exports blueprint findings as a local SARIF 2.1.0 report", async () => {
     const createObjectUrl = vi
       .spyOn(URL, "createObjectURL")

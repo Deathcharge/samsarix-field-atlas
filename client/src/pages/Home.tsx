@@ -197,9 +197,9 @@ function Home() {
               Trace the handoffs <span>before you trust the system.</span>
             </h1>
             <p className="hero-lede">
-              Explore Samsarix&apos;s 13-role model through deterministic
-              scenarios. See who acts, where approval is required, what evidence
-              survives, and what never leaves your browser.
+              Explore or adapt Samsarix&apos;s 13-role model through local,
+              deterministic scenarios. See who acts, where approval is required,
+              what evidence survives, and what never leaves your browser.
             </p>
             <div className="hero-actions">
               <a className="button button-primary" href="#lab">
@@ -562,6 +562,7 @@ function Home() {
               <ul>
                 <li>Deterministic scenario traces</li>
                 <li>Complete 13-role reference</li>
+                <li>Guided local scenario authoring</li>
                 <li>Local device preference only</li>
                 <li>Portable JSON blueprint</li>
                 <li>A2A handoff, evidence, and owner-review ledgers</li>

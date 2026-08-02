@@ -13,6 +13,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 ## Trust boundaries
 
 - Scenario definitions are repository-authored fixtures, not untrusted runtime input.
+- Scenario Studio values are untrusted local form input. Drafts remain in React memory, strings render through React text nodes, derived arrays are bounded by the v1 limits, and only a semantically valid snapshot can enter export or A2A handoff workflows.
 - Imported JSON is untrusted local input. The browser limits blueprints to 1 MiB and TCK reports to 5 MiB, requires valid UTF-8 JSON, validates bounded structures, and renders strings through React text nodes without persistence or execution.
 - Markdown review packets escape imported metacharacters so blueprint strings cannot directly create links or remote images in the generated artifact.
 - A2A deployment-profile values and generated Agent Card strings are untrusted local data. React renders them as text, Markdown output escapes metacharacters, and the browser never probes a declared endpoint.
@@ -23,7 +24,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - A2A review profiles are limited to 1 MiB and remain local. Evidence references accept bounded credential-free HTTPS URLs or URNs; HTTPS user information, queries, and fragments are rejected to reduce accidental credential and signed-URL capture.
 - Review ledgers bind canonical plan/receipt JSON and the receipt's exact TCK-report digest, but they are not signatures. Named reviewers, decision owners, case outcomes, waivers, evidence references, and release decisions remain unauthenticated owner assertions.
 - The browser stores only a scenario identifier in `localStorage`.
-- JSON exports are produced locally and are not uploaded.
+- Authored and imported JSON exports are produced locally and are not uploaded.
 - SARIF exports are produced locally and contain validator messages, encoded artifact names, and JSONPath locations. Field Atlas does not request `security-events: write`, upload to code scanning, or claim that governance findings are vulnerabilities.
 - External GitHub links are user-initiated navigation only.
 - The optional Express server serves build artifacts and a fixed `/healthz` response; it has no write API or authentication surface.
@@ -35,6 +36,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - If binding `HOST=0.0.0.0`, place the server behind an owner-approved TLS and network boundary.
 - Run `pnpm install --frozen-lockfile`, `pnpm audit --prod`, and `pnpm verify` before release.
 - Treat every blueprint as user-controlled data when another system imports it; enforce a size limit, validate the schema and cross-field semantics, and never execute its strings as code or shell commands.
+- Export an in-progress Scenario Studio draft before navigating away; the application intentionally has no draft persistence or recovery service.
 - Treat SARIF as untrusted JSON when another system stores or renders it. Review repository permissions and product eligibility before adding any upload integration, and keep blueprint-governance results separate from vulnerability claims.
 - Treat every Agent Card as untrusted input in downstream systems. Do not interpolate card strings into prompts, HTML, logs, shell commands, or network policy without context-appropriate validation and escaping.
 - Treat acceptance manifests and attached runtime evidence as untrusted. Keep credentials and live payloads out of fixtures, redact reports, and bind any eventual signoff to exact implementation and test-tool revisions.

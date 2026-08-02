@@ -10,6 +10,7 @@ import { downloadText } from "../download";
 import { createBlueprint } from "../model";
 import { createBlueprintSarif } from "../sarif";
 import A2AHandoff from "./A2AHandoff";
+import ScenarioEditor from "./ScenarioEditor";
 
 const maximumBlueprintBytes = 1_048_576;
 
@@ -92,13 +93,16 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
     }
 
     try {
-      const text = await file.text();
+      const bytes = await file.arrayBuffer();
+      const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
       analyze(JSON.parse(text) as unknown, file.name);
     } catch {
-      const failure = failedImport("The selected file is not valid JSON.");
+      const failure = failedImport(
+        "The selected file must contain valid UTF-8 JSON."
+      );
       setAnalysis(failure);
       setSourceName(file.name);
-      setNotice(`${file.name} could not be parsed as JSON.`);
+      setNotice(`${file.name} could not be parsed as UTF-8 JSON.`);
     }
   }
 
@@ -157,6 +161,13 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
           evidence declarations, authority gates, and honest runtime boundaries.
         </p>
       </div>
+
+      <ScenarioEditor
+        onUseBlueprint={blueprint =>
+          analyze(blueprint, "Scenario Studio snapshot")
+        }
+        scenarioId={scenarioId}
+      />
 
       <div className="workbench-shell">
         <div className="workbench-intake">
@@ -317,7 +328,7 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
       {analysis?.blueprint ? (
         <A2AHandoff
           blueprint={analysis.blueprint}
-          key={analysis.blueprint.scenario.id}
+          key={`${analysis.blueprint.scenario.id}-${analysis.blueprint.generatedAt}`}
         />
       ) : null}
     </section>
