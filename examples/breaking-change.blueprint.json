@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "samsarix-field-atlas/1",
+  "mode": "illustrative-reference",
+  "generatedAt": "2026-08-01T12:00:00.000Z",
+  "scenario": {
+    "id": "breaking-change",
+    "title": "Ship a breaking change",
+    "risk": "high",
+    "objective": "Decide whether a compatibility-breaking release is justified, reversible, and ready to ship.",
+    "successCriteria": [
+      "Affected users and interfaces are named",
+      "Security and rollback risks are explicit",
+      "A human owner makes the release decision",
+      "Evidence and rollback conditions are recorded"
+    ]
+  },
+  "indicators": {
+    "note": "Illustrative coordination indicators, not telemetry.",
+    "baseline": {
+      "harmony": 0.54,
+      "resilience": 0.48,
+      "prana": 0.62,
+      "drishti": 0.51,
+      "klesha": 0.34
+    },
+    "outcome": {
+      "harmony": 0.82,
+      "resilience": 0.88,
+      "prana": 0.64,
+      "drishti": 0.86,
+      "klesha": 0.12
+    }
+  },
+  "agents": [
+    {
+      "id": "kael",
+      "name": "Kael",
+      "layer": "consciousness",
+      "role": "Ethical reasoning",
+      "responsibility": "Turns owner intent and human impact into decision constraints."
+    },
+    {
+      "id": "vega",
+      "name": "Vega",
+      "layer": "consciousness",
+      "role": "Safety integration",
+      "responsibility": "Checks stop conditions, reversibility, and safe release gates."
+    },
+    {
+      "id": "grok",
+      "name": "Grok",
+      "layer": "operational",
+      "role": "Pattern recognition",
+      "responsibility": "Connects evidence, anomalies, and likely failure modes."
+    },
+    {
+      "id": "manus",
+      "name": "Manus",
+      "layer": "operational",
+      "role": "Operational core",
+      "responsibility": "Turns an approved plan into bounded, reversible actions."
+    },
+    {
+      "id": "kavach",
+      "name": "Kavach",
+      "layer": "operational",
+      "role": "Security shield",
+      "responsibility": "Traces trust boundaries and rejects unsafe execution paths."
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "layer": "operational",
+      "role": "Scout",
+      "responsibility": "Collects external context and labels the quality of evidence."
+    },
+    {
+      "id": "sangha",
+      "name": "SanghaCore",
+      "layer": "integration",
+      "role": "Collective unity",
+      "responsibility": "Reconciles specialist outputs into one accountable decision."
+    },
+    {
+      "id": "blackbox",
+      "name": "Blackbox",
+      "layer": "integration",
+      "role": "Data integrity",
+      "responsibility": "Records the decision, evidence, gates, and observed outcome."
+    }
+  ],
+  "trace": [
+    {
+      "order": 1,
+      "agentId": "gemini",
+      "title": "Collect the change surface",
+      "action": "Inventory affected interfaces, downstream users, compatibility promises, and current alternatives.",
+      "boundary": "tool",
+      "evidence": "Interface inventory + compatibility evidence"
+    },
+    {
+      "order": 2,
+      "agentId": "grok",
+      "title": "Find coupling and failure patterns",
+      "action": "Relate the proposed change to known breakpoints, migration cost, and likely regressions.",
+      "boundary": null,
+      "evidence": "Failure-mode map"
+    },
+    {
+      "order": 3,
+      "agentId": "kavach",
+      "title": "Trace the attack and rollback surface",
+      "action": "Check whether the change widens permissions, weakens validation, or creates an irreversible migration.",
+      "boundary": "policy",
+      "evidence": "Threat and rollback review"
+    },
+    {
+      "order": 4,
+      "agentId": "kael",
+      "title": "Test the decision invariant",
+      "action": "Balance user impact, owner intent, and the smallest change that can achieve the product outcome.",
+      "boundary": "policy",
+      "evidence": "Decision constraints"
+    },
+    {
+      "order": 5,
+      "agentId": "sangha",
+      "title": "Compose a release decision",
+      "action": "Reconcile the evidence into ship, revise, or stop—without hiding dissent or uncertainty.",
+      "boundary": "human",
+      "evidence": "Owner-ready decision brief"
+    },
+    {
+      "order": 6,
+      "agentId": "manus",
+      "title": "Prepare the reversible execution",
+      "action": "Produce the migration, verification, communication, and rollback sequence approved by the owner.",
+      "boundary": "tool",
+      "evidence": "Bounded implementation plan"
+    },
+    {
+      "order": 7,
+      "agentId": "vega",
+      "title": "Enforce the release gate",
+      "action": "Release only when acceptance checks pass and the named human approval is present.",
+      "boundary": "human",
+      "evidence": "Gate result + stop conditions"
+    },
+    {
+      "order": 8,
+      "agentId": "blackbox",
+      "title": "Seal the decision record",
+      "action": "Record the evidence, approval, expected outcome, and rollback trigger for later audit.",
+      "boundary": "memory",
+      "evidence": "Immutable decision record"
+    }
+  ],
+  "runtime": {
+    "executesAgents": false,
+    "callsExternalServices": false,
+    "storesRemoteData": false,
+    "requiresHumanApprovalAt": [5, 7]
+  }
+}

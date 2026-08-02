@@ -18,10 +18,10 @@ export function failUsage(message: string): never {
   throw new Error(`USAGE: ${message}`);
 }
 
-export function readJsonFileWithBytes(
+export function readFileWithLimit(
   path: string,
   maximumBytes = maximumJsonBytes
-): JsonFileContents {
+): Uint8Array {
   const absolutePath = resolve(path);
   const descriptor = openSync(absolutePath, "r");
   try {
@@ -35,7 +35,7 @@ export function readJsonFileWithBytes(
       );
     }
 
-    const buffer = Buffer.allocUnsafe(maximumBytes + 1);
+    const buffer = Buffer.allocUnsafe(status.size + 1);
     let bytesRead = 0;
     while (bytesRead < buffer.length) {
       const count = readSync(
@@ -48,17 +48,27 @@ export function readJsonFileWithBytes(
       if (count === 0) break;
       bytesRead += count;
     }
+    if (bytesRead > status.size) {
+      throw new Error(`${absolutePath} changed while it was being read.`);
+    }
     if (bytesRead > maximumBytes) {
       throw new Error(
         `${absolutePath} exceeds the ${maximumBytes} byte JSON input limit.`
       );
     }
-    const bytes = Uint8Array.from(buffer.subarray(0, bytesRead));
-    const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-    return { value: JSON.parse(text) as unknown, bytes };
+    return Uint8Array.from(buffer.subarray(0, bytesRead));
   } finally {
     closeSync(descriptor);
   }
+}
+
+export function readJsonFileWithBytes(
+  path: string,
+  maximumBytes = maximumJsonBytes
+): JsonFileContents {
+  const bytes = readFileWithLimit(path, maximumBytes);
+  const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  return { value: JSON.parse(text) as unknown, bytes };
 }
 
 export function readJsonFile(path: string): unknown {

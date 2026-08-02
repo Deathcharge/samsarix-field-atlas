@@ -15,6 +15,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Scenario definitions are repository-authored fixtures, not untrusted runtime input.
 - Scenario Studio values are untrusted local form input. Drafts remain in React memory, strings render through React text nodes, derived arrays are bounded by the v1 limits, and only a semantically valid snapshot can enter export or A2A handoff workflows.
 - Imported JSON is untrusted local input. The browser limits blueprints to 1 MiB and TCK reports to 5 MiB, requires valid UTF-8 JSON, validates bounded structures, and renders strings through React text nodes without persistence or execution.
+- Blueprint suite manifests are limited to 64 entries and 1 MiB per JSON file. Entry paths must be portable and relative; the CLI resolves canonical paths and rejects targets outside the manifest directory, including symlink escapes. Browser batch review is limited to 16 files.
 - Markdown review packets escape imported metacharacters so blueprint strings cannot directly create links or remote images in the generated artifact.
 - A2A deployment-profile values and generated Agent Card strings are untrusted local data. React renders them as text, Markdown output escapes metacharacters, and the browser never probes a declared endpoint.
 - A2A profiles have no credential field. Endpoint URLs containing user information, query strings, or fragments are blocked, production endpoints require HTTPS, and bearer credentials remain out of band.
@@ -36,6 +37,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - If binding `HOST=0.0.0.0`, place the server behind an owner-approved TLS and network boundary.
 - Run `pnpm install --frozen-lockfile`, `pnpm audit --prod`, and `pnpm verify` before release.
 - Treat every blueprint as user-controlled data when another system imports it; enforce a size limit, validate the schema and cross-field semantics, and never execute its strings as code or shell commands.
+- Treat suite reports and SHA-256 bindings as integrity metadata, not signatures or evidence that the named scenario, owner, approval, or runtime action is authentic.
 - Export an in-progress Scenario Studio draft before navigating away; the application intentionally has no draft persistence or recovery service.
 - Treat SARIF as untrusted JSON when another system stores or renders it. Review repository permissions and product eligibility before adding any upload integration, and keep blueprint-governance results separate from vulnerability claims.
 - Treat every Agent Card as untrusted input in downstream systems. Do not interpolate card strings into prompts, HTML, logs, shell commands, or network policy without context-appropriate validation and escaping.

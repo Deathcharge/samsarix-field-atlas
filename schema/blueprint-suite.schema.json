@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:samsarix:field-atlas:suite:1",
+  "title": "Samsarix Field Atlas blueprint suite v1",
+  "description": "A bounded, portable list of relative Field Atlas blueprint files for local batch conformance. Additive fields are permitted and reported as warnings by the reference validator.",
+  "type": "object",
+  "required": ["schemaVersion", "mode", "suite", "strict", "entries"],
+  "properties": {
+    "schemaVersion": {
+      "const": "samsarix-field-atlas/suite/1"
+    },
+    "mode": {
+      "const": "contract-conformance-suite"
+    },
+    "suite": {
+      "type": "object",
+      "required": ["id", "title", "description"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "strict": {
+      "type": "boolean"
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "tags"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^(?!\\.{1,2}(?:/|$))[a-zA-Z0-9._-]+(?:/(?!\\.{1,2}(?:/|$))[a-zA-Z0-9._-]+)*\\.json$"
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 16,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "pattern": "^[a-z][a-z0-9-]*$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

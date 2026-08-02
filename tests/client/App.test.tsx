@@ -9,6 +9,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import App from "../../client/src/App";
 import ErrorBoundary from "../../client/src/components/ErrorBoundary";
+import { createBlueprint } from "../../client/src/model";
 
 function BrokenView(): never {
   throw new Error("Expected render failure");
@@ -190,6 +191,50 @@ describe("Samsarix Field Atlas", () => {
     await waitFor(() =>
       expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-sarif")
     );
+  });
+
+  it("batch-checks local blueprints with a strict suite policy", async () => {
+    const ready = JSON.stringify(
+      createBlueprint("incident", "2026-08-01T12:00:00.000Z")
+    );
+    const review = JSON.stringify({
+      ...createBlueprint("ambiguous-request", "2026-08-01T12:00:00.000Z"),
+      ownerNote: "Additive metadata requires review.",
+    });
+    const files = [
+      new File([ready], "incident.json", { type: "application/json" }),
+      new File([review], "ambiguous.json", { type: "application/json" }),
+    ];
+    for (const [index, file] of files.entries()) {
+      const text = index === 0 ? ready : review;
+      Object.defineProperty(file, "arrayBuffer", {
+        configurable: true,
+        value: async () => new TextEncoder().encode(text).buffer,
+      });
+    }
+    render(<App />);
+
+    fireEvent.change(screen.getByLabelText(/import blueprint suite/i), {
+      target: { files },
+    });
+
+    await waitFor(
+      () =>
+        expect(screen.getByText(/2 local contracts checked/i)).toBeVisible(),
+      { timeout: 15_000 }
+    );
+    expect(
+      screen.getByRole("table", {
+        name: /local blueprint suite conformance results/i,
+      })
+    ).toBeVisible();
+    expect(
+      screen.getAllByText("Clarify an ambiguous request").at(-1)
+    ).toBeVisible();
+    expect(screen.getByText(/strict warning policy/i)).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /export suite report/i })
+    ).toBeEnabled();
   });
 
   it("turns a valid blueprint into an explicit A2A implementation handoff", async () => {

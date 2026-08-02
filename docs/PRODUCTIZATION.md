@@ -85,6 +85,7 @@ The execution products build or inspect running agent systems; the emerging stan
 11. Treat external TCK JSON as untrusted evidence: hash exact bytes, recompute report semantics, omit raw diagnostics, bind asserted provenance, and keep conformance and release decisions explicitly undetermined.
 12. Keep final dispositions in a separate owner-asserted ledger: bind canonical source artifacts, require complete case coverage and explicit exceptions, compute blocking readiness, reject contradictory approvals, and state that identities and authority were not authenticated.
 13. Keep guided scenario authoring local and bounded: start from a known route, select only reference-catalog roles, derive bookkeeping fields, validate live with the shared semantic checker, and snapshot before downstream handoff.
+14. Represent repeated evaluation work as a portable suite of relative blueprint files: hash exact bytes, preserve strict-policy effects separately from structural status, and keep collection conformance distinct from runtime evaluation.
 
 ## Assumptions
 
@@ -136,6 +137,7 @@ Final command evidence is appended after implementation verification.
 - [x] Add user-authored scenarios through a schema-validated local editor.
 - [x] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
 - [x] Add deterministic browser and CLI SARIF 2.1.0 reporting for blueprint conformance findings.
+- [x] Add portable multi-blueprint manifests, exact-byte bindings, and deterministic browser/CLI suite reports for repeatable collection-level review.
 - [x] Map a validated blueprint to an owner-completed draft A2A 1.0 Agent Card and implementation checklist.
 - [x] Generate a consumer-owned A2A acceptance manifest and execution checklist with deterministic fixtures and an official-TCK evidence requirement.
 - [x] Bind official-format A2A TCK JSON to an exact-byte, owner-review receipt that keeps failures, skips, not-tested requirements, and all non-TCK acceptance work visible.
@@ -167,6 +169,7 @@ Final command evidence is appended after implementation verification.
 - Added a local blueprint workbench with file import, readiness states, governance findings, metrics, and Markdown review-packet export.
 - Added Scenario Studio with guided local scenario, criteria, trace, boundary, evidence, and indicator authoring; derived role/order/approval/runtime fields; live shared validation; deliberate draft replacement; and immutable workbench snapshots.
 - Added a shared semantic validator, strict/JSON CLI modes, versioned JSON Schema, and a complete incident fixture enforced by `pnpm verify`.
+- Added portable scenario-suite manifests, bounded canonical path resolution, multi-file browser review, exact-byte SHA-256 bindings, deterministic aggregate reports, public schemas, and strict-ready fixtures covering all three built-in scenarios.
 - Added a shared A2A 1.0 handoff validator, browser profile, draft Agent Card/checklist exports, deterministic CLI mapping, and committed incident card fixture.
 - Added a shared A2A implementation acceptance validator, browser owner profile, JSON/Markdown plan exports, public schema, deterministic CLI, and committed incident fixtures.
 - Added a shared A2A TCK evidence validator, bounded browser import, exact-byte SHA-256, owner-asserted provenance profile, public receipt schema, deterministic CLI, and synthetic omission-focused incident fixtures.
@@ -382,3 +385,24 @@ Local evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.0`:
 | React best-practices review  | Passed applicable component-boundary, derived-state, functional-update, controlled-input, stable-key, accessibility, long-list rendering, and bundle-scope checks.                                          |
 
 This is local authoring, validation, test, and build evidence. It does not establish evaluator adoption, hosted availability, collaborative persistence, custom-role migration, or the truth of any authored evidence or approval. No deployment, account system, database, analytics, model call, or external write was added.
+
+## Blueprint suite increment
+
+Field Atlas now turns repeated contract review into a portable, repository-owned workflow. A `samsarix-field-atlas/suite/1` manifest groups up to 64 relative blueprint files under one committed strict policy. The CLI resolves each target inside the manifest directory, rejects traversal and canonical-path escapes, applies the shared semantic validator, binds exact imported bytes with SHA-256, and emits a timestamp-free `samsarix-field-atlas/suite-report/1` artifact. The workbench offers the same report model for ad hoc batches of up to 16 local files.
+
+This direction follows the collection pattern in current evaluation products without importing their hosted-runtime scope: [LangSmith datasets](https://docs.langchain.com/langsmith/manage-datasets) are versioned and support filtered/split evaluation views, [Braintrust datasets](https://www.braintrust.dev/docs/guides/datasets) version every mutation, and [Promptfoo test cases](https://www.promptfoo.dev/docs/configuration/test-cases/) can be organized in portable external files. Field Atlas remains a pre-runtime conformance surface: it does not invoke a target, score output quality, store a dataset, or claim that a test ran.
+
+Local evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.0`:
+
+| Command or check            | Result                                                                                                                                                                                                 |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Static gates                | `pnpm lint`, `pnpm format:check`, and `pnpm check` passed. The only lint output was an informational stale-data notice from `baseline-browser-mapping`.                                                |
+| `pnpm run test:coverage`    | Passed 14 test files / 103 tests and all thresholds: 81.4% statements, 79.53% branches, 82.08% functions, and 82.95% lines. `suite.ts` reached 84.15% statements, 82.35% branches, and 100% functions. |
+| Seven fixture gates         | Blueprint, SARIF, suite, A2A card, acceptance plan, TCK receipt, and review ledger checks all passed. The strict suite exactly matched three ready cases with 14 total manifest/case pass findings.    |
+| `pnpm build`                | Passed; client JS was 359.71 kB / 104.97 kB gzip, CSS was 43.62 kB / 8.60 kB gzip, server was 4.2 kB, and all six dependency-free CLI artifacts built.                                                 |
+| Suite CLI artifact          | `dist/atlas-suite.js` was 32,242 bytes; SHA-256 was `b832ee2323cb79cd521e00ef7b574ccccadbb5bea03e7d10908a47177ab5b30b`.                                                                                |
+| Committed suite artifacts   | Manifest SHA-256 was `49d2649b86ae6d067d24e6aaa95bba98914e735288423e17cf743a99cff9d089`; report SHA-256 was `52994c82ddadbde841ebf5abfd7ef6b1a057dfea67186b26d7827fd680728f87`.                        |
+| `pnpm audit --prod`         | Passed with no known production vulnerabilities and no new dependency.                                                                                                                                 |
+| React best-practices review | Passed applicable event-driven async, derived-state, stable-key, accessible control/table, disabled-pending-state, rendering, and bundle-scope checks.                                                 |
+
+The local `pnpm verify` wrapper was decomposed into its exact constituent commands after a 10-minute wrapper timeout caused by unrelated concurrent host test jobs; every constituent gate passed. This is local structure, fixture, integrity, test, and build evidence—not runtime evaluation evidence. Digests are not signatures, unreadable inputs do not receive invented hashes, and strict promotion remains distinct from underlying structural status. No deployment, upload permission, hosted storage, account system, agent execution, model call, or external write was added.

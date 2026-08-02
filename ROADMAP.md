@@ -28,6 +28,7 @@ Current disposition: Grow the provider-neutral conformance workflow through evid
 - [x] Export the same conformance errors and warnings as deterministic SARIF 2.1.0 without adding an automatic upload or security claim.
 - [x] Publish a v1 JSON Schema, complete example, governance findings, and Markdown review packet.
 - [x] Add a schema-validated local scenario editor after evaluator and market workflow evidence established that adapting user-owned cases is a core evaluation job; retain local-only state and the bounded reference-role vocabulary.
+- [x] Add portable multi-blueprint manifests and deterministic batch conformance reports with exact-byte bindings for repeatable browser and CI review.
 - [x] Map the portable contract to A2A 1.0 discovery without making A2A or any runtime canonical.
 - [x] Bind an externally generated official-format TCK JSON report to owner-asserted provenance metadata and an exact-byte owner-review receipt without turning it into a pass claim.
 - [x] Bind the plan and TCK receipt to one explicit disposition per planned case, deterministic blocking readiness, and an owner-asserted decision ledger without claiming authenticated authority.

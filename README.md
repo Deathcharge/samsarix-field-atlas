@@ -137,6 +137,17 @@ pnpm --silent blueprint:validate examples/incident.blueprint.json --strict --sar
 
 Normal mode exits successfully for a valid contract with review warnings. `--strict` turns warnings into a non-zero CI result. Invalid JSON, unsupported versions, broken role references, contradictory runtime claims, and misaligned approval gates always fail. `--sarif` emits portable SARIF 2.1.0 without uploading it; see [Blueprint SARIF reporting](docs/SARIF_REPORTING.md).
 
+## Validate a scenario suite
+
+Commit a bounded manifest when a review or release gate needs several blueprints to remain conformant together:
+
+```bash
+pnpm blueprint:suite examples/core.suite.json
+pnpm blueprint:suite examples/core.suite.json --check examples/core.suite-report.json
+```
+
+The suite CLI resolves portable relative paths, rejects traversal (including symlink escapes), checks up to 64 files with the shared semantic validator, hashes exact imported bytes, and emits one deterministic aggregate report. The browser workbench can batch-review up to 16 selected files without uploading them. See [Blueprint suites](docs/BLUEPRINT_SUITES.md).
+
 ## Development commands
 
 | Command                              | Purpose                                                                               |
@@ -147,9 +158,11 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 | `pnpm check`                         | Run the strict TypeScript compiler check                                              |
 | `pnpm test`                          | Run model, component, and server tests once                                           |
 | `pnpm test:coverage`                 | Run tests with enforced coverage thresholds                                           |
-| `pnpm build`                         | Build static assets, the optional Node release server, and all five CLIs              |
+| `pnpm build`                         | Build static assets, the optional Node release server, and all six CLIs               |
 | `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional strict, JSON, or SARIF output                   |
+| `pnpm blueprint:suite <manifest>`    | Batch-check a bounded suite and optionally compare its deterministic report           |
 | `pnpm validate:sarif-example`        | Check the deterministic strict-ready SARIF report against its committed fixture       |
+| `pnpm validate:suite-example`        | Check all three core scenarios against the committed strict-ready suite report        |
 | `pnpm blueprint:a2a <file> ...`      | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
 | `pnpm validate:a2a-example`          | Check the deterministic incident Agent Card mapping against its committed fixture     |
 | `pnpm blueprint:acceptance ...`      | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |
@@ -173,6 +186,7 @@ The build produces:
 - `dist/public/`: the standalone static site, suitable for a static host;
 - `dist/index.js`: a small Express server with `/healthz`, strict browser security headers, bounded timeouts, and graceful shutdown.
 - `dist/atlas-validate.js`: the bundled, dependency-free blueprint validation CLI.
+- `dist/atlas-suite.js`: the bundled, dependency-free blueprint suite and report CLI.
 - `dist/atlas-a2a.js`: the bundled, dependency-free A2A draft generation and fixture-check CLI.
 - `dist/atlas-acceptance.js`: the bundled, dependency-free A2A acceptance-plan and fixture-check CLI.
 - `dist/atlas-tck-evidence.js`: the bundled, dependency-free A2A TCK evidence receipt and fixture-check CLI.
@@ -203,6 +217,8 @@ client/src/model.ts           Canonical roles, scenarios, indicators, and serial
 client/src/scenario-editor.ts Guided draft conversion + derived contract fields
              ↓
 client/src/blueprint.ts       Shared semantic validator + Markdown review packet
+             ↘
+client/src/suite.ts           Bounded manifests + exact-byte batch reports
               ↓
 client/src/a2a.ts           Owner profile checks + draft card/checklist mapping
               ↓
@@ -212,7 +228,7 @@ client/src/evidence.ts      TCK report semantics + exact-byte evidence receipt
               ↓
 client/src/review.ts        Case dispositions + blocking readiness + owner decision
        ↙             ↘
-React workbench       CLI tools ───────────→ five bundled CLI artifacts
+React workbench       CLI tools ───────────→ six bundled CLI artifacts
        ↓                    ↑
 Vite static build     schemas/ + examples/
        ↓
@@ -229,6 +245,7 @@ The product intentionally has no authentication, database, analytics, remote API
 - Scenario Studio drafts remain in memory; valid snapshots derive role declarations, stage order, approval positions, and no-runtime claims before local export or handoff.
 - The JSON export is created in the browser and downloaded directly.
 - Imported blueprints are limited to 1 MiB, require valid UTF-8 JSON, are parsed in memory, rendered as text, and never uploaded or persisted.
+- Browser suite review accepts at most 16 blueprints; CLI manifests accept at most 64 relative 1 MiB files, reject traversal and canonical-path escapes, and bind readable files by exact-byte SHA-256.
 - A2A owner-profile values are local-only, rendered as text, and never used to probe an endpoint; no credential field exists.
 - Acceptance profiles and manifests remain local-only, are bounded in the CLI, and make no test-result claim.
 - TCK JSON imports are limited to 5 MiB and hashed locally; receipts omit raw errors, test IDs, and embedded Agent Card contents, reject likely secret-bearing commands, and never claim conformance or release approval.
@@ -249,6 +266,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - A generated TCK evidence receipt validates report structure and binds asserted provenance; it does not prove that the run occurred, authenticate the source revisions, make a conformance decision, complete non-TCK cases, or approve a release.
 - A generated review ledger can reject contradictory approvals and make missing/waived work visible, but it does not verify evidence contents, signatures, identities, authority, or the truth of an owner disposition.
 - The three bundled scenarios are representative rather than exhaustive; Scenario Studio can adapt them through the bounded 13-role reference vocabulary but does not persist drafts or define custom roles.
+- Suite reports establish repeatable contract conformance and byte integrity only; they do not execute evaluations, verify named evidence, authenticate owners, or approve releases.
 - No hosted URL is guaranteed by this repository.
 
 ## Project records
@@ -256,6 +274,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - [Productization assessment and release gates](docs/PRODUCTIZATION.md)
 - [Reference model and JSON contract](docs/REFERENCE_MODEL.md)
 - [Scenario Studio authoring workflow and proof boundary](docs/SCENARIO_STUDIO.md)
+- [Blueprint suites and deterministic batch conformance](docs/BLUEPRINT_SUITES.md)
 - [A2A 1.0 deployment handoff and proof boundary](docs/A2A_HANDOFF.md)
 - [A2A implementation acceptance contract](docs/A2A_ACCEPTANCE.md)
 - [A2A TCK evidence receipt and owner-review boundary](docs/A2A_TCK_EVIDENCE.md)
