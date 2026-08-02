@@ -24,6 +24,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Review ledgers bind canonical plan/receipt JSON and the receipt's exact TCK-report digest, but they are not signatures. Named reviewers, decision owners, case outcomes, waivers, evidence references, and release decisions remain unauthenticated owner assertions.
 - The browser stores only a scenario identifier in `localStorage`.
 - JSON exports are produced locally and are not uploaded.
+- SARIF exports are produced locally and contain validator messages, encoded artifact names, and JSONPath locations. Field Atlas does not request `security-events: write`, upload to code scanning, or claim that governance findings are vulnerabilities.
 - External GitHub links are user-initiated navigation only.
 - The optional Express server serves build artifacts and a fixed `/healthz` response; it has no write API or authentication surface.
 - Human approval markers in a blueprint are descriptive. They do not grant authority or execute an action.
@@ -34,6 +35,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - If binding `HOST=0.0.0.0`, place the server behind an owner-approved TLS and network boundary.
 - Run `pnpm install --frozen-lockfile`, `pnpm audit --prod`, and `pnpm verify` before release.
 - Treat every blueprint as user-controlled data when another system imports it; enforce a size limit, validate the schema and cross-field semantics, and never execute its strings as code or shell commands.
+- Treat SARIF as untrusted JSON when another system stores or renders it. Review repository permissions and product eligibility before adding any upload integration, and keep blueprint-governance results separate from vulnerability claims.
 - Treat every Agent Card as untrusted input in downstream systems. Do not interpolate card strings into prompts, HTML, logs, shell commands, or network policy without context-appropriate validation and escaping.
 - Treat acceptance manifests and attached runtime evidence as untrusted. Keep credentials and live payloads out of fixtures, redact reports, and bind any eventual signoff to exact implementation and test-tool revisions.
 - Treat review profiles, ledgers, and Markdown packets as untrusted assertions. Verify referenced evidence, artifact digests, identities, decision authority, and signatures in an owner-controlled system before acting on a release decision.

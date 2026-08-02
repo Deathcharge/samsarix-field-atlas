@@ -131,6 +131,7 @@ Final command evidence is appended after implementation verification.
 
 - [ ] Add user-authored scenarios through a schema-validated local editor.
 - [x] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
+- [x] Add deterministic browser and CLI SARIF 2.1.0 reporting for blueprint conformance findings.
 - [x] Map a validated blueprint to an owner-completed draft A2A 1.0 Agent Card and implementation checklist.
 - [x] Generate a consumer-owned A2A acceptance manifest and execution checklist with deterministic fixtures and an official-TCK evidence requirement.
 - [x] Bind official-format A2A TCK JSON to an exact-byte, owner-review receipt that keeps failures, skips, not-tested requirements, and all non-TCK acceptance work visible.
@@ -332,3 +333,25 @@ Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.
 | React best-practices review    | Passed applicable component-boundary, derived-state, controlled-input, async-race, stable-key, accessibility, rendering, and bundle-scope checks.                              |
 
 This is local parser, assertion, fixture, test, and build evidence only. Canonical digests are integrity pointers, not signatures. A real release still requires evidence-body inspection, source and revision verification, authenticated reviewers, confirmed decision authority, an owner-controlled system of record, support commitment, and rollback. No deployment was performed.
+
+## Blueprint SARIF reporting increment
+
+Field Atlas now renders the existing blueprint conformance decision as standard SARIF 2.1.0 in both the browser and CLI. Errors become `error` / `fail` results, warnings remain `warning` / `review` results even when strict mode fails the command, passing checks remain counts rather than alert noise, and each result retains its JSONPath plus a stable SHA-256 fingerprint. The source argument is URI-encoded, while physical locations conservatively remain line 1 because the semantic validator does not retain JSON token offsets.
+
+This closes a CI-interchange gap without adding a hosted control plane. The [A2A roadmap](https://a2a-protocol.org/latest/roadmap/) calls validation tooling critical as adoption grows. GitHub documents [SARIF 2.1.0 ingestion for third-party tools](https://docs.github.com/en/code-security/concepts/code-scanning/sarif-files), but Field Atlas neither requests `security-events: write` nor uploads a report. Repository owners retain the choice to store an ordinary artifact or opt into a compatible analysis surface.
+
+Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.0`:
+
+| Command or check                  | Result                                                                                                                                                   |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `corepack pnpm verify`            | Passed lint, formatting, strict types, 86 tests, coverage thresholds, six committed fixture checks, and client/server/five-CLI production builds.        |
+| `corepack pnpm run test:coverage` | Passed 10 files / 86 tests and all coverage thresholds.                                                                                                  |
+| Coverage                          | 81.87% statements, 79.88% branches, 83.61% functions, and 83.03% lines; `sarif.ts` reached 97.14% statements, 81.81% branches, and 100% functions/lines. |
+| Published SARIF schema validation | The 1,001-byte committed fixture validated against `https://json.schemastore.org/sarif-2.1.0.json`.                                                      |
+| `pnpm validate:sarif-example`     | Exactly matched the strict-ready incident report; invalid `--json --sarif` usage exited `2`.                                                             |
+| `pnpm build`                      | Passed; client JS was 338.45 kB / 99.83 kB gzip, CSS was 32.89 kB / 6.95 kB gzip, server was 4.2 kB, and the validator CLI was 25,593 bytes.             |
+| Validator CLI artifact            | `dist/atlas-validate.js` SHA-256 was `ca213cf6208049ba8702f9f804ad2cfa2e725562081412cedd9bd5f2dc8289af`.                                                 |
+| Committed SARIF fixture           | `examples/incident.blueprint.sarif.json` SHA-256 was `fb37e8ebc88462f20cc36a833d45703aed7480606fed43f3cb1c573a0c11715c`.                                 |
+| `corepack pnpm audit --prod`      | Passed with no known production vulnerabilities and no new runtime dependency.                                                                           |
+
+This is formatter, fixture, test, and build evidence—not proof that any external SARIF consumer accepted an upload. The report describes blueprint structure and governance findings, not source-code vulnerabilities, runtime behavior, evidence truth, or authenticated approval. No upload permission, code-scanning configuration, deployment, or external write was added.

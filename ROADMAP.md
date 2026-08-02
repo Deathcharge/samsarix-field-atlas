@@ -25,6 +25,7 @@ Current disposition: Grow the provider-neutral conformance workflow through evid
 ## Blueprint workbench
 
 - [x] Share semantic validation across browser import and the CI-capable CLI.
+- [x] Export the same conformance errors and warnings as deterministic SARIF 2.1.0 without adding an automatic upload or security claim.
 - [x] Publish a v1 JSON Schema, complete example, governance findings, and Markdown review packet.
 - Add a schema-validated local scenario editor only after an evaluator proves the authoring need.
 - [x] Map the portable contract to A2A 1.0 discovery without making A2A or any runtime canonical.

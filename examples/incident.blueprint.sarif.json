@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Samsarix Field Atlas",
+          "organization": "Samsarix LLC",
+          "semanticVersion": "1.0.0",
+          "informationUri": "https://github.com/Deathcharge/samsarix-field-atlas",
+          "rules": []
+        }
+      },
+      "automationDetails": {
+        "id": "samsarix-field-atlas/blueprint-conformance/"
+      },
+      "columnKind": "utf16CodeUnits",
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "commandLine": "blueprint:validate examples/incident.blueprint.json --strict --sarif",
+          "properties": {
+            "validationStatus": "ready",
+            "strict": true,
+            "strictFailure": false,
+            "counts": {
+              "error": 0,
+              "warning": 0,
+              "pass": 4
+            }
+          }
+        }
+      ],
+      "results": []
+    }
+  ]
+}

@@ -45,11 +45,12 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "validate:example": "pnpm blueprint:validate examples/incident.blueprint.json --strict",
+    "validate:sarif-example": "pnpm blueprint:validate examples/incident.blueprint.json --strict --sarif --check examples/incident.blueprint.sarif.json",
     "validate:a2a-example": "pnpm blueprint:a2a examples/incident.blueprint.json --endpoint https://agent.example.com/a2a --agent-version 0.1.0 --security bearer --name \"Incident Coordination Agent\" --provider-organization \"Samsarix LLC\" --provider-url https://samsarix.com --strict --check examples/incident.a2a-agent-card.json",
     "validate:acceptance-example": "pnpm blueprint:acceptance examples/incident.blueprint.json --agent-card examples/incident.a2a-agent-card.json --profile examples/incident.a2a-acceptance-profile.json --generated-at 2026-08-01T12:00:00.000Z --strict --check examples/incident.a2a-acceptance.json",
     "validate:tck-evidence-example": "pnpm blueprint:tck-evidence examples/incident.a2a-acceptance.json --tck-report examples/incident.a2a-tck-compatibility.json --profile examples/incident.a2a-tck-evidence-profile.json --generated-at 2026-08-01T13:00:00.000Z --check examples/incident.a2a-tck-receipt.json",
     "validate:review-example": "pnpm blueprint:review examples/incident.a2a-acceptance.json --tck-receipt examples/incident.a2a-tck-receipt.json --profile examples/incident.a2a-review-profile.json --generated-at 2026-08-01T14:10:00.000Z --check examples/incident.a2a-review-ledger.json",
-    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:a2a-example && pnpm run validate:acceptance-example && pnpm run validate:tck-evidence-example && pnpm run validate:review-example && pnpm run build"
+    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:sarif-example && pnpm run validate:a2a-example && pnpm run validate:acceptance-example && pnpm run validate:tck-evidence-example && pnpm run validate:review-example && pnpm run build"
   },
   "dependencies": {
     "express": "^5.2.1",
