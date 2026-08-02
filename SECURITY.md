@@ -15,6 +15,8 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Scenario definitions are repository-authored fixtures, not untrusted runtime input.
 - Imported JSON is untrusted local input. The browser limits files to 1 MiB, parses them as data, validates bounded structures, and renders strings through React text nodes without persistence or execution.
 - Markdown review packets escape imported metacharacters so blueprint strings cannot directly create links or remote images in the generated artifact.
+- A2A deployment-profile values and generated Agent Card strings are untrusted local data. React renders them as text, Markdown output escapes metacharacters, and the browser never probes a declared endpoint.
+- A2A profiles have no credential field. Endpoint URLs containing user information or fragments are blocked, production endpoints require HTTPS, query strings trigger review, and bearer credentials remain out of band.
 - The browser stores only a scenario identifier in `localStorage`.
 - JSON exports are produced locally and are not uploaded.
 - External GitHub links are user-initiated navigation only.
@@ -27,6 +29,8 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - If binding `HOST=0.0.0.0`, place the server behind an owner-approved TLS and network boundary.
 - Run `pnpm install --frozen-lockfile`, `pnpm audit --prod`, and `pnpm verify` before release.
 - Treat every blueprint as user-controlled data when another system imports it; enforce a size limit, validate the schema and cross-field semantics, and never execute its strings as code or shell commands.
+- Treat every Agent Card as untrusted input in downstream systems. Do not interpolate card strings into prompts, HTML, logs, shell commands, or network policy without context-appropriate validation and escaping.
+- Never place a token, password, cookie, API key, authorization header, or signed URL in a Field Atlas A2A profile or generated card.
 - Do not add secrets to `VITE_*` variables: Vite exposes those values to every browser.
 
 ## Data and cost posture

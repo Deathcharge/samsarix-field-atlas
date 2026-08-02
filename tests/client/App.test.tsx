@@ -122,6 +122,53 @@ describe("Samsarix Field Atlas", () => {
     expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-review");
   });
 
+  it("turns a valid blueprint into an explicit A2A implementation handoff", () => {
+    const createObjectUrl = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:samsarix-a2a");
+    const revokeObjectUrl = vi
+      .spyOn(URL, "revokeObjectURL")
+      .mockImplementation(() => undefined);
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => undefined);
+    render(<App />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /check current scenario/i })
+    );
+
+    expect(
+      screen.getByRole("heading", { name: /draft an a2a 1\.0 agent card/i })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /export draft agent card/i })
+    ).toBeDisabled();
+
+    fireEvent.change(screen.getByLabelText(/service endpoint/i), {
+      target: { value: "https://agent.example.com/a2a" },
+    });
+
+    expect(
+      screen.getByRole("heading", { name: /ready to hand off/i })
+    ).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", { name: /export draft agent card/i })
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /export implementation checklist/i,
+      })
+    );
+
+    expect(
+      screen.getByText(/a2a implementation checklist exported locally/i)
+    ).toBeVisible();
+    expect(createObjectUrl).toHaveBeenCalledTimes(2);
+    expect(click).toHaveBeenCalledTimes(2);
+    expect(revokeObjectUrl).toHaveBeenCalledTimes(2);
+  });
+
   it("fails safely when a render error reaches the boundary", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 

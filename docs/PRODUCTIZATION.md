@@ -72,6 +72,7 @@ The execution products build or inspect running agent systems; the emerging stan
 6. Remove analytics, remote fonts, remote runtime calls, placeholder authentication, and unused UI code.
 7. Make scope truth part of the interface, export contract, README, and tests.
 8. Keep one semantic validator shared by browser and CLI so interactive and CI decisions cannot drift.
+9. Keep A2A deployment facts in a separate owner-completed profile so provider-neutral design data cannot silently become a false runtime claim.
 
 ## Assumptions
 
@@ -122,6 +123,7 @@ Final command evidence is appended after implementation verification.
 
 - [ ] Add user-authored scenarios through a schema-validated local editor.
 - [x] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
+- [x] Map a validated blueprint to an owner-completed draft A2A 1.0 Agent Card and implementation checklist.
 - [ ] Add translations after the English information architecture stabilizes.
 - [ ] Add a printer-friendly trace view if evaluators request it.
 
@@ -148,6 +150,7 @@ Final command evidence is appended after implementation verification.
 - Added honest local-only runtime disclosure in product copy and exports.
 - Added a local blueprint workbench with file import, readiness states, governance findings, metrics, and Markdown review-packet export.
 - Added a shared semantic validator, strict/JSON CLI modes, versioned JSON Schema, and a complete incident fixture enforced by `pnpm verify`.
+- Added a shared A2A 1.0 handoff validator, browser profile, draft Agent Card/checklist exports, deterministic CLI mapping, and committed incident card fixture.
 - Removed misleading status, deployment, authentication, analytics, and integration claims.
 - Replaced the generated UI kit with purpose-built semantic React and CSS.
 - Added the optional hardened release server and meaningful automated tests.
@@ -156,7 +159,7 @@ Final command evidence is appended after implementation verification.
 ## Deferred work and rationale
 
 - User-authored scenarios remain deferred until real evaluator demand justifies the additional editing and migration surface.
-- Live runtime integration is out of scope because it would make this repository dependent on credentials and flagship infrastructure.
+- Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, compatibility evidence, and ongoing support commitment. The A2A handoff now makes that next step explicit without taking the dependency.
 - Internationalization is deferred until product language is validated.
 
 ## Owner-, legal-, and production-blocked work
@@ -231,3 +234,22 @@ This is local verification only, not completion of the release milestone. Releas
 | `pnpm audit --prod`     | Passed with no known production vulnerabilities.                                                                          |
 
 No deployment was performed. Publication remains an explicit owner action.
+
+## A2A deployment-handoff increment
+
+On August 1, 2026, Field Atlas added a concrete interoperability path from a validated provider-neutral blueprint to an owner-completed draft A2A 1.0 Agent Card. The browser and CLI share the same profile validator and mapping. A committed incident card makes drift visible in CI, while an exported Markdown checklist hands the remaining deployment, authentication, discovery, Inspector, and TCK work to the runtime owner.
+
+The product does not infer deployment facts, accept credentials, probe an endpoint, publish a card, or claim protocol compatibility. Human approvals, policy gates, memory boundaries, and evidence requirements remain authoritative in the source blueprint rather than being hidden in nonstandard Agent Card fields.
+
+Local release evidence on Windows with Node `v24.12.0` and pnpm `11.17.0`:
+
+| Command or check            | Result                                                                                                                                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pnpm verify`               | Passed lint, formatting, strict types, 37 tests, coverage thresholds, both committed fixture checks, and every production build.                                   |
+| Coverage                    | 83.11% statements, 77.28% branches, 83.70% functions, and 83.85% lines.                                                                                            |
+| `pnpm validate:a2a-example` | Passed with four mapping/boundary checks; the generated incident card exactly matched the committed A2A fixture.                                                   |
+| `pnpm build`                | Passed; client JS was 247.36 kB / 76.81 kB gzip, CSS was 27.62 kB / 6.15 kB gzip, server was 4.2 kB, blueprint CLI was 18,005 bytes, and A2A CLI was 29,962 bytes. |
+| A2A CLI artifact            | `dist/atlas-a2a.js` SHA-256 was `2325bde79b395b1f7b9d0a73d9441e7a1af2547521e6521c42d0d87bfb709426`.                                                                |
+| `pnpm audit --prod`         | Passed with no known production vulnerabilities.                                                                                                                   |
+
+This remains local transformation and build evidence, not a live consumer or deployment record. No deployment was performed. A future release claim still requires an exact commit, published artifact, consumer-owned live endpoint, compatibility report, support owner, and rollback path.

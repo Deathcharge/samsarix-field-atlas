@@ -2,11 +2,11 @@
 
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
-The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Its scenario runs are deterministic browser simulations that produce a portable JSON blueprint, a semantic conformance report, and a readable Markdown review packet.
+The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Its scenario runs are deterministic browser simulations that produce a portable JSON blueprint, a semantic conformance report, a readable Markdown review packet, and an owner-completed draft A2A 1.0 Agent Card.
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validator, public schema and example, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment remains an owner-controlled gate; see [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validator, public schema and examples, A2A 1.0 deployment handoff, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment remains an owner-controlled gate; see [Productization](docs/PRODUCTIZATION.md).
 
 ## Fastest successful path
 
@@ -34,6 +34,9 @@ No environment variables, API keys, accounts, databases, or companion repositori
 5. After completion, select **Export JSON** to download an implementation-neutral blueprint.
 6. In **Blueprint workbench**, check the current scenario or import any v1 blueprint.
 7. Resolve structural errors and governance warnings, then export the Markdown review packet for a decision owner.
+8. Complete the runtime-owner profile to map a valid scenario to a draft A2A 1.0 Agent Card.
+9. Export the draft card and implementation checklist for a server owner.
+10. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit.
 
 The selected scenario is remembered in device-local browser storage. It contains no personal content and never leaves the device.
 
@@ -49,6 +52,24 @@ The `samsarix-field-atlas/1` JSON document records:
 
 The export is a design aid or test fixture. It is not an execution plan, authorization record, or production trace. Field Atlas validates the internal contract, not whether named evidence or approval exists in the real world. See [Blueprint conformance](docs/BLUEPRINT_CONFORMANCE.md) and [Reference Model](docs/REFERENCE_MODEL.md).
 
+## Prepare an A2A 1.0 handoff
+
+A valid blueprint can be mapped to a standards-shaped draft Agent Card after a runtime owner explicitly supplies the service URL, binding, agent version, media modes, security posture, provider identity, and optional streaming/push declarations. Field Atlas never invents or probes those facts and never accepts credentials.
+
+```bash
+pnpm --silent blueprint:a2a examples/incident.blueprint.json \
+  --endpoint https://agent.example.com/a2a \
+  --agent-version 0.1.0 \
+  --security bearer \
+  --name "Incident Coordination Agent" \
+  --provider-organization "Samsarix LLC" \
+  --provider-url https://samsarix.com
+
+pnpm validate:a2a-example
+```
+
+The second command compares the generated card with the committed incident fixture for CI drift detection. Neither command proves that a server is deployed, reachable, authenticated, signed, or A2A-compatible. See [A2A deployment handoff](docs/A2A_HANDOFF.md).
+
 ## Validate a blueprint in CI
 
 The CLI uses the same semantic validator as the browser workbench:
@@ -63,18 +84,20 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 
 ## Development commands
 
-| Command                          | Purpose                                                                                 |
-| -------------------------------- | --------------------------------------------------------------------------------------- |
-| `pnpm dev`                       | Start the local Vite development server on `127.0.0.1:3000`                             |
-| `pnpm lint`                      | Run ESLint across TypeScript and React code                                             |
-| `pnpm format:check`              | Check repository formatting with Prettier                                               |
-| `pnpm check`                     | Run the strict TypeScript compiler check                                                |
-| `pnpm test`                      | Run model, component, and server tests once                                             |
-| `pnpm test:coverage`             | Run tests with enforced coverage thresholds                                             |
-| `pnpm build`                     | Build static assets and the optional Node release server                                |
-| `pnpm blueprint:validate <file>` | Validate a v1 blueprint with optional `--strict` or `--json`                            |
-| `pnpm start`                     | Serve the completed build on `127.0.0.1:3000`                                           |
-| `pnpm verify`                    | Run lint, formatting, types, coverage, strict fixture validation, and build in CI order |
+| Command                          | Purpose                                                                                |
+| -------------------------------- | -------------------------------------------------------------------------------------- |
+| `pnpm dev`                       | Start the local Vite development server on `127.0.0.1:3000`                            |
+| `pnpm lint`                      | Run ESLint across TypeScript and React code                                            |
+| `pnpm format:check`              | Check repository formatting with Prettier                                              |
+| `pnpm check`                     | Run the strict TypeScript compiler check                                               |
+| `pnpm test`                      | Run model, component, and server tests once                                            |
+| `pnpm test:coverage`             | Run tests with enforced coverage thresholds                                            |
+| `pnpm build`                     | Build static assets, the optional Node release server, and both CLIs                   |
+| `pnpm blueprint:validate <file>` | Validate a v1 blueprint with optional `--strict` or `--json`                           |
+| `pnpm blueprint:a2a <file> ...`  | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile  |
+| `pnpm validate:a2a-example`      | Check the deterministic incident Agent Card mapping against its committed fixture      |
+| `pnpm start`                     | Serve the completed build on `127.0.0.1:3000`                                          |
+| `pnpm verify`                    | Run lint, formatting, types, coverage, both fixture validations, and build in CI order |
 
 ## Production build and distribution
 
@@ -88,6 +111,7 @@ The build produces:
 - `dist/public/`: the standalone static site, suitable for a static host;
 - `dist/index.js`: a small Express server with `/healthz`, strict browser security headers, bounded timeouts, and graceful shutdown.
 - `dist/atlas-validate.js`: the bundled, dependency-free blueprint validation CLI.
+- `dist/atlas-a2a.js`: the bundled, dependency-free A2A draft generation and fixture-check CLI.
 
 The server accepts optional `HOST` and `PORT` process variables. It defaults to `127.0.0.1:3000`; set `HOST=0.0.0.0` only when an external deployment boundary is intentional and protected.
 
@@ -112,8 +136,10 @@ No production deployment is performed by this repository. Hosting configuration,
 client/src/model.ts         Canonical roles, scenarios, indicators, and serializer
             ↓
 client/src/blueprint.ts     Shared semantic validator + Markdown review packet
+              ↓
+client/src/a2a.ts           Owner profile checks + draft card/checklist mapping
        ↙             ↘
-React workbench       CLI validator ───────→ dist/atlas-validate.js
+React workbench       CLI tools ───────────→ dist/atlas-validate.js + dist/atlas-a2a.js
        ↓                    ↑
 Vite static build     schema/ + examples/
        ↓
@@ -129,6 +155,7 @@ The product intentionally has no authentication, database, analytics, remote API
 - Only the selected scenario ID is saved to `localStorage`.
 - The JSON export is created in the browser and downloaded directly.
 - Imported blueprints are limited to 1 MiB, parsed in memory, rendered as text, and never uploaded or persisted.
+- A2A owner-profile values are local-only, rendered as text, and never used to probe an endpoint; no credential field exists.
 - The validator rejects oversized collections, malformed references, unsupported major versions, and reference-mode runtime contradictions.
 - The release server disables framework disclosure, denies framing, restricts browser capabilities, and serves a narrow health contract.
 - Public links open with `rel="noreferrer"`.
@@ -140,6 +167,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - Indicator values are explanatory values defined by each fixture, not telemetry or scientific measurements.
 - The model is a reference vocabulary, not a normative multi-agent standard.
 - Conformance proves internal consistency only; it cannot prove that a real implementation generated the evidence or received the approval named in a trace.
+- A generated A2A Agent Card is a draft declaration, not proof of endpoint reachability, authentication, signature validity, or protocol compatibility.
 - The three bundled scenarios are representative rather than exhaustive.
 - No hosted URL is guaranteed by this repository.
 
@@ -147,6 +175,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 
 - [Productization assessment and release gates](docs/PRODUCTIZATION.md)
 - [Reference model and JSON contract](docs/REFERENCE_MODEL.md)
+- [A2A 1.0 deployment handoff and proof boundary](docs/A2A_HANDOFF.md)
 - [Historical pre-Samsarix context](CONTEXT.md) — preserved as non-normative source material
 - [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
