@@ -1,9 +1,8 @@
-import { readFileSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { validateBlueprint } from "../client/src/blueprint";
+import { readJsonFile, terminalText } from "./shared";
 
-const maximumBlueprintBytes = 1_048_576;
 const argumentsList = process.argv.slice(2);
 const jsonOutput = argumentsList.includes("--json");
 const strict = argumentsList.includes("--strict");
@@ -12,15 +11,6 @@ const unknownFlags = argumentsList.filter(
     argument.startsWith("-") && argument !== "--json" && argument !== "--strict"
 );
 const inputFiles = argumentsList.filter(argument => !argument.startsWith("-"));
-
-function terminalText(value: string): string {
-  return Array.from(value, character => {
-    const codePoint = character.codePointAt(0) ?? 0;
-    return codePoint <= 31 || (codePoint >= 127 && codePoint <= 159)
-      ? "?"
-      : character;
-  }).join("");
-}
 
 function failUsage(message: string): number {
   console.error(terminalText(message));
@@ -47,10 +37,7 @@ function main(): number {
   let value: unknown;
 
   try {
-    if (statSync(absolutePath).size > maximumBlueprintBytes) {
-      throw new Error("Blueprint files must be 1 MiB or smaller.");
-    }
-    value = JSON.parse(readFileSync(absolutePath, "utf8")) as unknown;
+    value = readJsonFile(absolutePath);
   } catch (error) {
     const message =
       error instanceof Error ? error.message : "Unknown read error";

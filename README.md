@@ -2,11 +2,11 @@
 
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
-The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench then validates that blueprint, exports a readable Markdown review packet, and can combine it with an owner-completed deployment profile to draft an A2A 1.0 Agent Card.
+The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench validates that blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, and creates a consumer-owned acceptance plan without pretending any test ran.
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validator, public schema and examples, A2A 1.0 deployment handoff, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment remains an owner-controlled gate; see [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment and acceptance handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment and live acceptance evidence remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
 
 ## Fastest successful path
 
@@ -36,7 +36,9 @@ No environment variables, API keys, accounts, databases, or companion repositori
 7. Resolve structural errors and governance warnings, then export the Markdown review packet for a decision owner.
 8. Complete the runtime-owner profile to map a valid scenario to a draft A2A 1.0 Agent Card.
 9. Export the draft card and implementation checklist for a server owner.
-10. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit.
+10. Complete the acceptance-owner profile with environment, limits, retention, classification, and processor decisions.
+11. Export the `plan-not-run` JSON manifest and Markdown execution checklist.
+12. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit, then attach those results in an owner-controlled signoff record.
 
 The selected scenario is remembered in device-local browser storage. It contains no personal content and never leaves the device.
 
@@ -70,6 +72,21 @@ pnpm validate:a2a-example
 
 The second command compares the generated card with the committed incident fixture in strict mode for CI drift detection. Neither command proves that a server is deployed, reachable, authenticated, signed, or A2A-compatible. See [A2A deployment handoff](docs/A2A_HANDOFF.md).
 
+## Define A2A implementation acceptance
+
+A valid blueprint and its draft Agent Card can be combined with consumer-owned operational decisions to create a repeatable acceptance plan. The plan covers authentication, authorization, validation errors, version negotiation, request/deadline/concurrency limits, retention, external processors, every human gate, every expected evidence artifact, and an official A2A TCK run.
+
+```bash
+pnpm --silent blueprint:acceptance examples/incident.blueprint.json \
+  --agent-card examples/incident.a2a-agent-card.json \
+  --profile examples/incident.a2a-acceptance-profile.json \
+  --generated-at 2026-08-01T12:00:00.000Z
+
+pnpm validate:acceptance-example
+```
+
+The artifact status is always `plan-not-run`. Field Atlas performs no network request, test execution, credential acquisition, or compatibility judgment. The acceptance manifest is a Samsarix Field Atlas artifact, not an A2A extension or TCK report. See [A2A implementation acceptance](docs/A2A_ACCEPTANCE.md).
+
 ## Validate a blueprint in CI
 
 The CLI uses the same semantic validator as the browser workbench:
@@ -84,20 +101,22 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 
 ## Development commands
 
-| Command                          | Purpose                                                                                |
-| -------------------------------- | -------------------------------------------------------------------------------------- |
-| `pnpm dev`                       | Start the local Vite development server on `127.0.0.1:3000`                            |
-| `pnpm lint`                      | Run ESLint across TypeScript and React code                                            |
-| `pnpm format:check`              | Check repository formatting with Prettier                                              |
-| `pnpm check`                     | Run the strict TypeScript compiler check                                               |
-| `pnpm test`                      | Run model, component, and server tests once                                            |
-| `pnpm test:coverage`             | Run tests with enforced coverage thresholds                                            |
-| `pnpm build`                     | Build static assets, the optional Node release server, and both CLIs                   |
-| `pnpm blueprint:validate <file>` | Validate a v1 blueprint with optional `--strict` or `--json`                           |
-| `pnpm blueprint:a2a <file> ...`  | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile  |
-| `pnpm validate:a2a-example`      | Check the deterministic incident Agent Card mapping against its committed fixture      |
-| `pnpm start`                     | Serve the completed build on `127.0.0.1:3000`                                          |
-| `pnpm verify`                    | Run lint, formatting, types, coverage, both fixture validations, and build in CI order |
+| Command                            | Purpose                                                                               |
+| ---------------------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm dev`                         | Start the local Vite development server on `127.0.0.1:3000`                           |
+| `pnpm lint`                        | Run ESLint across TypeScript and React code                                           |
+| `pnpm format:check`                | Check repository formatting with Prettier                                             |
+| `pnpm check`                       | Run the strict TypeScript compiler check                                              |
+| `pnpm test`                        | Run model, component, and server tests once                                           |
+| `pnpm test:coverage`               | Run tests with enforced coverage thresholds                                           |
+| `pnpm build`                       | Build static assets, the optional Node release server, and all three CLIs             |
+| `pnpm blueprint:validate <file>`   | Validate a v1 blueprint with optional `--strict` or `--json`                          |
+| `pnpm blueprint:a2a <file> ...`    | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
+| `pnpm validate:a2a-example`        | Check the deterministic incident Agent Card mapping against its committed fixture     |
+| `pnpm blueprint:acceptance ...`    | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |
+| `pnpm validate:acceptance-example` | Check the incident acceptance plan against its complete committed fixture             |
+| `pnpm start`                       | Serve the completed build on `127.0.0.1:3000`                                         |
+| `pnpm verify`                      | Run lint, formatting, types, coverage, all fixture validations, and build in CI order |
 
 ## Production build and distribution
 
@@ -112,6 +131,7 @@ The build produces:
 - `dist/index.js`: a small Express server with `/healthz`, strict browser security headers, bounded timeouts, and graceful shutdown.
 - `dist/atlas-validate.js`: the bundled, dependency-free blueprint validation CLI.
 - `dist/atlas-a2a.js`: the bundled, dependency-free A2A draft generation and fixture-check CLI.
+- `dist/atlas-acceptance.js`: the bundled, dependency-free A2A acceptance-plan and fixture-check CLI.
 
 The server accepts optional `HOST` and `PORT` process variables. It defaults to `127.0.0.1:3000`; set `HOST=0.0.0.0` only when an external deployment boundary is intentional and protected.
 
@@ -138,10 +158,12 @@ client/src/model.ts         Canonical roles, scenarios, indicators, and serializ
 client/src/blueprint.ts     Shared semantic validator + Markdown review packet
               ↓
 client/src/a2a.ts           Owner profile checks + draft card/checklist mapping
+              ↓
+client/src/acceptance.ts    Owner limits + deterministic plan/checklist mapping
        ↙             ↘
-React workbench       CLI tools ───────────→ dist/atlas-validate.js + dist/atlas-a2a.js
+React workbench       CLI tools ───────────→ three bundled CLI artifacts
        ↓                    ↑
-Vite static build     schema/ + examples/
+Vite static build     schemas/ + examples/
        ↓
 dist/public ──────────→ optional Express server + /healthz
 ```
@@ -156,6 +178,7 @@ The product intentionally has no authentication, database, analytics, remote API
 - The JSON export is created in the browser and downloaded directly.
 - Imported blueprints are limited to 1 MiB, parsed in memory, rendered as text, and never uploaded or persisted.
 - A2A owner-profile values are local-only, rendered as text, and never used to probe an endpoint; no credential field exists.
+- Acceptance profiles and manifests remain local-only, are bounded in the CLI, and make no test-result claim; evidence and credentials are never collected by the browser.
 - The validator rejects oversized collections, malformed references, unsupported major versions, and reference-mode runtime contradictions.
 - The release server disables framework disclosure, denies framing, restricts browser capabilities, and serves a narrow health contract.
 - Public links open with `rel="noreferrer"`.
@@ -168,6 +191,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - The model is a reference vocabulary, not a normative multi-agent standard.
 - Conformance proves internal consistency only; it cannot prove that a real implementation generated the evidence or received the approval named in a trace.
 - A generated A2A Agent Card is a draft declaration, not proof of endpoint reachability, authentication, signature validity, or protocol compatibility.
+- A generated acceptance manifest is a not-yet-run consumer plan, not an official extension, TCK report, pass result, or accountable release signoff.
 - The three bundled scenarios are representative rather than exhaustive.
 - No hosted URL is guaranteed by this repository.
 
@@ -176,6 +200,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - [Productization assessment and release gates](docs/PRODUCTIZATION.md)
 - [Reference model and JSON contract](docs/REFERENCE_MODEL.md)
 - [A2A 1.0 deployment handoff and proof boundary](docs/A2A_HANDOFF.md)
+- [A2A implementation acceptance contract](docs/A2A_ACCEPTANCE.md)
 - [Historical pre-Samsarix context](CONTEXT.md) — preserved as non-normative source material
 - [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)

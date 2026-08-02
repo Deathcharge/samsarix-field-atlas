@@ -1,0 +1,396 @@
+{
+  "schemaVersion": "samsarix-field-atlas/a2a-acceptance/1",
+  "generatedAt": "2026-08-01T12:00:00.000Z",
+  "status": "plan-not-run",
+  "source": {
+    "blueprint": {
+      "schemaVersion": "samsarix-field-atlas/1",
+      "scenarioId": "incident",
+      "title": "Triage a production incident",
+      "risk": "high"
+    },
+    "agentCard": {
+      "name": "Incident Coordination Agent",
+      "version": "0.1.0",
+      "interfaceUrl": "https://agent.example.com/a2a",
+      "binding": "HTTP+JSON",
+      "protocolVersion": "1.0",
+      "inputModes": ["application/json"],
+      "outputModes": ["application/json"],
+      "authentication": "bearer"
+    }
+  },
+  "acceptance": {
+    "owner": "Incident Platform Team",
+    "supportContact": "support@samsarix.com",
+    "environment": "staging",
+    "maxRequestBytes": 1048576,
+    "responseDeadlineMs": 30000,
+    "maxConcurrentTasks": 10,
+    "retentionMode": "transient",
+    "retentionHours": 24,
+    "dataClassification": "internal",
+    "externalProcessors": false
+  },
+  "summary": {
+    "testCases": 22,
+    "blockingCases": 14,
+    "officialTckCases": 1,
+    "humanApprovalCases": 1,
+    "evidenceCases": 8
+  },
+  "testCases": [
+    {
+      "id": "a2a-discovery-card",
+      "category": "discovery",
+      "title": "Discover the declared Agent Card",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "The discovery document and implementation-owned card must match the reviewed draft.",
+      "procedure": [
+        "Fetch /.well-known/agent-card.json from the intended discovery domain over its production transport.",
+        "Compare identity, version, interface, binding, modes, skills, capabilities, and security declarations with the reviewed draft.",
+        "Record TLS, cache, ETag, and response metadata without recording credentials."
+      ],
+      "expected": "Discovery succeeds and the served card matches the approved draft or an explicitly reviewed revision.",
+      "evidence": [
+        "served Agent Card",
+        "comparison result",
+        "response metadata"
+      ]
+    },
+    {
+      "id": "a2a-version-negotiation",
+      "category": "compatibility",
+      "title": "Enforce A2A version negotiation",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "The service accepts A2A 1.0 and returns the specified unsupported-version error for an incompatible version.",
+      "procedure": [
+        "Send a valid request with A2A-Version 1.0.",
+        "Repeat with a deliberately unsupported version."
+      ],
+      "expected": "The supported request is processed and the unsupported request fails with an actionable version error.",
+      "evidence": [
+        "redacted requests",
+        "redacted responses",
+        "version error assertion"
+      ]
+    },
+    {
+      "id": "a2a-media-validation",
+      "category": "compatibility",
+      "title": "Accept declared media and reject unsupported content",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "The implementation accepts application/json and emits application/json as declared.",
+      "procedure": [
+        "Send representative valid content for every declared input mode.",
+        "Send a safe unsupported media type and malformed content."
+      ],
+      "expected": "Declared content succeeds; unsupported or malformed content receives a bounded, actionable validation error.",
+      "evidence": [
+        "media matrix",
+        "redacted responses",
+        "validation assertions"
+      ]
+    },
+    {
+      "id": "a2a-authentication",
+      "category": "security",
+      "title": "Reject missing and invalid authentication",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "Protected operations reject absent, invalid, and expired credentials without disclosing sensitive details.",
+      "procedure": [
+        "Call a protected operation without credentials.",
+        "Repeat with invalid and expired test credentials supplied through the runtime's approved secret channel."
+      ],
+      "expected": "Each request is rejected with an appropriate authentication error and no credential material is logged.",
+      "evidence": ["authentication assertions", "redacted audit event"]
+    },
+    {
+      "id": "a2a-resource-authorization",
+      "category": "security",
+      "title": "Prevent unauthorized task disclosure",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "A caller cannot distinguish or retrieve tasks it is not authorized to access.",
+      "procedure": [
+        "Create a task under an isolated test principal.",
+        "Attempt retrieval or mutation with a different or unauthorized principal.",
+        "Repeat with a nonexistent task identifier and compare disclosure behavior."
+      ],
+      "expected": "Unauthorized and nonexistent resources do not leak task existence or content beyond the approved error contract.",
+      "evidence": [
+        "authorization matrix",
+        "redacted responses",
+        "non-disclosure assertion"
+      ]
+    },
+    {
+      "id": "a2a-validation-errors",
+      "category": "reliability",
+      "title": "Return bounded, actionable validation errors",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "Invalid requests fail predictably without stack traces, secrets, or unbounded reflection.",
+      "procedure": [
+        "Submit missing, malformed, and oversized-safe test fields across the primary operation.",
+        "Verify error codes, messages, correlation metadata, and retry guidance."
+      ],
+      "expected": "Each invalid request receives an actionable protocol error without sensitive implementation detail.",
+      "evidence": ["negative-test matrix", "redacted error samples"]
+    },
+    {
+      "id": "owner-request-limit",
+      "category": "reliability",
+      "title": "Enforce the request-size boundary",
+      "blocking": true,
+      "source": "owner-profile",
+      "requirement": "Requests larger than 1048576 bytes are rejected before expensive processing.",
+      "procedure": [
+        "Send a valid request at the configured boundary.",
+        "Send a request one byte above the boundary using non-sensitive test data."
+      ],
+      "expected": "The boundary request follows the normal path and the oversized request is rejected predictably.",
+      "evidence": ["request-size assertions", "resource-use observation"]
+    },
+    {
+      "id": "owner-response-deadline",
+      "category": "reliability",
+      "title": "Meet the response deadline",
+      "blocking": true,
+      "source": "owner-profile",
+      "requirement": "The service responds or returns an intentional asynchronous/task state within 30000 ms.",
+      "procedure": [
+        "Exercise representative success and controlled slow-path requests under deployment-like conditions.",
+        "Measure time to response or durable task acknowledgement."
+      ],
+      "expected": "Every tested request meets the deadline or follows a documented timeout and retry contract.",
+      "evidence": [
+        "latency distribution",
+        "timeout assertion",
+        "test conditions"
+      ]
+    },
+    {
+      "id": "owner-concurrency-limit",
+      "category": "reliability",
+      "title": "Enforce bounded concurrency",
+      "blocking": true,
+      "source": "owner-profile",
+      "requirement": "The runtime admits no more than 10 concurrent tasks per the owner-defined scope.",
+      "procedure": [
+        "Drive the configured concurrency with bounded synthetic tasks.",
+        "Submit one additional task and observe queueing or rejection behavior."
+      ],
+      "expected": "The runtime preserves availability and applies the documented queue, backpressure, or rejection behavior.",
+      "evidence": [
+        "load-test configuration",
+        "admission results",
+        "resource metrics"
+      ]
+    },
+    {
+      "id": "a2a-transient-failure",
+      "category": "reliability",
+      "title": "Make transient failures safely retryable",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "Retryable failures provide actionable guidance without duplicating non-idempotent work.",
+      "procedure": [
+        "Introduce an approved transient dependency failure in an isolated environment.",
+        "Retry according to the documented guidance and inspect task identity and side effects."
+      ],
+      "expected": "The caller can recover without duplicate task effects or ambiguous final state.",
+      "evidence": [
+        "failure-injection record",
+        "retry trace",
+        "side-effect assertion"
+      ]
+    },
+    {
+      "id": "a2a-official-tck",
+      "category": "compatibility",
+      "title": "Run the official A2A Technology Compatibility Kit",
+      "blocking": true,
+      "source": "a2a-1.0",
+      "requirement": "Core protocol compatibility is evaluated with the official A2A TCK against the reviewed implementation revision.",
+      "procedure": [
+        "Run the official TCK for the declared HTTP+JSON binding and A2A 1.0.",
+        "Preserve the command, TCK revision, implementation revision, environment, and machine-readable report.",
+        "Triage every skipped, failed, or inapplicable case with an accountable owner."
+      ],
+      "expected": "The official report satisfies the release policy and is traceable to the tested implementation revision.",
+      "evidence": [
+        "TCK JSON or JUnit report",
+        "TCK revision",
+        "implementation revision"
+      ]
+    },
+    {
+      "id": "privacy-secret-handling",
+      "category": "privacy",
+      "title": "Exclude secrets from artifacts and logs",
+      "blocking": true,
+      "source": "field-atlas",
+      "requirement": "No credential or unnecessary internal task data is stored in test artifacts, cards, or operational logs.",
+      "procedure": [
+        "Exercise authenticated and failing requests with approved synthetic data.",
+        "Inspect the Agent Card, application logs, traces, reports, and exported evidence for credential or payload leakage."
+      ],
+      "expected": "Artifacts contain only the minimum redacted metadata required by the evidence policy.",
+      "evidence": [
+        "redaction review",
+        "logging configuration",
+        "sample sanitized artifact"
+      ]
+    },
+    {
+      "id": "privacy-retention",
+      "category": "privacy",
+      "title": "Enforce the declared retention window",
+      "blocking": true,
+      "source": "owner-profile",
+      "requirement": "Task data is deleted or irreversibly de-identified after 24 hours.",
+      "procedure": [
+        "Create an isolated task containing uniquely identifiable synthetic data.",
+        "Inspect every declared store before and after the retention boundary."
+      ],
+      "expected": "The synthetic record is unavailable after the retention boundary and deletion is auditable.",
+      "evidence": [
+        "data-flow inventory",
+        "retention assertion",
+        "deletion audit event"
+      ]
+    },
+    {
+      "id": "governance-human-approval-5",
+      "category": "governance",
+      "title": "Preserve human approval at stage 5",
+      "blocking": true,
+      "source": "field-atlas",
+      "requirement": "Runtime execution must stop for accountable human approval before “Hold the production gate.”",
+      "procedure": [
+        "Run the workflow to the approval boundary with a reversible test task.",
+        "Verify that no gated action occurs before an authenticated, attributable decision.",
+        "Exercise approve, reject, timeout, and revoked-approval paths."
+      ],
+      "expected": "The gate blocks by default and records the decision, owner, time, scope, and resulting transition.",
+      "evidence": ["Approval + stop conditions", "gate transition trace"]
+    },
+    {
+      "id": "evidence-stage-1",
+      "category": "evidence",
+      "title": "Capture stage 1 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Response frame” for the Stabilize the response flow stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Response frame"]
+    },
+    {
+      "id": "evidence-stage-2",
+      "category": "evidence",
+      "title": "Capture stage 2 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Timestamped observations” for the Gather bounded observations stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Timestamped observations"]
+    },
+    {
+      "id": "evidence-stage-3",
+      "category": "evidence",
+      "title": "Capture stage 3 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Hypothesis ledger” for the Rank plausible causes stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Hypothesis ledger"]
+    },
+    {
+      "id": "evidence-stage-4",
+      "category": "evidence",
+      "title": "Capture stage 4 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Containment proposal” for the Prepare the smallest containment stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Containment proposal"]
+    },
+    {
+      "id": "evidence-stage-5",
+      "category": "evidence",
+      "title": "Capture stage 5 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Approval + stop conditions” for the Hold the production gate stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Approval + stop conditions"]
+    },
+    {
+      "id": "evidence-stage-6",
+      "category": "evidence",
+      "title": "Capture stage 6 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Incident action log” for the Record actions as they happen stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Incident action log"]
+    },
+    {
+      "id": "evidence-stage-7",
+      "category": "evidence",
+      "title": "Capture stage 7 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Reusable incident memory” for the Archive verified learning stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Reusable incident memory"]
+    },
+    {
+      "id": "evidence-stage-8",
+      "category": "evidence",
+      "title": "Capture stage 8 evidence",
+      "blocking": false,
+      "source": "field-atlas",
+      "requirement": "The runtime produces “Post-incident proof gaps” for the Challenge the closure stage without claiming evidence before it exists.",
+      "procedure": [
+        "Exercise the stage with synthetic or approved test data.",
+        "Verify artifact ownership, timestamp, source revision, integrity metadata, and redaction."
+      ],
+      "expected": "The named artifact is attributable, reviewable, bounded, and linked to the tested task and implementation revision.",
+      "evidence": ["Post-incident proof gaps"]
+    }
+  ]
+}

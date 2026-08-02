@@ -10,6 +10,7 @@ import {
 } from "../a2a";
 import type { Blueprint } from "../blueprint";
 import { downloadText } from "../download";
+import A2AAcceptancePack from "./A2AAcceptancePack";
 
 interface A2AHandoffProps {
   blueprint: Blueprint;
@@ -342,6 +343,13 @@ function A2AHandoff({ blueprint }: A2AHandoffProps) {
       <p aria-live="polite" className="run-notice a2a-notice">
         {notice}
       </p>
+
+      {analysis.agentCard ? (
+        <A2AAcceptancePack
+          agentCard={analysis.agentCard}
+          blueprint={blueprint}
+        />
+      ) : null}
     </section>
   );
 }

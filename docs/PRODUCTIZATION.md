@@ -58,7 +58,10 @@ Bounded research used primary documentation current on August 1, 2026:
 - [LangSmith Studio](https://docs.langchain.com/oss/python/langgraph/studio) connects to locally running LangGraph agents for interactive debugging and inspection.
 - [OpenAI Agents SDK tracing](https://openai.github.io/openai-agents-js/guides/tracing/) records real generations, tool calls, handoffs, and guardrails, with explicit sensitive-data controls.
 - [Agent2Agent Protocol 1.0](https://github.com/a2aproject/A2A/blob/main/docs/specification.md) standardizes discovery, messages, tasks, and artifacts across independent agent systems.
+- The official [A2A Technology Compatibility Kit](https://github.com/a2aproject/a2a-tck) runs protocol tests across JSON-RPC, HTTP+JSON, and gRPC implementations and emits machine-readable compatibility reports.
+- [A2A extension and binding governance](https://a2a-protocol.org/latest/topics/extension-and-binding-governance/) separates official extensions from vendor-specific additions, supporting a separate Field Atlas acceptance artifact instead of nonstandard Agent Card fields.
 - [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) provides a governance frame for managing AI risks, with a Generative AI Profile and continuing work on human oversight in critical infrastructure.
+- [NIST TEVV](https://www.nist.gov/ai-test-evaluation-validation-and-verification-tevv) and the [AI RMF Core](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/) call for documented, repeatable evaluation under deployment-like conditions with defined human oversight.
 
 The execution products build or inspect running agent systems; the emerging standards make portable declarations and governance evidence increasingly relevant across runtimes. Field Atlas occupies the pre-runtime wedge: an account-free, provider-neutral coordination designer, semantic contract checker, and review-artifact generator. It does not compete as a model runner or observability service.
 
@@ -73,6 +76,7 @@ The execution products build or inspect running agent systems; the emerging stan
 7. Make scope truth part of the interface, export contract, README, and tests.
 8. Keep one semantic validator shared by browser and CLI so interactive and CI decisions cannot drift.
 9. Keep A2A deployment facts in a separate owner-completed profile so provider-neutral design data cannot silently become a false runtime claim.
+10. Keep consumer acceptance semantics in a separate `plan-not-run` artifact: the official A2A TCK owns core compatibility, while Field Atlas preserves owner limits, privacy choices, human gates, and evidence requirements without extending the Agent Card.
 
 ## Assumptions
 
@@ -124,6 +128,7 @@ Final command evidence is appended after implementation verification.
 - [ ] Add user-authored scenarios through a schema-validated local editor.
 - [x] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
 - [x] Map a validated blueprint to an owner-completed draft A2A 1.0 Agent Card and implementation checklist.
+- [x] Generate a consumer-owned A2A acceptance manifest and execution checklist with deterministic fixtures and an official-TCK evidence requirement.
 - [ ] Add translations after the English information architecture stabilizes.
 - [ ] Add a printer-friendly trace view if evaluators request it.
 
@@ -151,6 +156,7 @@ Final command evidence is appended after implementation verification.
 - Added a local blueprint workbench with file import, readiness states, governance findings, metrics, and Markdown review-packet export.
 - Added a shared semantic validator, strict/JSON CLI modes, versioned JSON Schema, and a complete incident fixture enforced by `pnpm verify`.
 - Added a shared A2A 1.0 handoff validator, browser profile, draft Agent Card/checklist exports, deterministic CLI mapping, and committed incident card fixture.
+- Added a shared A2A implementation acceptance validator, browser owner profile, JSON/Markdown plan exports, public schema, deterministic CLI, and committed incident fixtures.
 - Removed misleading status, deployment, authentication, analytics, and integration claims.
 - Replaced the generated UI kit with purpose-built semantic React and CSS.
 - Added the optional hardened release server and meaningful automated tests.
@@ -159,7 +165,7 @@ Final command evidence is appended after implementation verification.
 ## Deferred work and rationale
 
 - User-authored scenarios remain deferred until real evaluator demand justifies the additional editing and migration surface.
-- Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, compatibility evidence, and ongoing support commitment. The A2A handoff now makes that next step explicit without taking the dependency.
+- Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, compatibility evidence, and ongoing support commitment. The A2A handoff and acceptance plan now make those next steps explicit without taking the dependency or claiming tests ran.
 - Internationalization is deferred until product language is validated.
 
 ## Owner-, legal-, and production-blocked work
@@ -253,3 +259,23 @@ Local release evidence on Windows with Node `v24.12.0` and pnpm `11.17.0`:
 | `pnpm audit --prod`         | Passed with no known production vulnerabilities.                                                                                                                   |
 
 This remains local transformation and build evidence, not a live consumer or deployment record. No deployment was performed. A future release claim still requires an exact commit, published artifact, consumer-owned live endpoint, compatibility report, support owner, and rollback path.
+
+## A2A acceptance-contract increment
+
+On August 1, 2026, Field Atlas added a consumer-owned bridge from design and discovery declarations to repeatable implementation evaluation. A validated blueprint, its draft Agent Card, and an explicit acceptance-owner profile now produce a deterministic JSON manifest plus a Markdown execution checklist. The browser and CLI share the same semantic validator.
+
+The manifest covers A2A discovery, version, media, authentication, authorization, validation, and retry behavior; owner-defined request, deadline, concurrency, retention, classification, and processor boundaries; every source human gate and evidence stage; and one required official TCK run. Its status is always `plan-not-run`. It adds no nonstandard fields to the Agent Card and is not an official A2A extension, runtime result, TCK report, deployment probe, or conformance claim.
+
+Local release evidence on Windows with Node `v24.12.0` and pnpm `11.17.0`:
+
+| Command or check                   | Result                                                                                                                                                   |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm verify`                      | Passed lint, formatting, strict types, 50 tests, coverage thresholds, all three committed fixture checks, and client/server/three-CLI production builds. |
+| Coverage                           | 82.82% statements, 77.56% branches, 81.77% functions, and 83.64% lines.                                                                                  |
+| `pnpm validate:acceptance-example` | Passed three truth/profile checks; the generated 22-case incident plan exactly matched the committed fixture in strict mode.                             |
+| `pnpm build`                       | Passed; client JS was 276.94 kB / 84.42 kB gzip, CSS was 28.63 kB / 6.32 kB gzip, server was 4.2 kB, and acceptance CLI was 48,392 bytes.                |
+| Acceptance CLI artifact            | `dist/atlas-acceptance.js` SHA-256 was `b4fb0513cd652cb15c1ba9d1dc586a5cdf9a4e6da6a2b37113b2303bf513fb14`.                                               |
+| `pnpm audit --prod`                | Passed with no known production vulnerabilities.                                                                                                         |
+| React best-practices review        | Passed the applicable local-state, derived-state, component-boundary, controlled-input, accessibility, and rendering checklist.                          |
+
+This is local plan-generation and build evidence only. No endpoint was contacted, no TCK or runtime test was run, no acceptance result was recorded, and no deployment was performed. Live implementation evidence, signoff, publication, and rollback remain runtime-owner responsibilities.

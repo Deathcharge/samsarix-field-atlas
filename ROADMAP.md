@@ -33,7 +33,7 @@ Current disposition: Grow the provider-neutral conformance workflow through evid
 ## Samsarix adoption
 
 - Define a public API, event, schema, artifact, or deployment contract before connecting to Samsarix Unified.
-- Add a consumer-owned contract fixture covering authentication, privacy, limits, errors, and version compatibility.
+- [x] Add a consumer-owned plan fixture covering authentication, privacy, limits, errors, and version compatibility; live execution evidence remains owner-controlled and pending.
 - Make one implementation canonical; remove or freeze duplicate behavior only after parity and rollback are proven.
 - Record an owner, support level, compatibility window, and measurable adoption signal.
 

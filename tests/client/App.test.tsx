@@ -163,6 +163,25 @@ describe("Samsarix Field Atlas", () => {
     expect(
       screen.getByRole("heading", { name: /ready to hand off/i })
     ).toBeVisible();
+    expect(
+      screen.getByRole("heading", {
+        name: /turn the handoff into a testable owner contract/i,
+      })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /export acceptance manifest/i })
+    ).toBeDisabled();
+
+    fireEvent.change(screen.getByLabelText(/acceptance owner/i), {
+      target: { value: "Release Team" },
+    });
+    fireEvent.change(screen.getByLabelText(/support contact/i), {
+      target: { value: "support@samsarix.com" },
+    });
+
+    expect(
+      screen.getByRole("heading", { name: /plan ready to execute elsewhere/i })
+    ).toBeVisible();
     fireEvent.click(
       screen.getByRole("button", { name: /export draft agent card/i })
     );
@@ -171,13 +190,19 @@ describe("Samsarix Field Atlas", () => {
         name: /export implementation checklist/i,
       })
     );
+    fireEvent.click(
+      screen.getByRole("button", { name: /export acceptance manifest/i })
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: /export execution checklist/i })
+    );
 
     expect(
-      screen.getByText(/a2a implementation checklist exported locally/i)
+      screen.getByText(/execution checklist exported locally/i)
     ).toBeVisible();
-    expect(createObjectUrl).toHaveBeenCalledTimes(2);
-    expect(click).toHaveBeenCalledTimes(2);
-    await waitFor(() => expect(revokeObjectUrl).toHaveBeenCalledTimes(2));
+    expect(createObjectUrl).toHaveBeenCalledTimes(4);
+    expect(click).toHaveBeenCalledTimes(4);
+    await waitFor(() => expect(revokeObjectUrl).toHaveBeenCalledTimes(4));
   });
 
   it("fails safely when a render error reaches the boundary", () => {

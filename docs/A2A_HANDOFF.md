@@ -45,6 +45,7 @@ Field Atlas is not an official A2A schema validator, protocol client, Inspector,
 3. Complete the **Runtime-owner profile** that appears below the readiness result.
 4. Resolve errors and consciously review warnings.
 5. Export **Draft Agent Card** and **Implementation checklist**.
+6. Complete **Define implementation acceptance** to export a consumer-owned test manifest and execution checklist.
 
 The draft filename contains `draft` to prevent the local transformation from being mistaken for a deployed card.
 
@@ -80,6 +81,10 @@ pnpm validate:a2a-example
 ```
 
 This compares a deterministic transformation of `examples/incident.blueprint.json` with `examples/incident.a2a-agent-card.json`. It proves repository mapping stability, not live A2A compatibility.
+
+## Next step: consumer-owned acceptance
+
+Once the draft card is valid, Field Atlas can combine it with explicit owner decisions for environment, limits, retention, data classification, and external processing. The resulting manifest keeps its status fixed at `plan-not-run`, requires the official TCK, and preserves human gates and evidence requirements without changing the Agent Card. See [A2A implementation acceptance](A2A_ACCEPTANCE.md).
 
 ## Required implementation evidence
 
