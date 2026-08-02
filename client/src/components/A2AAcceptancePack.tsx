@@ -13,6 +13,7 @@ import {
 import type { A2AAgentCard } from "../a2a";
 import type { Blueprint } from "../blueprint";
 import { downloadText } from "../download";
+import A2ATckEvidenceReceipt from "./A2ATckEvidenceReceipt";
 
 interface A2AAcceptancePackProps {
   blueprint: Blueprint;
@@ -408,6 +409,8 @@ function A2AAcceptancePack({ blueprint, agentCard }: A2AAcceptancePackProps) {
           ? notice
           : "Acceptance inputs are paused until the draft Agent Card is valid; completed values remain in this browser."}
       </p>
+
+      <A2ATckEvidenceReceipt acceptanceManifest={analysis.manifest} />
     </section>
   );
 }

@@ -1574,6 +1574,10 @@ button.button {
   border-right: 1px solid var(--line);
 }
 
+.a2a-profile.is-disabled {
+  opacity: 0.62;
+}
+
 .a2a-profile fieldset {
   min-width: 0;
   margin: 0;
@@ -1627,7 +1631,8 @@ button.button {
 }
 
 .a2a-fields input,
-.a2a-fields select {
+.a2a-fields select,
+.a2a-fields textarea {
   width: 100%;
   min-height: 2.8rem;
   padding: 0.65rem 0.75rem;
@@ -1642,12 +1647,28 @@ button.button {
 
 .a2a-fields input:focus-visible,
 .a2a-fields select:focus-visible,
+.a2a-fields textarea:focus-visible,
 .capability-options input:focus-visible {
   outline: 3px solid var(--acid);
   outline-offset: 3px;
 }
 
 .a2a-fields input::placeholder {
+  color: #747770;
+}
+
+.a2a-profile fieldset:disabled input,
+.a2a-profile fieldset:disabled select,
+.a2a-profile fieldset:disabled textarea {
+  cursor: not-allowed;
+}
+
+.a2a-fields textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.a2a-fields textarea::placeholder {
   color: #747770;
 }
 
@@ -1791,6 +1812,76 @@ button.button {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 1.25rem;
   font-weight: 850;
+}
+
+.tck-evidence {
+  border-top: 1px solid rgba(101, 226, 212, 0.25);
+  background:
+    linear-gradient(145deg, rgba(101, 226, 212, 0.045), transparent 45%),
+    rgba(8, 10, 9, 0.36);
+}
+
+.tck-evidence .acceptance-heading .panel-label {
+  color: var(--cyan);
+}
+
+.tck-evidence .acceptance-heading .protocol-chip {
+  border-color: rgba(101, 226, 212, 0.45);
+  background: rgba(101, 226, 212, 0.07);
+  color: var(--cyan);
+}
+
+.evidence-fields label:nth-child(2) {
+  grid-column: auto;
+}
+
+.evidence-fields .evidence-command-field {
+  grid-column: 1 / -1;
+}
+
+.evidence-upload {
+  display: grid;
+  justify-items: start;
+  gap: 0.65rem;
+  margin-top: 1.4rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.evidence-upload > small {
+  color: var(--ink-muted);
+  font-size: 0.64rem;
+  line-height: 1.5;
+}
+
+.tck-evidence fieldset:disabled .button {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.evidence-file {
+  display: grid;
+  max-width: 100%;
+  gap: 0.3rem;
+  margin: 0.25rem 0 0;
+  color: #c9cbc4;
+  font-size: 0.7rem;
+}
+
+.evidence-file strong,
+.evidence-file code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.evidence-file code {
+  color: var(--cyan);
+  font-size: 0.64rem;
+}
+
+.evidence-metrics dd {
+  font-size: 1.05rem;
 }
 
 @keyframes spin {

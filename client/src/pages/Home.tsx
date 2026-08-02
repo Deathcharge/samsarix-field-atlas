@@ -564,6 +564,7 @@ function Home() {
                 <li>Complete 13-role reference</li>
                 <li>Local device preference only</li>
                 <li>Portable JSON blueprint</li>
+                <li>A2A handoff, acceptance, and evidence receipts</li>
                 <li>Static deployment build</li>
               </ul>
             </div>

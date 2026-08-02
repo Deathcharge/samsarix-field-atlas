@@ -28,12 +28,14 @@ Current disposition: Grow the provider-neutral conformance workflow through evid
 - [x] Publish a v1 JSON Schema, complete example, governance findings, and Markdown review packet.
 - Add a schema-validated local scenario editor only after an evaluator proves the authoring need.
 - [x] Map the portable contract to A2A 1.0 discovery without making A2A or any runtime canonical.
+- [x] Bind an externally generated official-format TCK JSON report to owner-asserted provenance metadata and an exact-byte owner-review receipt without turning it into a pass claim.
 - Add a consumer-owned live A2A service fixture only when a runtime owner can provide endpoint, authentication, error, and compatibility evidence.
 
 ## Samsarix adoption
 
 - Define a public API, event, schema, artifact, or deployment contract before connecting to Samsarix Unified.
 - [x] Add a consumer-owned plan fixture covering authentication, privacy, limits, errors, and version compatibility; live execution evidence remains owner-controlled and pending.
+- [x] Add a consumer-owned TCK evidence fixture that exposes skipped/not-tested requirements even when the reported compatibility percentage is 100%; the fixture remains synthetic and is not live-run evidence.
 - Make one implementation canonical; remove or freeze duplicate behavior only after parity and rollback are proven.
 - Record an owner, support level, compatibility window, and measurable adoption signal.
 

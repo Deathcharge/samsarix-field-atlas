@@ -1,0 +1,94 @@
+{
+  "summary": {
+    "timestamp": "2026-08-01T12:30:00+00:00",
+    "sut_url": "https://agent.example.com",
+    "spec_version": "",
+    "overall_compatibility": "100.0%",
+    "must_compatibility": "100.0%",
+    "should_compatibility": "100.0%",
+    "may_compatibility": "100.0%"
+  },
+  "per_requirement": {
+    "CORE-GET-001": {
+      "level": "MUST",
+      "status": "PASS",
+      "transports": {
+        "http_json": "PASS"
+      },
+      "errors": [],
+      "test_ids": [
+        "tests/compatibility/http_json/test_agent_card.py::test_agent_card"
+      ]
+    },
+    "CORE-ERR-002": {
+      "level": "SHOULD",
+      "status": "PASS",
+      "transports": {
+        "http_json": "PASS"
+      },
+      "errors": [],
+      "test_ids": [
+        "tests/compatibility/http_json/test_errors.py::test_error_mapping"
+      ]
+    },
+    "CORE-PUSH-001": {
+      "level": "MAY",
+      "status": "SKIPPED",
+      "transports": {
+        "http_json": "SKIPPED"
+      },
+      "errors": [],
+      "test_ids": [
+        "tests/compatibility/http_json/test_push.py::test_push_notification"
+      ]
+    },
+    "CORE-TASK-003": {
+      "level": "MUST",
+      "status": "NOT TESTED",
+      "transports": {},
+      "errors": [],
+      "test_ids": []
+    }
+  },
+  "per_transport": {
+    "http_json": {
+      "total": 3,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 1
+    }
+  },
+  "agent_card": {
+    "name": "Incident Coordination Agent",
+    "description": "Restore a degraded service without turning uncertainty into unsafe or unaudited action.",
+    "supportedInterfaces": [
+      {
+        "url": "https://agent.example.com/a2a",
+        "protocolBinding": "HTTP+JSON",
+        "protocolVersion": "1.0"
+      }
+    ],
+    "version": "0.1.0",
+    "capabilities": {
+      "streaming": false,
+      "pushNotifications": false
+    },
+    "defaultInputModes": ["application/json"],
+    "defaultOutputModes": ["application/json"],
+    "skills": [
+      {
+        "id": "incident",
+        "name": "Triage a production incident",
+        "description": "Restore a degraded service without turning uncertainty into unsafe or unaudited action.",
+        "tags": [
+          "coordination",
+          "high-risk",
+          "evidence-aware",
+          "human-governed"
+        ],
+        "inputModes": ["application/json"],
+        "outputModes": ["application/json"]
+      }
+    ]
+  }
+}
