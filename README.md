@@ -2,7 +2,7 @@
 
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
-The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Its scenario runs are deterministic browser simulations that produce a portable JSON blueprint, a semantic conformance report, a readable Markdown review packet, and an owner-completed draft A2A 1.0 Agent Card.
+The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench then validates that blueprint, exports a readable Markdown review packet, and can combine it with an owner-completed deployment profile to draft an A2A 1.0 Agent Card.
 
 ## Current status
 
@@ -68,7 +68,7 @@ pnpm --silent blueprint:a2a examples/incident.blueprint.json \
 pnpm validate:a2a-example
 ```
 
-The second command compares the generated card with the committed incident fixture for CI drift detection. Neither command proves that a server is deployed, reachable, authenticated, signed, or A2A-compatible. See [A2A deployment handoff](docs/A2A_HANDOFF.md).
+The second command compares the generated card with the committed incident fixture in strict mode for CI drift detection. Neither command proves that a server is deployed, reachable, authenticated, signed, or A2A-compatible. See [A2A deployment handoff](docs/A2A_HANDOFF.md).
 
 ## Validate a blueprint in CI
 

@@ -1,4 +1,4 @@
-import { readFileSync, statSync } from "node:fs";
+import { closeSync, fstatSync, openSync, readSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { resolve } from "node:path";
 
@@ -26,6 +26,7 @@ interface CliOptions {
   providerUrl: string;
   streaming: boolean;
   pushNotifications: boolean;
+  strict: boolean;
   checkFile?: string;
 }
 
@@ -41,7 +42,11 @@ const valueFlags = new Set([
   "--provider-url",
   "--check",
 ]);
-const booleanFlags = new Set(["--streaming", "--push-notifications"]);
+const booleanFlags = new Set([
+  "--streaming",
+  "--push-notifications",
+  "--strict",
+]);
 
 function terminalText(value: string): string {
   return value.replaceAll(/\p{C}/gu, "?");
@@ -111,16 +116,43 @@ function parseArguments(argumentsList: string[]): CliOptions {
     providerUrl: values.get("--provider-url") ?? "",
     streaming: enabled.has("--streaming"),
     pushNotifications: enabled.has("--push-notifications"),
+    strict: enabled.has("--strict"),
     ...(values.has("--check") ? { checkFile: values.get("--check") } : {}),
   };
 }
 
 function readJsonFile(path: string): unknown {
   const absolutePath = resolve(path);
-  if (statSync(absolutePath).size > maximumJsonBytes) {
-    throw new Error(`${absolutePath} exceeds the 1 MiB JSON input limit.`);
+  const descriptor = openSync(absolutePath, "r");
+  try {
+    const status = fstatSync(descriptor);
+    if (!status.isFile()) {
+      throw new Error(`${absolutePath} is not a regular file.`);
+    }
+    if (status.size > maximumJsonBytes) {
+      throw new Error(`${absolutePath} exceeds the 1 MiB JSON input limit.`);
+    }
+
+    const buffer = Buffer.allocUnsafe(maximumJsonBytes + 1);
+    let bytesRead = 0;
+    while (bytesRead < buffer.length) {
+      const count = readSync(
+        descriptor,
+        buffer,
+        bytesRead,
+        buffer.length - bytesRead,
+        null
+      );
+      if (count === 0) break;
+      bytesRead += count;
+    }
+    if (bytesRead > maximumJsonBytes) {
+      throw new Error(`${absolutePath} exceeds the 1 MiB JSON input limit.`);
+    }
+    return JSON.parse(buffer.toString("utf8", 0, bytesRead)) as unknown;
+  } finally {
+    closeSync(descriptor);
   }
-  return JSON.parse(readFileSync(absolutePath, "utf8")) as unknown;
 }
 
 function readBlueprint(path: string): Blueprint {
@@ -139,7 +171,7 @@ function usage(): string {
   return [
     "Usage: pnpm blueprint:a2a <blueprint.json> --endpoint <https-url> --agent-version <semver> --security <bearer|public> [options]",
     "Options: --binding <HTTP+JSON|JSONRPC|GRPC> --name <name> --input-mode <mime> --output-mode <mime>",
-    "         --provider-organization <name> --provider-url <https-url> --streaming --push-notifications --check <expected.json>",
+    "         --provider-organization <name> --provider-url <https-url> --streaming --push-notifications --strict --check <expected.json>",
   ].join("\n");
 }
 
@@ -179,6 +211,10 @@ function main(): number {
       );
     }
     if (!analysis.agentCard || analysis.status === "invalid") {
+      return 1;
+    }
+    if (options.strict && analysis.status === "review") {
+      console.error("INVALID Strict mode rejects deployment-profile warnings.");
       return 1;
     }
 

@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import App from "../../client/src/App";
@@ -71,6 +77,9 @@ describe("Samsarix Field Atlas", () => {
     fireEvent.click(screen.getByRole("button", { name: /export json/i }));
     expect(screen.getByText(/blueprint exported/i)).toBeVisible();
     expect(createObjectUrl).toHaveBeenCalledOnce();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0);
+    });
     expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-blueprint");
   });
 
@@ -85,7 +94,7 @@ describe("Samsarix Field Atlas", () => {
     expect(screen.getByRole("button", { name: /export json/i })).toBeDisabled();
   });
 
-  it("checks a blueprint locally and exports a readable review packet", () => {
+  it("checks a blueprint locally and exports a readable review packet", async () => {
     const createObjectUrl = vi
       .spyOn(URL, "createObjectURL")
       .mockReturnValue("blob:samsarix-review");
@@ -119,10 +128,12 @@ describe("Samsarix Field Atlas", () => {
       screen.getByText(/review packet exported as markdown/i)
     ).toBeVisible();
     expect(createObjectUrl).toHaveBeenCalledOnce();
-    expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-review");
+    await waitFor(() =>
+      expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-review")
+    );
   });
 
-  it("turns a valid blueprint into an explicit A2A implementation handoff", () => {
+  it("turns a valid blueprint into an explicit A2A implementation handoff", async () => {
     const createObjectUrl = vi
       .spyOn(URL, "createObjectURL")
       .mockReturnValue("blob:samsarix-a2a");
@@ -166,7 +177,7 @@ describe("Samsarix Field Atlas", () => {
     ).toBeVisible();
     expect(createObjectUrl).toHaveBeenCalledTimes(2);
     expect(click).toHaveBeenCalledTimes(2);
-    expect(revokeObjectUrl).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(revokeObjectUrl).toHaveBeenCalledTimes(2));
   });
 
   it("fails safely when a render error reaches the boundary", () => {

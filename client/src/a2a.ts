@@ -90,7 +90,7 @@ const securityPostures = new Set<A2ASecurityPosture>(["bearer", "public"]);
 const semanticVersionPattern =
   /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 const mediaTypePattern =
-  /^(?:application|audio|font|image|message|model|multipart|text|video)\/[A-Za-z0-9!#$&^_.+-]+$/;
+  /^(?:application|audio|font|image|message|model|multipart|text|video)\/[A-Za-z0-9!#$%&'*+.^_`|~-]+(?:\s*;\s*[A-Za-z0-9!#$%&'*+.^_`|~-]+\s*=\s*(?:[A-Za-z0-9!#$%&'*+.^_`|~-]+|"(?:[\t !#-[\]-~]|\\[\t !-~])*"))*$/;
 const markdownMetacharacters = /([\\`*_[\]{}()<>#+!|])/g;
 
 function addFinding(
@@ -152,10 +152,10 @@ function parseEndpoint(
   if (parsed.search) {
     addFinding(
       findings,
-      "warning",
+      "error",
       "ENDPOINT_QUERY",
       "$.profile.endpoint",
-      "Confirm that query parameters are stable routing data and contain no secret."
+      "Remove query parameters from the Agent Card URL; they can expose credentials or signed routing data."
     );
   }
   if (parsed.protocol === "https:") {
@@ -303,6 +303,15 @@ export function validateA2ADeployment(
       `The source blueprint has ${sourceAnalysis.counts.error} structural errors.`
     );
   }
+  if (sourceAnalysis.counts.warning > 0) {
+    addFinding(
+      findings,
+      "warning",
+      "SOURCE_BLUEPRINT_REVIEW",
+      "$.blueprint",
+      `The source blueprint still has ${sourceAnalysis.counts.warning} review ${sourceAnalysis.counts.warning === 1 ? "warning" : "warnings"}.`
+    );
+  }
 
   if (!nonEmpty(profile.agentName, 240)) {
     addFinding(
@@ -444,7 +453,9 @@ export function validateA2ADeployment(
       mappedSkills: 1,
       sourceStages: blueprint.trace.length,
       humanGates: blueprint.runtime.requiresHumanApprovalAt.length,
-      evidenceArtifacts: blueprint.trace.length,
+      evidenceArtifacts: blueprint.trace.filter(
+        stage => stage.evidence.trim().length > 0
+      ).length,
     };
   }
   return analysis;

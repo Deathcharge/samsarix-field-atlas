@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -10,8 +11,10 @@ import {
 } from "../client/src/a2a";
 import type { Blueprint } from "../client/src/blueprint";
 
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
 function readFixture<T>(path: string): T {
-  return JSON.parse(readFileSync(resolve(path), "utf8")) as T;
+  return JSON.parse(readFileSync(resolve(repositoryRoot, path), "utf8")) as T;
 }
 
 function incidentBlueprint(): Blueprint {
@@ -71,6 +74,10 @@ describe("A2A deployment handoff", () => {
     ["http://agent.example.com/a2a", "INSECURE_A2A_ENDPOINT"],
     ["https://user:secret@agent.example.com/a2a", "CREDENTIALS_IN_ENDPOINT"],
     ["https://agent.example.com/a2a#task", "ENDPOINT_FRAGMENT"],
+    ["https://agent.example.com/a2a?token=secret", "ENDPOINT_QUERY"],
+    ["file:///etc/passwd", "INSECURE_A2A_ENDPOINT"],
+    ["javascript:alert(1)", "INSECURE_A2A_ENDPOINT"],
+    ["agent.example.com/a2a", "INVALID_A2A_ENDPOINT"],
   ])("blocks an unsafe endpoint %s", (endpoint, code) => {
     const blueprint = incidentBlueprint();
     const analysis = validateA2ADeployment(blueprint, {
@@ -89,18 +96,14 @@ describe("A2A deployment handoff", () => {
     const blueprint = incidentBlueprint();
     const analysis = validateA2ADeployment(blueprint, {
       ...validProfile(blueprint),
-      endpoint: "http://localhost:8080/a2a?profile=dev",
+      endpoint: "http://localhost:8080/a2a",
       securityPosture: "public",
     });
 
     expect(analysis.status).toBe("review");
     expect(analysis.agentCard?.securitySchemes).toBeUndefined();
     expect(analysis.findings.map(finding => finding.code)).toEqual(
-      expect.arrayContaining([
-        "LOOPBACK_ENDPOINT",
-        "ENDPOINT_QUERY",
-        "PUBLIC_SECURITY_POSTURE",
-      ])
+      expect.arrayContaining(["LOOPBACK_ENDPOINT", "PUBLIC_SECURITY_POSTURE"])
     );
   });
 
@@ -110,7 +113,7 @@ describe("A2A deployment handoff", () => {
       ...validProfile(blueprint),
       agentVersion: "version one",
       inputMode: "json",
-      outputMode: "application/json; charset=utf-8",
+      outputMode: "application/json; charset",
       providerUrl: "",
     });
 
@@ -130,6 +133,8 @@ describe("A2A deployment handoff", () => {
     const valid = validateA2ADeployment(blueprint, {
       ...validProfile(blueprint),
       agentVersion: "1.2.3-rc.1+build.9",
+      inputMode: "text/plain; charset=utf-8",
+      outputMode: 'application/json; profile="review"',
     });
     const unsafeProvider = validateA2ADeployment(blueprint, {
       ...validProfile(blueprint),
@@ -137,6 +142,9 @@ describe("A2A deployment handoff", () => {
     });
 
     expect(valid.status).toBe("ready");
+    expect(valid.agentCard?.defaultInputModes).toEqual([
+      "text/plain; charset=utf-8",
+    ]);
     expect(unsafeProvider.status).toBe("invalid");
     expect(unsafeProvider.findings).toEqual(
       expect.arrayContaining([
@@ -154,6 +162,21 @@ describe("A2A deployment handoff", () => {
     expect(analysis.findings).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ code: "INVALID_SOURCE_BLUEPRINT" }),
+      ])
+    );
+  });
+
+  it("carries source blueprint warnings into the handoff decision", () => {
+    const blueprint = incidentBlueprint() as Blueprint & {
+      futureExtension?: boolean;
+    };
+    blueprint.futureExtension = true;
+    const analysis = validateA2ADeployment(blueprint, validProfile(blueprint));
+
+    expect(analysis.status).toBe("review");
+    expect(analysis.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "SOURCE_BLUEPRINT_REVIEW" }),
       ])
     );
   });
@@ -179,6 +202,9 @@ describe("A2A deployment handoff", () => {
     expect(markdown).toContain("remain authoritative in the source blueprint");
     expect(markdown).toContain("Owner \\<draft\\>");
     expect(markdown).not.toContain("\n# injected");
+    expect(markdown).toContain(
+      "Incident \\# injected \\[link\\]\\(https://bad.invalid\\)"
+    );
   });
 
   it("does not create a checklist for an invalid profile", () => {

@@ -39,7 +39,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "validate:example": "pnpm blueprint:validate examples/incident.blueprint.json --strict",
-    "validate:a2a-example": "pnpm blueprint:a2a examples/incident.blueprint.json --endpoint https://agent.example.com/a2a --agent-version 0.1.0 --security bearer --name \"Incident Coordination Agent\" --provider-organization \"Samsarix LLC\" --provider-url https://samsarix.com --check examples/incident.a2a-agent-card.json",
+    "validate:a2a-example": "pnpm blueprint:a2a examples/incident.blueprint.json --endpoint https://agent.example.com/a2a --agent-version 0.1.0 --security bearer --name \"Incident Coordination Agent\" --provider-organization \"Samsarix LLC\" --provider-url https://samsarix.com --strict --check examples/incident.a2a-agent-card.json",
     "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:a2a-example && pnpm run build"
   },
   "dependencies": {

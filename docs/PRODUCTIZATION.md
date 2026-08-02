@@ -245,11 +245,11 @@ Local release evidence on Windows with Node `v24.12.0` and pnpm `11.17.0`:
 
 | Command or check            | Result                                                                                                                                                             |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm verify`               | Passed lint, formatting, strict types, 37 tests, coverage thresholds, both committed fixture checks, and every production build.                                   |
-| Coverage                    | 83.11% statements, 77.28% branches, 83.70% functions, and 83.85% lines.                                                                                            |
+| `pnpm verify`               | Passed lint, formatting, strict types, 42 tests, coverage thresholds, both committed fixture checks, and every production build.                                   |
+| Coverage                    | 83.23% statements, 77.26% branches, 83.94% functions, and 83.95% lines.                                                                                            |
 | `pnpm validate:a2a-example` | Passed with four mapping/boundary checks; the generated incident card exactly matched the committed A2A fixture.                                                   |
-| `pnpm build`                | Passed; client JS was 247.36 kB / 76.81 kB gzip, CSS was 27.62 kB / 6.15 kB gzip, server was 4.2 kB, blueprint CLI was 18,005 bytes, and A2A CLI was 29,962 bytes. |
-| A2A CLI artifact            | `dist/atlas-a2a.js` SHA-256 was `2325bde79b395b1f7b9d0a73d9441e7a1af2547521e6521c42d0d87bfb709426`.                                                                |
+| `pnpm build`                | Passed; client JS was 247.72 kB / 76.95 kB gzip, CSS was 27.62 kB / 6.15 kB gzip, server was 4.2 kB, blueprint CLI was 18,005 bytes, and A2A CLI was 31,405 bytes. |
+| A2A CLI artifact            | `dist/atlas-a2a.js` SHA-256 was `bc280b909d664e186746554f6c272cd108076b194ba59d7791e5bc59dac6cc74`.                                                                |
 | `pnpm audit --prod`         | Passed with no known production vulnerabilities.                                                                                                                   |
 
 This remains local transformation and build evidence, not a live consumer or deployment record. No deployment was performed. A future release claim still requires an exact commit, published artifact, consumer-owned live endpoint, compatibility report, support owner, and rollback path.

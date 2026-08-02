@@ -16,7 +16,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Imported JSON is untrusted local input. The browser limits files to 1 MiB, parses them as data, validates bounded structures, and renders strings through React text nodes without persistence or execution.
 - Markdown review packets escape imported metacharacters so blueprint strings cannot directly create links or remote images in the generated artifact.
 - A2A deployment-profile values and generated Agent Card strings are untrusted local data. React renders them as text, Markdown output escapes metacharacters, and the browser never probes a declared endpoint.
-- A2A profiles have no credential field. Endpoint URLs containing user information or fragments are blocked, production endpoints require HTTPS, query strings trigger review, and bearer credentials remain out of band.
+- A2A profiles have no credential field. Endpoint URLs containing user information, query strings, or fragments are blocked, production endpoints require HTTPS, and bearer credentials remain out of band.
 - The browser stores only a scenario identifier in `localStorage`.
 - JSON exports are produced locally and are not uploaded.
 - External GitHub links are user-initiated navigation only.

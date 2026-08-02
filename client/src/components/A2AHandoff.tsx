@@ -267,10 +267,7 @@ function A2AHandoff({ blueprint }: A2AHandoffProps) {
           </fieldset>
         </form>
 
-        <div
-          aria-live="polite"
-          className={`a2a-decision is-${analysis.status}`}
-        >
+        <div className={`a2a-decision is-${analysis.status}`}>
           <div className="a2a-decision-heading">
             <div>
               <p className="panel-label">Draft readiness</p>
