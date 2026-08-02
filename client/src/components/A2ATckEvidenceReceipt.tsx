@@ -11,6 +11,7 @@ import {
   type A2ATckEvidenceAnalysis,
   type A2ATckEvidenceProfile,
 } from "../evidence";
+import A2AAcceptanceReviewLedger from "./A2AAcceptanceReviewLedger";
 
 interface A2ATckEvidenceReceiptProps {
   acceptanceManifest: A2AAcceptanceManifest | undefined;
@@ -207,7 +208,7 @@ function A2ATckEvidenceReceipt({
               </label>
 
               <label>
-                <span>Implementation revision</span>
+                <span>TCK implementation revision</span>
                 <input
                   autoCapitalize="none"
                   maxLength={64}
@@ -346,6 +347,11 @@ function A2ATckEvidenceReceipt({
           ? notice
           : "Evidence inputs are paused until the acceptance plan is valid; imported values remain in this browser."}
       </p>
+
+      <A2AAcceptanceReviewLedger
+        acceptanceManifest={acceptanceManifest}
+        tckReceipt={analysis.receipt}
+      />
     </section>
   );
 }

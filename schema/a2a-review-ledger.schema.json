@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://samsarix.com/schemas/a2a-review-ledger-v1.json",
+  "title": "Samsarix Field Atlas A2A acceptance review ledger v1",
+  "description": "A provider-neutral, owner-asserted disposition record for a Field Atlas A2A acceptance plan and TCK evidence receipt. It is not authenticated runtime or release evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "status",
+    "proofBoundary",
+    "source",
+    "review",
+    "summary",
+    "conclusion",
+    "reviewItems"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "samsarix-field-atlas/a2a-review-ledger/1"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "const": "owner-asserted-review"
+    },
+    "proofBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtimeExecutionByFieldAtlas",
+        "sourceAuthenticationByFieldAtlas",
+        "ownerIdentityVerificationByFieldAtlas",
+        "decisionAuthority"
+      ],
+      "properties": {
+        "runtimeExecutionByFieldAtlas": { "const": "not-performed" },
+        "sourceAuthenticationByFieldAtlas": { "const": "not-performed" },
+        "ownerIdentityVerificationByFieldAtlas": {
+          "const": "not-performed"
+        },
+        "decisionAuthority": { "const": "owner-asserted" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acceptancePlan", "tckReceipt"],
+      "properties": {
+        "acceptancePlan": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "canonicalSha256",
+            "generatedAt",
+            "scenarioId",
+            "agentName",
+            "agentVersion",
+            "interfaceUrl",
+            "binding",
+            "protocolVersion",
+            "acceptanceOwner",
+            "environment"
+          ],
+          "properties": {
+            "schemaVersion": {
+              "const": "samsarix-field-atlas/a2a-acceptance/1"
+            },
+            "canonicalSha256": { "$ref": "#/$defs/sha256" },
+            "generatedAt": { "$ref": "#/$defs/timestamp" },
+            "scenarioId": { "$ref": "#/$defs/boundedText" },
+            "agentName": { "$ref": "#/$defs/boundedText" },
+            "agentVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "interfaceUrl": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 2048
+            },
+            "binding": { "enum": ["JSONRPC", "GRPC", "HTTP+JSON"] },
+            "protocolVersion": { "const": "1.0" },
+            "acceptanceOwner": { "$ref": "#/$defs/boundedText" },
+            "environment": {
+              "enum": ["local", "staging", "production"]
+            }
+          }
+        },
+        "tckReceipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "canonicalSha256",
+            "generatedAt",
+            "tckReportSha256",
+            "assertedTckRevision",
+            "implementationRevision"
+          ],
+          "properties": {
+            "schemaVersion": {
+              "const": "samsarix-field-atlas/a2a-tck-receipt/1"
+            },
+            "canonicalSha256": { "$ref": "#/$defs/sha256" },
+            "generatedAt": { "$ref": "#/$defs/timestamp" },
+            "tckReportSha256": { "$ref": "#/$defs/sha256" },
+            "assertedTckRevision": {
+              "type": "string",
+              "pattern": "^[A-Fa-f0-9]{40}$"
+            },
+            "implementationRevision": { "$ref": "#/$defs/revision" }
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewOwner",
+        "decisionOwner",
+        "decision",
+        "decidedAt",
+        "decisionRationale",
+        "cases"
+      ],
+      "properties": {
+        "reviewOwner": { "$ref": "#/$defs/boundedText" },
+        "decisionOwner": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "decision": { "$ref": "#/$defs/decision" },
+        "decidedAt": {
+          "oneOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+        },
+        "decisionRationale": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            { "type": "null" }
+          ]
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 500,
+          "items": { "$ref": "#/$defs/caseReview" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total",
+        "blocking",
+        "accepted",
+        "rejected",
+        "waived",
+        "pending",
+        "blockingAccepted",
+        "blockingRejected",
+        "blockingWaived",
+        "blockingPending",
+        "evidenceReferences"
+      ],
+      "properties": {
+        "total": { "$ref": "#/$defs/count" },
+        "blocking": { "$ref": "#/$defs/count" },
+        "accepted": { "$ref": "#/$defs/count" },
+        "rejected": { "$ref": "#/$defs/count" },
+        "waived": { "$ref": "#/$defs/count" },
+        "pending": { "$ref": "#/$defs/count" },
+        "blockingAccepted": { "$ref": "#/$defs/count" },
+        "blockingRejected": { "$ref": "#/$defs/count" },
+        "blockingWaived": { "$ref": "#/$defs/count" },
+        "blockingPending": { "$ref": "#/$defs/count" },
+        "evidenceReferences": { "$ref": "#/$defs/count" }
+      }
+    },
+    "conclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["automatedReadiness", "releaseDecision"],
+      "properties": {
+        "automatedReadiness": {
+          "enum": ["blocked", "eligible-for-owner-decision"]
+        },
+        "releaseDecision": { "$ref": "#/$defs/decision" }
+      }
+    },
+    "reviewItems": {
+      "type": "array",
+      "maxItems": 500,
+      "items": { "$ref": "#/$defs/reviewItem" }
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "revision": {
+      "type": "string",
+      "pattern": "^(?:[A-Fa-f0-9]{40}|[A-Fa-f0-9]{64})$"
+    },
+    "boundedText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "decision": {
+      "enum": ["not-made", "approved", "rejected"]
+    },
+    "caseReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "caseId",
+        "category",
+        "title",
+        "blocking",
+        "source",
+        "outcome",
+        "reviewedBy",
+        "reviewedAt",
+        "evidenceRefs",
+        "rationale"
+      ],
+      "properties": {
+        "caseId": { "$ref": "#/$defs/boundedText" },
+        "category": {
+          "enum": [
+            "discovery",
+            "security",
+            "compatibility",
+            "reliability",
+            "governance",
+            "evidence",
+            "privacy"
+          ]
+        },
+        "title": { "$ref": "#/$defs/boundedText" },
+        "blocking": { "type": "boolean" },
+        "source": {
+          "enum": ["a2a-1.0", "field-atlas", "owner-profile"]
+        },
+        "outcome": {
+          "enum": ["pending", "accepted", "rejected", "waived"]
+        },
+        "reviewedBy": {
+          "oneOf": [{ "$ref": "#/$defs/boundedText" }, { "type": "null" }]
+        },
+        "reviewedAt": {
+          "oneOf": [{ "$ref": "#/$defs/timestamp" }, { "type": "null" }]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "format": "uri",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "rationale": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000
+            },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "reviewItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    }
+  }
+}

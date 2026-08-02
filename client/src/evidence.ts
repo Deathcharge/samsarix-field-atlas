@@ -393,7 +393,7 @@ function validateProfile(
       "error",
       "INVALID_EVIDENCE_PROFILE",
       "$.profile",
-      "Supply the evidence owner and immutable run provenance."
+      "Supply the evidence owner and owner-asserted revision provenance."
     );
     return null;
   }

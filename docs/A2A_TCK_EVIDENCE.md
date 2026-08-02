@@ -30,7 +30,7 @@ The workflow needs three inputs:
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Acceptance manifest           | Plan timestamp, scenario and agent identity, A2A interface and binding, acceptance owner and environment, and case IDs                                                          |
 | Official `compatibility.json` | Report timestamp and safe SUT URL, reported spec version, compatibility values, requirement statuses, transport summaries, error counts, and whether an Agent Card was embedded |
-| Evidence profile              | Evidence owner, full official TCK Git revision, full immutable implementation revision, and one redacted run command                                                            |
+| Evidence profile              | Evidence owner, full official TCK Git revision, full implementation revision, and one redacted run command                                                                      |
 
 The exact report bytes receive a SHA-256 digest before parsing. The receipt does **not** copy raw error strings, test IDs, or the embedded Agent Card. Keep the original JSON, HTML, JUnit, and relevant execution logs in the owner-controlled evidence store; the digest lets a reviewer detect whether the JSON file changed.
 
@@ -103,6 +103,6 @@ Before any release decision, the accountable owners still need to:
 2. inspect the original JSON, HTML, JUnit, and redacted runtime evidence;
 3. disposition every TCK failure, skip, and not-tested requirement;
 4. execute and review every remaining acceptance case, including authorization, privacy, operational limits, human gates, and stage evidence;
-5. record the decision, date, residual risk, exceptions, approvers, and rollback path in an owner-controlled system.
+5. use the separate [Field Atlas acceptance review ledger](A2A_REVIEW_LEDGER.md) to preserve case dispositions and blocking readiness, then authenticate the decision, identities, evidence, exceptions, and rollback in an owner-controlled system.
 
 Research and parser semantics were reviewed on August 1, 2026. Future TCK report changes require a new evidence review before this receipt can interpret them without a warning.

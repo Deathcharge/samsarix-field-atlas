@@ -74,7 +74,7 @@ describe("A2A TCK evidence browser workflow", () => {
     const user = userEvent.setup();
     render(<A2ATckEvidenceReceipt acceptanceManifest={plan} />);
 
-    fireEvent.change(screen.getByLabelText(/implementation revision/i), {
+    fireEvent.change(screen.getByLabelText(/TCK implementation revision/i), {
       target: { value: "8b1d0c6e9050d88b71c43e1c40267b807e2d67f4" },
     });
     fireEvent.change(screen.getByLabelText(/redacted run command/i), {

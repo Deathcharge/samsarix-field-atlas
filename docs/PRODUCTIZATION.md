@@ -36,7 +36,7 @@ A developer, technical evaluator, or collaborator who wants to understand or dis
 
 ### Primary use case and journey
 
-The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, inspects the exact human/policy/tool/memory boundaries, and exports an implementation-neutral JSON blueprint. The user can then import that contract, receive a semantic readiness decision, enforce it in CI, prepare an A2A deployment and acceptance handoff, and bind an externally generated official TCK report to an owner-review receipt.
+The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, inspects the exact human/policy/tool/memory boundaries, and exports an implementation-neutral JSON blueprint. The user can then import that contract, receive a semantic readiness decision, enforce it in CI, prepare an A2A deployment and acceptance handoff, bind an externally generated official TCK report to an owner-review receipt, and record one explicit disposition per planned case in an owner-asserted review ledger.
 
 ### Independent reason to exist
 
@@ -62,6 +62,8 @@ Bounded research used primary documentation current on August 1, 2026:
 - [A2A extension and binding governance](https://a2a-protocol.org/latest/topics/extension-and-binding-governance/) separates official extensions from vendor-specific additions, supporting a separate Field Atlas acceptance artifact instead of nonstandard Agent Card fields.
 - [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) provides a governance frame for managing AI risks, with a Generative AI Profile and continuing work on human oversight in critical infrastructure.
 - [NIST TEVV](https://www.nist.gov/ai-test-evaluation-validation-and-verification-tevv) and the [AI RMF Core](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/) call for documented, repeatable evaluation under deployment-like conditions with defined human oversight.
+- [LangSmith annotation queues](https://docs.langchain.com/langsmith/annotation-queues) organize human review with rubrics, assigned reviewers, and explicit completion states.
+- [Braintrust human review](https://www.braintrust.dev/docs/annotate/human-review) combines structured case scores, assignments, comments, and completed-review tracking with automated evaluation.
 
 The execution products build or inspect running agent systems; the emerging standards make portable declarations and governance evidence increasingly relevant across runtimes. Field Atlas occupies the pre-runtime wedge: an account-free, provider-neutral coordination designer, semantic contract checker, and review-artifact generator. It does not compete as a model runner or observability service.
 
@@ -78,6 +80,7 @@ The execution products build or inspect running agent systems; the emerging stan
 9. Keep A2A deployment facts in a separate owner-completed profile so provider-neutral design data cannot silently become a false runtime claim.
 10. Keep consumer acceptance semantics in a separate `plan-not-run` artifact: the official A2A TCK owns core compatibility, while Field Atlas preserves owner limits, privacy choices, human gates, and evidence requirements without extending the Agent Card.
 11. Treat external TCK JSON as untrusted evidence: hash exact bytes, recompute report semantics, omit raw diagnostics, bind asserted provenance, and keep conformance and release decisions explicitly undetermined.
+12. Keep final dispositions in a separate owner-asserted ledger: bind canonical source artifacts, require complete case coverage and explicit exceptions, compute blocking readiness, reject contradictory approvals, and state that identities and authority were not authenticated.
 
 ## Assumptions
 
@@ -131,6 +134,7 @@ Final command evidence is appended after implementation verification.
 - [x] Map a validated blueprint to an owner-completed draft A2A 1.0 Agent Card and implementation checklist.
 - [x] Generate a consumer-owned A2A acceptance manifest and execution checklist with deterministic fixtures and an official-TCK evidence requirement.
 - [x] Bind official-format A2A TCK JSON to an exact-byte, owner-review receipt that keeps failures, skips, not-tested requirements, and all non-TCK acceptance work visible.
+- [x] Record every planned case as accepted, rejected, waived, or pending in a canonical-source-bound review ledger with deterministic blocking readiness and an optional owner decision.
 - [ ] Add translations after the English information architecture stabilizes.
 - [ ] Add a printer-friendly trace view if evaluators request it.
 
@@ -160,6 +164,7 @@ Final command evidence is appended after implementation verification.
 - Added a shared A2A 1.0 handoff validator, browser profile, draft Agent Card/checklist exports, deterministic CLI mapping, and committed incident card fixture.
 - Added a shared A2A implementation acceptance validator, browser owner profile, JSON/Markdown plan exports, public schema, deterministic CLI, and committed incident fixtures.
 - Added a shared A2A TCK evidence validator, bounded browser import, exact-byte SHA-256, owner-asserted provenance profile, public receipt schema, deterministic CLI, and synthetic omission-focused incident fixtures.
+- Added a shared A2A acceptance review validator, per-case browser workflow, canonical source binding, credential-free evidence references, JSON/Markdown exports, public schema, deterministic CLI, and a complete synthetic blocked-decision fixture.
 - Removed misleading status, deployment, authentication, analytics, and integration claims.
 - Replaced the generated UI kit with purpose-built semantic React and CSS.
 - Added the optional hardened release server and meaningful automated tests.
@@ -168,7 +173,7 @@ Final command evidence is appended after implementation verification.
 ## Deferred work and rationale
 
 - User-authored scenarios remain deferred until real evaluator demand justifies the additional editing and migration surface.
-- Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, genuine compatibility evidence, accountable signoff, and ongoing support commitment. The A2A handoff, acceptance plan, and evidence receipt make those next steps explicit without taking the dependency or claiming the synthetic fixture ran.
+- Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, genuine compatibility evidence, authenticated signoff, and ongoing support commitment. The A2A handoff, acceptance plan, evidence receipt, and owner-asserted review ledger make those next steps explicit without taking the dependency or claiming the synthetic fixture ran.
 - Internationalization is deferred until product language is validated.
 
 ## Owner-, legal-, and production-blocked work
@@ -285,7 +290,7 @@ This is local plan-generation and build evidence only. No endpoint was contacted
 
 ## A2A TCK evidence-receipt increment
 
-On August 1, 2026, Field Atlas added a bounded intake path for the official A2A TCK `compatibility.json` report. The browser and CLI hash the exact report bytes, validate current report semantics, bind owner-asserted immutable revisions and a redacted run command, and emit the same deterministic `owner-review-required` receipt.
+On August 1, 2026, Field Atlas added a bounded intake path for the official A2A TCK `compatibility.json` report. The browser and CLI hash the exact report bytes, validate current report semantics, bind owner-asserted full revisions and a redacted run command, and emit the same deterministic `owner-review-required` receipt.
 
 The receipt preserves the official summary but recomputes it from requirement statuses, separately counts failures, skips, and not-tested requirements, validates transport arithmetic, and maps only `a2a-official-tck` to evidence-attached. Raw errors, test IDs, and embedded Agent Card contents do not enter the receipt. Protocol conformance stays `not-determined`, the release decision stays `not-made`, and all non-TCK acceptance cases remain unresolved.
 
@@ -306,3 +311,24 @@ Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.
 | React best-practices review               | Passed the applicable component-boundary, local/derived-state, async race, controlled-input, accessibility, rendering, and bundle-scope checklist.           |
 
 This is parser, fixture, test, and build evidence only. No endpoint was contacted, no TCK process was executed, no source-revision assertion was remotely verified, no conformance or release decision was made, and no deployment was performed. Genuine runtime evidence, owner signoff, publication, support, and rollback remain external gates.
+
+## A2A acceptance-review ledger increment
+
+Field Atlas now turns the acceptance plan, its TCK receipt, and one explicit disposition per planned case into a deterministic `samsarix-field-atlas/a2a-review-ledger/1` JSON artifact plus a Markdown packet. Browser and CLI share the validator. The workflow binds Field Atlas canonical JSON digests for both source artifacts, retains the exact TCK-report digest, constrains evidence references, validates chronology, computes readiness from the original blocking flags, requires rationale for rejections and waivers, and rejects an approval that contradicts blocking results.
+
+The committed incident fixture is intentionally negative: 21 cases are synthetically accepted, the blocking authentication case is rejected, automated readiness is `blocked`, and the owner-asserted release decision is `rejected`. The official-TCK row references the exact synthetic report digest and preserves the report's skipped/not-tested warning. None of the synthetic URNs resolve to evidence, no runtime was exercised, and no identity or decision authority was authenticated.
+
+Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.0`:
+
+| Command or check               | Result                                                                                                                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `corepack pnpm verify`         | Passed lint, formatting, strict types, 81 tests, coverage thresholds, all five committed fixture checks, and client/server/five-CLI production builds.                         |
+| Coverage                       | 81.55% statements, 79.92% branches, 82.89% functions, and 82.62% lines; `review.ts` reached 85.03% statements, 86.51% branches, and 100% functions.                            |
+| `pnpm validate:review-example` | Bound all 22 planned cases, retained the synthetic TCK caveat, computed one blocking rejection, and exactly matched the committed rejected-decision ledger.                    |
+| `pnpm build`                   | Passed; client JS was 335.56 kB / 98.75 kB gzip, CSS was 32.80 kB / 6.93 kB gzip, server was 4.2 kB, and review CLI was 36,213 bytes.                                          |
+| Review CLI artifact            | `dist/atlas-review.js` SHA-256 was `e7c0a0ee01a57bdcb6ca7ed9b9ef27f7be1c5538bda3b20a46eeb510b7955599`.                                                                         |
+| Review fixture artifacts       | Profile SHA-256 was `e4e28b2c7725e8d197fa1f4271c6e88b0e6a56c6e78a11a65153d8b4d0e986a2`; ledger SHA-256 was `d090ee5f14f698a1720969d800c68d6261e08e42115d88165e6149d81b6e3c9f`. |
+| `corepack pnpm audit --prod`   | Passed with no known production vulnerabilities.                                                                                                                               |
+| React best-practices review    | Passed applicable component-boundary, derived-state, controlled-input, async-race, stable-key, accessibility, rendering, and bundle-scope checks.                              |
+
+This is local parser, assertion, fixture, test, and build evidence only. Canonical digests are integrity pointers, not signatures. A real release still requires evidence-body inspection, source and revision verification, authenticated reviewers, confirmed decision authority, an owner-controlled system of record, support commitment, and rollback. No deployment was performed.
