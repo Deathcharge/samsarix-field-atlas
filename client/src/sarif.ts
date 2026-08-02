@@ -1,7 +1,8 @@
-import type {
-  BlueprintAnalysis,
-  BlueprintFinding,
-  FindingSeverity,
+import {
+  effectiveValidationStatus,
+  type BlueprintAnalysis,
+  type BlueprintFinding,
+  type FindingSeverity,
 } from "./blueprint";
 
 export const sarifSchemaVersion = "2.1.0" as const;
@@ -95,13 +96,18 @@ function sarifLevel(severity: FindingSeverity): "error" | "warning" {
 
 function artifactUri(value: string): string {
   const normalized = value.replaceAll("\\", "/").replace(/^\.\//, "");
+  const segments = normalized.split("/");
+  const firstSegment = segments[0] ?? "";
+  if (/^[A-Za-z]:$/.test(firstSegment)) {
+    const path = segments
+      .slice(1)
+      .map(segment => encodeURIComponent(segment))
+      .join("/");
+    return `file:///${firstSegment[0]?.toUpperCase()}:/${path}`;
+  }
   return normalized
     .split("/")
-    .map((segment, index) =>
-      index === 0 && /^[A-Za-z]:$/.test(segment)
-        ? `${segment[0]}%3A`
-        : encodeURIComponent(segment)
-    )
+    .map(segment => encodeURIComponent(segment))
     .join("/");
 }
 
@@ -202,10 +208,10 @@ export async function createBlueprintSarif(
               ? { commandLine: options.commandLine }
               : {}),
             properties: {
-              validationStatus:
-                strictFailure && analysis.status === "review"
-                  ? "invalid"
-                  : analysis.status,
+              validationStatus: effectiveValidationStatus(
+                analysis.status,
+                strictFailure
+              ),
               strict,
               strictFailure,
               counts: analysis.counts,

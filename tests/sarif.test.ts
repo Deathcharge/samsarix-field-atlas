@@ -80,6 +80,10 @@ describe("blueprint SARIF reporting", () => {
       artifactUri: "a-different-file.json",
       strict: true,
     });
+    const windowsPath = await createBlueprintSarif(analysis, {
+      artifactUri: "C:\\Users\\reviewer\\file.json",
+      strict: true,
+    });
     const result = first.runs[0]!.results[0]!;
 
     expect(analysis.status).toBe("review");
@@ -111,6 +115,10 @@ describe("blueprint SARIF reporting", () => {
     expect(result.partialFingerprints).toEqual(
       second.runs[0]!.results[0]!.partialFingerprints
     );
+    expect(
+      windowsPath.runs[0]!.results[0]!.locations[0]!.physicalLocation
+        .artifactLocation.uri
+    ).toBe("file:///C:/Users/reviewer/file.json");
     expect(first.runs[0]!.invocations[0]!.properties).toMatchObject({
       validationStatus: "invalid",
       strictFailure: true,

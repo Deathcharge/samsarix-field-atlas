@@ -73,6 +73,13 @@ export interface BlueprintAnalysis {
   };
 }
 
+export function effectiveValidationStatus(
+  status: BlueprintAnalysis["status"],
+  strictFailure: boolean
+): BlueprintAnalysis["status"] {
+  return strictFailure && status === "review" ? "invalid" : status;
+}
+
 const layers = new Set<BlueprintLayer>([
   "consciousness",
   "operational",

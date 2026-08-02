@@ -1,7 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
 import { resolve } from "node:path";
 
-import { validateBlueprint } from "../client/src/blueprint";
+import {
+  effectiveValidationStatus,
+  validateBlueprint,
+} from "../client/src/blueprint";
 import { createBlueprintSarif } from "../client/src/sarif";
 import { readJsonFile, terminalText } from "./shared";
 
@@ -126,7 +129,7 @@ async function main(): Promise<number> {
           return 1;
         }
         console.error(
-          `READY ${terminalText(resolve(checkFile))} matches the generated SARIF report.`
+          `MATCH ${terminalText(resolve(checkFile))} matches the generated SARIF report; blueprint validation status is ${effectiveValidationStatus(analysis.status, strictFailure)}${strictFailure ? " because strict mode rejected warnings" : ""}.`
         );
       } catch (error) {
         const message =
@@ -141,10 +144,7 @@ async function main(): Promise<number> {
     console.log(
       JSON.stringify(
         {
-          status:
-            strictFailure && analysis.status === "review"
-              ? "invalid"
-              : analysis.status,
+          status: effectiveValidationStatus(analysis.status, strictFailure),
           file: absolutePath,
           strict,
           counts: analysis.counts,

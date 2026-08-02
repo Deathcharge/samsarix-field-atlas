@@ -346,11 +346,11 @@ Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `corepack pnpm verify`            | Passed lint, formatting, strict types, 86 tests, coverage thresholds, six committed fixture checks, and client/server/five-CLI production builds.        |
 | `corepack pnpm run test:coverage` | Passed 10 files / 86 tests and all coverage thresholds.                                                                                                  |
-| Coverage                          | 81.79% statements, 79.88% branches, 83.51% functions, and 82.95% lines; `sarif.ts` reached 96.55% statements, 84.61% branches, and 100% functions/lines. |
+| Coverage                          | 81.87% statements, 79.88% branches, 83.61% functions, and 83.03% lines; `sarif.ts` reached 97.14% statements, 81.81% branches, and 100% functions/lines. |
 | Published SARIF schema validation | The 1,001-byte committed fixture validated against `https://json.schemastore.org/sarif-2.1.0.json`.                                                      |
 | `pnpm validate:sarif-example`     | Exactly matched the strict-ready incident report; invalid `--json --sarif` usage exited `2`.                                                             |
-| `pnpm build`                      | Passed; client JS was 338.31 kB / 99.80 kB gzip, CSS was 32.89 kB / 6.95 kB gzip, server was 4.2 kB, and the validator CLI was 25,088 bytes.             |
-| Validator CLI artifact            | `dist/atlas-validate.js` SHA-256 was `46a915f3099b12b21df98a005e3a215166ecf00e7d8acbc98e582b5324186d4b`.                                                 |
+| `pnpm build`                      | Passed; client JS was 338.45 kB / 99.83 kB gzip, CSS was 32.89 kB / 6.95 kB gzip, server was 4.2 kB, and the validator CLI was 25,593 bytes.             |
+| Validator CLI artifact            | `dist/atlas-validate.js` SHA-256 was `ca213cf6208049ba8702f9f804ad2cfa2e725562081412cedd9bd5f2dc8289af`.                                                 |
 | Committed SARIF fixture           | `examples/incident.blueprint.sarif.json` SHA-256 was `fb37e8ebc88462f20cc36a833d45703aed7480606fed43f3cb1c573a0c11715c`.                                 |
 | `corepack pnpm audit --prod`      | Passed with no known production vulnerabilities and no new runtime dependency.                                                                           |
 
