@@ -2,11 +2,11 @@
 
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
-The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench validates that blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, and creates a consumer-owned acceptance plan without pretending any test ran.
+The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench validates that blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, and binds an externally generated official A2A TCK report to a review receipt without inventing a pass or release decision.
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment and acceptance handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment and live acceptance evidence remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, and TCK evidence handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, accountable signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
 
 ## Fastest successful path
 
@@ -38,7 +38,9 @@ No environment variables, API keys, accounts, databases, or companion repositori
 9. Export the draft card and implementation checklist for a server owner.
 10. Complete the acceptance-owner profile with environment, limits, retention, classification, and processor decisions.
 11. Export the `plan-not-run` JSON manifest and Markdown execution checklist.
-12. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit, then attach those results in an owner-controlled signoff record.
+12. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit.
+13. Import the TCK `compatibility.json`, supply immutable run provenance, and export an `owner-review-required` evidence receipt.
+14. Preserve the original reports and complete every non-TCK case in an owner-controlled signoff record.
 
 The selected scenario is remembered in device-local browser storage. It contains no personal content and never leaves the device.
 
@@ -87,6 +89,22 @@ pnpm validate:acceptance-example
 
 The artifact status is always `plan-not-run`. Field Atlas performs no network request, test execution, credential acquisition, or compatibility judgment. The acceptance manifest is a Samsarix Field Atlas artifact, not an A2A extension or TCK report. See [A2A implementation acceptance](docs/A2A_ACCEPTANCE.md).
 
+## Bind an official A2A TCK report
+
+After a runtime owner executes the official TCK elsewhere, Field Atlas can hash the exact `compatibility.json` bytes, validate the report's internal status/percentage/transport semantics, bind asserted TCK and implementation revisions, and produce a deterministic owner-review receipt:
+
+```bash
+pnpm --silent blueprint:tck-evidence \
+  examples/incident.a2a-acceptance.json \
+  --tck-report examples/incident.a2a-tck-compatibility.json \
+  --profile examples/incident.a2a-tck-evidence-profile.json \
+  --generated-at 2026-08-01T13:00:00.000Z
+
+pnpm validate:tck-evidence-example
+```
+
+The receipt never becomes a pass result: `protocolConformance` remains `not-determined`, `releaseDecision` remains `not-made`, and all non-TCK acceptance cases remain unresolved. It explicitly counts failures, skips, and not-tested requirements even when the official summary says `100.0%`. The committed TCK report is a synthetic official-format fixture, not evidence that any service ran. See [A2A TCK evidence receipt](docs/A2A_TCK_EVIDENCE.md).
+
 ## Validate a blueprint in CI
 
 The CLI uses the same semantic validator as the browser workbench:
@@ -101,22 +119,24 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 
 ## Development commands
 
-| Command                            | Purpose                                                                               |
-| ---------------------------------- | ------------------------------------------------------------------------------------- |
-| `pnpm dev`                         | Start the local Vite development server on `127.0.0.1:3000`                           |
-| `pnpm lint`                        | Run ESLint across TypeScript and React code                                           |
-| `pnpm format:check`                | Check repository formatting with Prettier                                             |
-| `pnpm check`                       | Run the strict TypeScript compiler check                                              |
-| `pnpm test`                        | Run model, component, and server tests once                                           |
-| `pnpm test:coverage`               | Run tests with enforced coverage thresholds                                           |
-| `pnpm build`                       | Build static assets, the optional Node release server, and all three CLIs             |
-| `pnpm blueprint:validate <file>`   | Validate a v1 blueprint with optional `--strict` or `--json`                          |
-| `pnpm blueprint:a2a <file> ...`    | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
-| `pnpm validate:a2a-example`        | Check the deterministic incident Agent Card mapping against its committed fixture     |
-| `pnpm blueprint:acceptance ...`    | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |
-| `pnpm validate:acceptance-example` | Check the incident acceptance plan against its complete committed fixture             |
-| `pnpm start`                       | Serve the completed build on `127.0.0.1:3000`                                         |
-| `pnpm verify`                      | Run lint, formatting, types, coverage, all fixture validations, and build in CI order |
+| Command                              | Purpose                                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------------------- |
+| `pnpm dev`                           | Start the local Vite development server on `127.0.0.1:3000`                           |
+| `pnpm lint`                          | Run ESLint across TypeScript and React code                                           |
+| `pnpm format:check`                  | Check repository formatting with Prettier                                             |
+| `pnpm check`                         | Run the strict TypeScript compiler check                                              |
+| `pnpm test`                          | Run model, component, and server tests once                                           |
+| `pnpm test:coverage`                 | Run tests with enforced coverage thresholds                                           |
+| `pnpm build`                         | Build static assets, the optional Node release server, and all four CLIs              |
+| `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional `--strict` or `--json`                          |
+| `pnpm blueprint:a2a <file> ...`      | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
+| `pnpm validate:a2a-example`          | Check the deterministic incident Agent Card mapping against its committed fixture     |
+| `pnpm blueprint:acceptance ...`      | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |
+| `pnpm validate:acceptance-example`   | Check the incident acceptance plan against its complete committed fixture             |
+| `pnpm blueprint:tck-evidence ...`    | Bind an official-format TCK JSON report to a deterministic owner-review receipt       |
+| `pnpm validate:tck-evidence-example` | Check the incident TCK receipt against its complete committed fixture                 |
+| `pnpm start`                         | Serve the completed build on `127.0.0.1:3000`                                         |
+| `pnpm verify`                        | Run lint, formatting, types, coverage, all fixture validations, and build in CI order |
 
 ## Production build and distribution
 
@@ -132,6 +152,7 @@ The build produces:
 - `dist/atlas-validate.js`: the bundled, dependency-free blueprint validation CLI.
 - `dist/atlas-a2a.js`: the bundled, dependency-free A2A draft generation and fixture-check CLI.
 - `dist/atlas-acceptance.js`: the bundled, dependency-free A2A acceptance-plan and fixture-check CLI.
+- `dist/atlas-tck-evidence.js`: the bundled, dependency-free A2A TCK evidence receipt and fixture-check CLI.
 
 The server accepts optional `HOST` and `PORT` process variables. It defaults to `127.0.0.1:3000`; set `HOST=0.0.0.0` only when an external deployment boundary is intentional and protected.
 
@@ -160,8 +181,10 @@ client/src/blueprint.ts     Shared semantic validator + Markdown review packet
 client/src/a2a.ts           Owner profile checks + draft card/checklist mapping
               ↓
 client/src/acceptance.ts    Owner limits + deterministic plan/checklist mapping
+              ↓
+client/src/evidence.ts      TCK report semantics + exact-byte evidence receipt
        ↙             ↘
-React workbench       CLI tools ───────────→ three bundled CLI artifacts
+React workbench       CLI tools ───────────→ four bundled CLI artifacts
        ↓                    ↑
 Vite static build     schemas/ + examples/
        ↓
@@ -178,7 +201,8 @@ The product intentionally has no authentication, database, analytics, remote API
 - The JSON export is created in the browser and downloaded directly.
 - Imported blueprints are limited to 1 MiB, parsed in memory, rendered as text, and never uploaded or persisted.
 - A2A owner-profile values are local-only, rendered as text, and never used to probe an endpoint; no credential field exists.
-- Acceptance profiles and manifests remain local-only, are bounded in the CLI, and make no test-result claim; evidence and credentials are never collected by the browser.
+- Acceptance profiles and manifests remain local-only, are bounded in the CLI, and make no test-result claim.
+- TCK JSON imports are limited to 5 MiB and hashed locally; receipts omit raw errors, test IDs, and embedded Agent Card contents, reject likely secret-bearing commands, and never claim conformance or release approval.
 - The validator rejects oversized collections, malformed references, unsupported major versions, and reference-mode runtime contradictions.
 - The release server disables framework disclosure, denies framing, restricts browser capabilities, and serves a narrow health contract.
 - Public links open with `rel="noreferrer"`.
@@ -192,6 +216,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - Conformance proves internal consistency only; it cannot prove that a real implementation generated the evidence or received the approval named in a trace.
 - A generated A2A Agent Card is a draft declaration, not proof of endpoint reachability, authentication, signature validity, or protocol compatibility.
 - A generated acceptance manifest is a not-yet-run consumer plan, not an official extension, TCK report, pass result, or accountable release signoff.
+- A generated TCK evidence receipt validates report structure and binds asserted provenance; it does not prove that the run occurred, authenticate the source revisions, make a conformance decision, complete non-TCK cases, or approve a release.
 - The three bundled scenarios are representative rather than exhaustive.
 - No hosted URL is guaranteed by this repository.
 
@@ -201,6 +226,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - [Reference model and JSON contract](docs/REFERENCE_MODEL.md)
 - [A2A 1.0 deployment handoff and proof boundary](docs/A2A_HANDOFF.md)
 - [A2A implementation acceptance contract](docs/A2A_ACCEPTANCE.md)
+- [A2A TCK evidence receipt and owner-review boundary](docs/A2A_TCK_EVIDENCE.md)
 - [Historical pre-Samsarix context](CONTEXT.md) — preserved as non-normative source material
 - [Contributing](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)

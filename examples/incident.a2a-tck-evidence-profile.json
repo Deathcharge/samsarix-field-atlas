@@ -1,0 +1,6 @@
+{
+  "evidenceOwner": "Incident Platform Team",
+  "tckRevision": "5996b79f9cefa6fc390980e383e358a66fb9e49e",
+  "implementationRevision": "8b1d0c6e9050d88b71c43e1c40267b807e2d67f4",
+  "runCommand": "./run_tck.py --sut-host https://agent.example.com --transport http_json"
+}

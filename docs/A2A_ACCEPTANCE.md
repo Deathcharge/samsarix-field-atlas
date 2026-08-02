@@ -70,7 +70,7 @@ The manifest creates cases for:
 - credential/log redaction;
 - one required run of the official [A2A TCK revision reviewed here](https://github.com/a2aproject/a2a-tck/tree/5996b79f9cefa6fc390980e383e358a66fb9e49e).
 
-The official TCK owns core protocol compatibility. Field Atlas preserves its report as separate evidence and does not reproduce or reinterpret a passing result. The runtime owner should also use the [A2A Inspector revision reviewed here](https://github.com/a2aproject/a2a-inspector/tree/8098818f97c6b8554f1f83636508a9608842f5a0) for live discovery and interaction debugging.
+The official TCK owns core protocol compatibility. Field Atlas can now bind its machine-readable report to a separate [`owner-review-required` evidence receipt](A2A_TCK_EVIDENCE.md), recomputing report summaries and surfacing failures, skips, and not-tested requirements without making a passing or release claim. The runtime owner should also use the [A2A Inspector revision reviewed here](https://github.com/a2aproject/a2a-inspector/tree/8098818f97c6b8554f1f83636508a9608842f5a0) for live discovery and interaction debugging.
 
 This split follows NIST AI RMF guidance to make test, evaluation, validation, and verification objective, repeatable, documented, tied to deployment-like conditions, and subject to defined human oversight: [AI RMF Core](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/) and [NIST TEVV](https://www.nist.gov/ai-test-evaluation-validation-and-verification-tevv).
 
@@ -80,7 +80,7 @@ The exported plan is ready for execution elsewhere only after the profile is str
 
 1. identify the implementation revision, TCK revision, environment, and test-data boundary;
 2. run the cases under deployment-like conditions using synthetic or explicitly approved data;
-3. attach redacted evidence without editing `plan-not-run` into a result claim;
+3. attach redacted evidence without editing `plan-not-run` into a result claim; for official TCK JSON, create the separate Field Atlas evidence receipt and retain the original report;
 4. disposition TCK failures, skips, and inapplicable cases;
 5. record the release decision, date, unresolved risk, and rollback path in a separate accountable record.
 

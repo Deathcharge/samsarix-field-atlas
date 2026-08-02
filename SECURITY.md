@@ -13,12 +13,13 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 ## Trust boundaries
 
 - Scenario definitions are repository-authored fixtures, not untrusted runtime input.
-- Imported JSON is untrusted local input. The browser limits files to 1 MiB, parses them as data, validates bounded structures, and renders strings through React text nodes without persistence or execution.
+- Imported JSON is untrusted local input. The browser limits blueprints to 1 MiB and TCK reports to 5 MiB, requires valid UTF-8 JSON, validates bounded structures, and renders strings through React text nodes without persistence or execution.
 - Markdown review packets escape imported metacharacters so blueprint strings cannot directly create links or remote images in the generated artifact.
 - A2A deployment-profile values and generated Agent Card strings are untrusted local data. React renders them as text, Markdown output escapes metacharacters, and the browser never probes a declared endpoint.
 - A2A profiles have no credential field. Endpoint URLs containing user information, query strings, or fragments are blocked, production endpoints require HTTPS, and bearer credentials remain out of band.
 - A2A acceptance profiles, Agent Cards, and generated manifests are untrusted local data. Each CLI input is limited to a 1 MiB regular file, browser strings render as text, and Markdown exports escape imported metacharacters.
 - Acceptance artifacts always remain `plan-not-run`; named evidence is a future requirement rather than proof that a test, approval, or TCK run occurred.
+- TCK evidence receipts hash exact report bytes, omit raw errors/test IDs/embedded card contents, and reject likely secret-bearing run commands. Asserted revisions are not remotely verified, and receipt claims remain `not-determined` / `not-made` until accountable owner review.
 - The browser stores only a scenario identifier in `localStorage`.
 - JSON exports are produced locally and are not uploaded.
 - External GitHub links are user-initiated navigation only.

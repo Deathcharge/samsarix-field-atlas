@@ -36,7 +36,7 @@ A developer, technical evaluator, or collaborator who wants to understand or dis
 
 ### Primary use case and journey
 
-The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, inspects the exact human/policy/tool/memory boundaries, and exports an implementation-neutral JSON blueprint. The user can then import that contract, receive a semantic readiness decision, enforce it in CI, and export a readable Markdown review packet.
+The user selects a realistic scenario, reviews its objective and acceptance criteria, runs a deterministic role-by-role trace, inspects the exact human/policy/tool/memory boundaries, and exports an implementation-neutral JSON blueprint. The user can then import that contract, receive a semantic readiness decision, enforce it in CI, prepare an A2A deployment and acceptance handoff, and bind an externally generated official TCK report to an owner-review receipt.
 
 ### Independent reason to exist
 
@@ -77,6 +77,7 @@ The execution products build or inspect running agent systems; the emerging stan
 8. Keep one semantic validator shared by browser and CLI so interactive and CI decisions cannot drift.
 9. Keep A2A deployment facts in a separate owner-completed profile so provider-neutral design data cannot silently become a false runtime claim.
 10. Keep consumer acceptance semantics in a separate `plan-not-run` artifact: the official A2A TCK owns core compatibility, while Field Atlas preserves owner limits, privacy choices, human gates, and evidence requirements without extending the Agent Card.
+11. Treat external TCK JSON as untrusted evidence: hash exact bytes, recompute report semantics, omit raw diagnostics, bind asserted provenance, and keep conformance and release decisions explicitly undetermined.
 
 ## Assumptions
 
@@ -129,6 +130,7 @@ Final command evidence is appended after implementation verification.
 - [x] Add import/conformance checks for `samsarix-field-atlas/1` blueprints.
 - [x] Map a validated blueprint to an owner-completed draft A2A 1.0 Agent Card and implementation checklist.
 - [x] Generate a consumer-owned A2A acceptance manifest and execution checklist with deterministic fixtures and an official-TCK evidence requirement.
+- [x] Bind official-format A2A TCK JSON to an exact-byte, owner-review receipt that keeps failures, skips, not-tested requirements, and all non-TCK acceptance work visible.
 - [ ] Add translations after the English information architecture stabilizes.
 - [ ] Add a printer-friendly trace view if evaluators request it.
 
@@ -157,6 +159,7 @@ Final command evidence is appended after implementation verification.
 - Added a shared semantic validator, strict/JSON CLI modes, versioned JSON Schema, and a complete incident fixture enforced by `pnpm verify`.
 - Added a shared A2A 1.0 handoff validator, browser profile, draft Agent Card/checklist exports, deterministic CLI mapping, and committed incident card fixture.
 - Added a shared A2A implementation acceptance validator, browser owner profile, JSON/Markdown plan exports, public schema, deterministic CLI, and committed incident fixtures.
+- Added a shared A2A TCK evidence validator, bounded browser import, exact-byte SHA-256, immutable provenance profile, public receipt schema, deterministic CLI, and synthetic omission-focused incident fixtures.
 - Removed misleading status, deployment, authentication, analytics, and integration claims.
 - Replaced the generated UI kit with purpose-built semantic React and CSS.
 - Added the optional hardened release server and meaningful automated tests.
@@ -165,7 +168,7 @@ Final command evidence is appended after implementation verification.
 ## Deferred work and rationale
 
 - User-authored scenarios remain deferred until real evaluator demand justifies the additional editing and migration surface.
-- Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, compatibility evidence, and ongoing support commitment. The A2A handoff and acceptance plan now make those next steps explicit without taking the dependency or claiming tests ran.
+- Live runtime integration remains owner-controlled because it requires a real endpoint, authentication boundary, genuine compatibility evidence, accountable signoff, and ongoing support commitment. The A2A handoff, acceptance plan, and evidence receipt make those next steps explicit without taking the dependency or claiming the synthetic fixture ran.
 - Internationalization is deferred until product language is validated.
 
 ## Owner-, legal-, and production-blocked work
@@ -279,3 +282,27 @@ Local release evidence on Windows with Node `v24.12.0` and pnpm `11.17.0`:
 | React best-practices review        | Passed the applicable local-state, derived-state, component-boundary, controlled-input, accessibility, and rendering checklist.                          |
 
 This is local plan-generation and build evidence only. No endpoint was contacted, no TCK or runtime test was run, no acceptance result was recorded, and no deployment was performed. Live implementation evidence, signoff, publication, and rollback remain runtime-owner responsibilities.
+
+## A2A TCK evidence-receipt increment
+
+On August 1, 2026, Field Atlas added a bounded intake path for the official A2A TCK `compatibility.json` report. The browser and CLI hash the exact report bytes, validate current report semantics, bind owner-asserted immutable revisions and a redacted run command, and emit the same deterministic `owner-review-required` receipt.
+
+The receipt preserves the official summary but recomputes it from requirement statuses, separately counts failures, skips, and not-tested requirements, validates transport arithmetic, and maps only `a2a-official-tck` to evidence-attached. Raw errors, test IDs, and embedded Agent Card contents do not enter the receipt. Protocol conformance stays `not-determined`, the release decision stays `not-made`, and all non-TCK acceptance cases remain unresolved.
+
+The committed `compatibility.json` is synthetic official-format input. It deliberately reports `100.0%` while one requirement is skipped and another is not tested, demonstrating why the percentage is not a completeness claim. It is not evidence that the example endpoint or any Samsarix service ran.
+
+Local release evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.0`:
+
+| Command or check                          | Result                                                                                                                                                       |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `corepack pnpm install --frozen-lockfile` | Passed from the committed lockfile with pnpm 11.17.0.                                                                                                        |
+| `corepack pnpm verify`                    | Passed lint, formatting, strict types, 62 tests, coverage thresholds, all four committed fixture checks, and client/server/four-CLI production builds.       |
+| Coverage                                  | 82.61% statements, 78.22% branches, 83.80% functions, and 83.43% lines.                                                                                      |
+| `pnpm validate:tck-evidence-example`      | Recomputed the synthetic report, surfaced its blank spec version plus one skipped and one not-tested requirement, and exactly matched the committed receipt. |
+| `pnpm build`                              | Passed; client JS was 302.40 kB / 91.20 kB gzip, CSS was 29.93 kB / 6.55 kB gzip, server was 4.2 kB, and TCK evidence CLI was 35,149 bytes.                  |
+| TCK evidence CLI artifact                 | `dist/atlas-tck-evidence.js` SHA-256 was `317e019712521fc8ebd3d9fec1ee9bd6f3b7e635dd5dab17df06403a1c02741e`.                                                 |
+| Synthetic report fixture                  | Exact-byte SHA-256 was `efb0998b9bb08646f4013d1f01058a2fa66e5c2757d953539d83c27abf3417ab`, matching the receipt.                                             |
+| `pnpm audit --prod`                       | Passed with no known production vulnerabilities.                                                                                                             |
+| React best-practices review               | Passed the applicable component-boundary, local/derived-state, async race, controlled-input, accessibility, rendering, and bundle-scope checklist.           |
+
+This is parser, fixture, test, and build evidence only. No endpoint was contacted, no TCK process was executed, no source-revision assertion was remotely verified, no conformance or release decision was made, and no deployment was performed. Genuine runtime evidence, owner signoff, publication, support, and rollback remain external gates.

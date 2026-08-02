@@ -5,6 +5,11 @@ import { validateBlueprint, type Blueprint } from "../client/src/blueprint";
 
 export const maximumJsonBytes = 1_048_576;
 
+export interface JsonFileContents {
+  value: unknown;
+  bytes: Uint8Array;
+}
+
 export function terminalText(value: string): string {
   return value.replaceAll(/\p{C}/gu, "?");
 }
@@ -13,7 +18,10 @@ export function failUsage(message: string): never {
   throw new Error(`USAGE: ${message}`);
 }
 
-export function readJsonFile(path: string): unknown {
+export function readJsonFileWithBytes(
+  path: string,
+  maximumBytes = maximumJsonBytes
+): JsonFileContents {
   const absolutePath = resolve(path);
   const descriptor = openSync(absolutePath, "r");
   try {
@@ -21,11 +29,13 @@ export function readJsonFile(path: string): unknown {
     if (!status.isFile()) {
       throw new Error(`${absolutePath} is not a regular file.`);
     }
-    if (status.size > maximumJsonBytes) {
-      throw new Error(`${absolutePath} exceeds the 1 MiB JSON input limit.`);
+    if (status.size > maximumBytes) {
+      throw new Error(
+        `${absolutePath} exceeds the ${maximumBytes} byte JSON input limit.`
+      );
     }
 
-    const buffer = Buffer.allocUnsafe(maximumJsonBytes + 1);
+    const buffer = Buffer.allocUnsafe(maximumBytes + 1);
     let bytesRead = 0;
     while (bytesRead < buffer.length) {
       const count = readSync(
@@ -38,13 +48,21 @@ export function readJsonFile(path: string): unknown {
       if (count === 0) break;
       bytesRead += count;
     }
-    if (bytesRead > maximumJsonBytes) {
-      throw new Error(`${absolutePath} exceeds the 1 MiB JSON input limit.`);
+    if (bytesRead > maximumBytes) {
+      throw new Error(
+        `${absolutePath} exceeds the ${maximumBytes} byte JSON input limit.`
+      );
     }
-    return JSON.parse(buffer.toString("utf8", 0, bytesRead)) as unknown;
+    const bytes = Uint8Array.from(buffer.subarray(0, bytesRead));
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    return { value: JSON.parse(text) as unknown, bytes };
   } finally {
     closeSync(descriptor);
   }
+}
+
+export function readJsonFile(path: string): unknown {
+  return readJsonFileWithBytes(path).value;
 }
 
 export function readBlueprint(path: string): Blueprint {

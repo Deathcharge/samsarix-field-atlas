@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "samsarix-field-atlas/a2a-tck-receipt/1",
+  "generatedAt": "2026-08-01T13:00:00.000Z",
+  "status": "owner-review-required",
+  "evidenceState": "attached-unreviewed",
+  "claims": {
+    "protocolConformance": "not-determined",
+    "releaseDecision": "not-made"
+  },
+  "source": {
+    "acceptancePlan": {
+      "schemaVersion": "samsarix-field-atlas/a2a-acceptance/1",
+      "generatedAt": "2026-08-01T12:00:00.000Z",
+      "scenarioId": "incident",
+      "agentName": "Incident Coordination Agent",
+      "agentVersion": "0.1.0",
+      "interfaceUrl": "https://agent.example.com/a2a",
+      "binding": "HTTP+JSON",
+      "protocolVersion": "1.0",
+      "acceptanceOwner": "Incident Platform Team",
+      "environment": "staging"
+    },
+    "provenance": {
+      "evidenceOwner": "Incident Platform Team",
+      "tckRepository": "https://github.com/a2aproject/a2a-tck",
+      "assertedTckRevision": "5996b79f9cefa6fc390980e383e358a66fb9e49e",
+      "interpretedAgainstTckRevision": "5996b79f9cefa6fc390980e383e358a66fb9e49e",
+      "implementationRevision": "8b1d0c6e9050d88b71c43e1c40267b807e2d67f4",
+      "runCommand": "./run_tck.py --sut-host https://agent.example.com --transport http_json"
+    },
+    "tckReport": {
+      "sha256": "efb0998b9bb08646f4013d1f01058a2fa66e5c2757d953539d83c27abf3417ab",
+      "timestamp": "2026-08-01T12:30:00.000Z",
+      "sutUrl": "https://agent.example.com/",
+      "reportedSpecVersion": null,
+      "embeddedAgentCard": true
+    }
+  },
+  "observations": {
+    "compatibility": {
+      "overall": "100.0%",
+      "must": "100.0%",
+      "should": "100.0%",
+      "may": "100.0%"
+    },
+    "requirements": {
+      "total": 4,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 1,
+      "notTested": 1,
+      "requirementsWithErrors": 0,
+      "errorMessages": 0
+    },
+    "transports": [
+      {
+        "name": "http_json",
+        "total": 3,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 1
+      }
+    ]
+  },
+  "acceptanceCoverage": {
+    "evidenceAttachedCaseIds": ["a2a-official-tck"],
+    "unresolvedCaseIds": [
+      "a2a-discovery-card",
+      "a2a-version-negotiation",
+      "a2a-media-validation",
+      "a2a-authentication",
+      "a2a-resource-authorization",
+      "a2a-validation-errors",
+      "owner-request-limit",
+      "owner-response-deadline",
+      "owner-concurrency-limit",
+      "a2a-transient-failure",
+      "privacy-secret-handling",
+      "privacy-retention",
+      "governance-human-approval-5",
+      "evidence-stage-1",
+      "evidence-stage-2",
+      "evidence-stage-3",
+      "evidence-stage-4",
+      "evidence-stage-5",
+      "evidence-stage-6",
+      "evidence-stage-7",
+      "evidence-stage-8"
+    ],
+    "unresolvedBlockingCaseIds": [
+      "a2a-discovery-card",
+      "a2a-version-negotiation",
+      "a2a-media-validation",
+      "a2a-authentication",
+      "a2a-resource-authorization",
+      "a2a-validation-errors",
+      "owner-request-limit",
+      "owner-response-deadline",
+      "owner-concurrency-limit",
+      "a2a-transient-failure",
+      "privacy-secret-handling",
+      "privacy-retention",
+      "governance-human-approval-5"
+    ]
+  },
+  "reviewItems": [
+    {
+      "code": "MISSING_REPORT_SPEC_VERSION",
+      "message": "The current official runner can emit an empty spec_version; use the pinned TCK revision and plan target during owner review."
+    },
+    {
+      "code": "TCK_SKIPPED_REQUIREMENTS",
+      "message": "1 skipped requirement is excluded from compatibility percentages."
+    },
+    {
+      "code": "TCK_NOT_TESTED_REQUIREMENTS",
+      "message": "1 not-tested requirement is excluded from compatibility percentages."
+    },
+    {
+      "code": "UNRESOLVED_ACCEPTANCE_CASES",
+      "message": "21 non-TCK acceptance cases remain unresolved; this receipt is not a release decision."
+    }
+  ]
+}
