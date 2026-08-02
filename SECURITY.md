@@ -17,6 +17,8 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Markdown review packets escape imported metacharacters so blueprint strings cannot directly create links or remote images in the generated artifact.
 - A2A deployment-profile values and generated Agent Card strings are untrusted local data. React renders them as text, Markdown output escapes metacharacters, and the browser never probes a declared endpoint.
 - A2A profiles have no credential field. Endpoint URLs containing user information, query strings, or fragments are blocked, production endpoints require HTTPS, and bearer credentials remain out of band.
+- A2A acceptance profiles, Agent Cards, and generated manifests are untrusted local data. Each CLI input is limited to a 1 MiB regular file, browser strings render as text, and Markdown exports escape imported metacharacters.
+- Acceptance artifacts always remain `plan-not-run`; named evidence is a future requirement rather than proof that a test, approval, or TCK run occurred.
 - The browser stores only a scenario identifier in `localStorage`.
 - JSON exports are produced locally and are not uploaded.
 - External GitHub links are user-initiated navigation only.
@@ -30,6 +32,7 @@ Samsarix LLC will acknowledge a report within five business days and coordinate 
 - Run `pnpm install --frozen-lockfile`, `pnpm audit --prod`, and `pnpm verify` before release.
 - Treat every blueprint as user-controlled data when another system imports it; enforce a size limit, validate the schema and cross-field semantics, and never execute its strings as code or shell commands.
 - Treat every Agent Card as untrusted input in downstream systems. Do not interpolate card strings into prompts, HTML, logs, shell commands, or network policy without context-appropriate validation and escaping.
+- Treat acceptance manifests and attached runtime evidence as untrusted. Keep credentials and live payloads out of fixtures, redact reports, and bind any eventual signoff to exact implementation and test-tool revisions.
 - Never place a token, password, cookie, API key, authorization header, or signed URL in a Field Atlas A2A profile or generated card.
 - Do not add secrets to `VITE_*` variables: Vite exposes those values to every browser.
 

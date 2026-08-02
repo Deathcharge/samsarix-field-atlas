@@ -1733,6 +1733,66 @@ button.button {
   border-top: 1px solid var(--line);
 }
 
+.acceptance-pack {
+  margin: 2rem clamp(1rem, 2vw, 1.5rem) clamp(1rem, 2vw, 1.5rem);
+  overflow: hidden;
+  border: 1px solid rgba(170, 152, 255, 0.32);
+  border-radius: 0.55rem;
+  background:
+    linear-gradient(150deg, rgba(170, 152, 255, 0.07), transparent 42%),
+    rgba(8, 10, 9, 0.74);
+}
+
+.acceptance-heading .panel-label {
+  color: var(--violet);
+}
+
+.acceptance-heading .protocol-chip {
+  border-color: rgba(170, 152, 255, 0.42);
+  background: rgba(170, 152, 255, 0.08);
+  color: #c5baff;
+}
+
+.acceptance-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(22rem, 0.88fr);
+}
+
+.acceptance-fields input:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.acceptance-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 1.5rem 0 0;
+}
+
+.acceptance-metrics > div {
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.acceptance-metrics dt {
+  color: var(--ink-muted);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.acceptance-metrics dd {
+  margin: 0.35rem 0 0;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.25rem;
+  font-weight: 850;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -1801,6 +1861,10 @@ button.button {
   }
 
   .a2a-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .acceptance-grid {
     grid-template-columns: 1fr;
   }
 

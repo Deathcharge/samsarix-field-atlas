@@ -24,11 +24,13 @@
     "build": "pnpm run build:client && pnpm run build:server && pnpm run build:cli",
     "build:client": "vite build",
     "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "build:cli": "pnpm run build:blueprint-cli && pnpm run build:a2a-cli",
+    "build:cli": "pnpm run build:blueprint-cli && pnpm run build:a2a-cli && pnpm run build:acceptance-cli",
     "build:blueprint-cli": "esbuild cli/validate.ts --platform=node --bundle --format=esm --log-level=error --outfile=dist/atlas-validate.js",
     "build:a2a-cli": "esbuild cli/a2a.ts --platform=node --bundle --format=esm --log-level=error --outfile=dist/atlas-a2a.js",
+    "build:acceptance-cli": "esbuild cli/acceptance.ts --platform=node --bundle --format=esm --log-level=error --outfile=dist/atlas-acceptance.js",
     "blueprint:validate": "pnpm --silent run build:blueprint-cli && node dist/atlas-validate.js",
     "blueprint:a2a": "pnpm --silent run build:a2a-cli && node dist/atlas-a2a.js",
+    "blueprint:acceptance": "pnpm --silent run build:acceptance-cli && node dist/atlas-acceptance.js",
     "start": "node dist/index.js",
     "preview": "vite preview",
     "check": "tsc --noEmit",
@@ -40,7 +42,8 @@
     "test:coverage": "vitest run --coverage",
     "validate:example": "pnpm blueprint:validate examples/incident.blueprint.json --strict",
     "validate:a2a-example": "pnpm blueprint:a2a examples/incident.blueprint.json --endpoint https://agent.example.com/a2a --agent-version 0.1.0 --security bearer --name \"Incident Coordination Agent\" --provider-organization \"Samsarix LLC\" --provider-url https://samsarix.com --strict --check examples/incident.a2a-agent-card.json",
-    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:a2a-example && pnpm run build"
+    "validate:acceptance-example": "pnpm blueprint:acceptance examples/incident.blueprint.json --agent-card examples/incident.a2a-agent-card.json --profile examples/incident.a2a-acceptance-profile.json --generated-at 2026-08-01T12:00:00.000Z --strict --check examples/incident.a2a-acceptance.json",
+    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:a2a-example && pnpm run validate:acceptance-example && pnpm run build"
   },
   "dependencies": {
     "express": "^5.2.1",
@@ -59,6 +62,8 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.4",
     "@vitest/coverage-v8": "^4.1.10",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "esbuild": "^0.28.1",
     "eslint": "^10.8.0",
     "eslint-plugin-react-hooks": "^7.1.1",

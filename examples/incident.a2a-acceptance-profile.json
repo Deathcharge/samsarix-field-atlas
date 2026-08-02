@@ -1,0 +1,12 @@
+{
+  "owner": "Incident Platform Team",
+  "supportContact": "support@samsarix.com",
+  "environment": "staging",
+  "maxRequestBytes": 1048576,
+  "responseDeadlineMs": 30000,
+  "maxConcurrentTasks": 10,
+  "retentionMode": "transient",
+  "retentionHours": 24,
+  "dataClassification": "internal",
+  "externalProcessors": false
+}
