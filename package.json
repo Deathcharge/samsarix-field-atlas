@@ -24,8 +24,11 @@
     "build": "pnpm run build:client && pnpm run build:server && pnpm run build:cli",
     "build:client": "vite build",
     "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "build:cli": "esbuild cli/validate.ts --platform=node --bundle --format=esm --outfile=dist/atlas-validate.js",
-    "blueprint:validate": "pnpm run build:cli && node dist/atlas-validate.js",
+    "build:cli": "pnpm run build:blueprint-cli && pnpm run build:a2a-cli",
+    "build:blueprint-cli": "esbuild cli/validate.ts --platform=node --bundle --format=esm --log-level=error --outfile=dist/atlas-validate.js",
+    "build:a2a-cli": "esbuild cli/a2a.ts --platform=node --bundle --format=esm --log-level=error --outfile=dist/atlas-a2a.js",
+    "blueprint:validate": "pnpm --silent run build:blueprint-cli && node dist/atlas-validate.js",
+    "blueprint:a2a": "pnpm --silent run build:a2a-cli && node dist/atlas-a2a.js",
     "start": "node dist/index.js",
     "preview": "vite preview",
     "check": "tsc --noEmit",
@@ -36,7 +39,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "validate:example": "pnpm blueprint:validate examples/incident.blueprint.json --strict",
-    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run build"
+    "validate:a2a-example": "pnpm blueprint:a2a examples/incident.blueprint.json --endpoint https://agent.example.com/a2a --agent-version 0.1.0 --security bearer --name \"Incident Coordination Agent\" --provider-organization \"Samsarix LLC\" --provider-url https://samsarix.com --strict --check examples/incident.a2a-agent-card.json",
+    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:a2a-example && pnpm run build"
   },
   "dependencies": {
     "express": "^5.2.1",

@@ -27,7 +27,8 @@ Current disposition: Grow the provider-neutral conformance workflow through evid
 - [x] Share semantic validation across browser import and the CI-capable CLI.
 - [x] Publish a v1 JSON Schema, complete example, governance findings, and Markdown review packet.
 - Add a schema-validated local scenario editor only after an evaluator proves the authoring need.
-- Map the portable contract to one external runtime or interoperability standard without making that runtime canonical.
+- [x] Map the portable contract to A2A 1.0 discovery without making A2A or any runtime canonical.
+- Add a consumer-owned live A2A service fixture only when a runtime owner can provide endpoint, authentication, error, and compatibility evidence.
 
 ## Samsarix adoption
 

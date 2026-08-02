@@ -1,0 +1,49 @@
+{
+  "name": "Incident Coordination Agent",
+  "description": "Restore a degraded service without turning uncertainty into unsafe or unaudited action.",
+  "supportedInterfaces": [
+    {
+      "url": "https://agent.example.com/a2a",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "provider": {
+    "url": "https://samsarix.com",
+    "organization": "Samsarix LLC"
+  },
+  "version": "0.1.0",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "securitySchemes": {
+    "bearerAuth": {
+      "httpAuthSecurityScheme": {
+        "description": "Bearer credentials are obtained out of band; no secret is embedded in this Agent Card.",
+        "scheme": "Bearer"
+      }
+    }
+  },
+  "securityRequirements": [
+    {
+      "schemes": {
+        "bearerAuth": {
+          "list": []
+        }
+      }
+    }
+  ],
+  "defaultInputModes": ["application/json"],
+  "defaultOutputModes": ["application/json"],
+  "skills": [
+    {
+      "id": "incident",
+      "name": "Triage a production incident",
+      "description": "Restore a degraded service without turning uncertainty into unsafe or unaudited action.",
+      "tags": ["coordination", "high-risk", "evidence-aware", "human-governed"],
+      "inputModes": ["application/json"],
+      "outputModes": ["application/json"]
+    }
+  ]
+}

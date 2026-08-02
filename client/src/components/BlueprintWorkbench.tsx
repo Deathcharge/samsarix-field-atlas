@@ -6,21 +6,11 @@ import {
   type Blueprint,
   type BlueprintAnalysis,
 } from "../blueprint";
+import { downloadText } from "../download";
 import { createBlueprint } from "../model";
+import A2AHandoff from "./A2AHandoff";
 
 const maximumBlueprintBytes = 1_048_576;
-
-function downloadText(contents: string, filename: string, type: string) {
-  const blob = new Blob([contents], { type });
-  const objectUrl = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = objectUrl;
-  link.download = filename;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(objectUrl);
-}
 
 function failedImport(message: string): BlueprintAnalysis {
   return {
@@ -296,6 +286,13 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
       <p aria-live="polite" className="run-notice workbench-notice">
         {notice}
       </p>
+
+      {analysis?.blueprint ? (
+        <A2AHandoff
+          blueprint={analysis.blueprint}
+          key={analysis.blueprint.scenario.id}
+        />
+      ) : null}
     </section>
   );
 }
