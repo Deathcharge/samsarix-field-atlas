@@ -188,6 +188,7 @@ function validateAgentCard(
   blueprint: Blueprint,
   findings: BlueprintFinding[]
 ): A2AAgentCard | null {
+  const findingsStart = findings.length;
   if (!isRecord(value)) {
     addFinding(
       findings,
@@ -380,7 +381,9 @@ function validateAgentCard(
     }
   }
 
-  return findings.some(finding => finding.severity === "error")
+  return findings
+    .slice(findingsStart)
+    .some(finding => finding.severity === "error")
     ? null
     : (value as unknown as A2AAgentCard);
 }
@@ -389,6 +392,7 @@ function validateProfile(
   value: unknown,
   findings: BlueprintFinding[]
 ): A2AAcceptanceProfile | null {
+  const findingsStart = findings.length;
   if (!isRecord(value)) {
     addFinding(
       findings,
@@ -519,9 +523,24 @@ function validateProfile(
     );
   }
 
-  return findings.some(finding => finding.severity === "error")
-    ? null
-    : (value as unknown as A2AAcceptanceProfile);
+  if (
+    findings.slice(findingsStart).some(finding => finding.severity === "error")
+  ) {
+    return null;
+  }
+
+  return {
+    owner: value.owner as string,
+    supportContact: value.supportContact as string,
+    environment: value.environment as A2AAcceptanceEnvironment,
+    maxRequestBytes: value.maxRequestBytes as number,
+    responseDeadlineMs: value.responseDeadlineMs as number,
+    maxConcurrentTasks: value.maxConcurrentTasks as number,
+    retentionMode: value.retentionMode as A2ARetentionMode,
+    retentionHours: value.retentionHours as number,
+    dataClassification: value.dataClassification as A2ADataClassification,
+    externalProcessors: value.externalProcessors as boolean,
+  };
 }
 
 function acceptanceCases(
@@ -983,7 +1002,18 @@ export function validateA2AAcceptance(
           authentication: card.securitySchemes ? "bearer" : "public",
         },
       },
-      acceptance: { ...acceptedProfile },
+      acceptance: {
+        owner: acceptedProfile.owner,
+        supportContact: acceptedProfile.supportContact,
+        environment: acceptedProfile.environment,
+        maxRequestBytes: acceptedProfile.maxRequestBytes,
+        responseDeadlineMs: acceptedProfile.responseDeadlineMs,
+        maxConcurrentTasks: acceptedProfile.maxConcurrentTasks,
+        retentionMode: acceptedProfile.retentionMode,
+        retentionHours: acceptedProfile.retentionHours,
+        dataClassification: acceptedProfile.dataClassification,
+        externalProcessors: acceptedProfile.externalProcessors,
+      },
       summary: {
         testCases: testCases.length,
         blockingCases: testCases.filter(testCase => testCase.blocking).length,

@@ -5,6 +5,7 @@ import {
   defaultA2AAcceptanceProfile,
   validateA2AAcceptance,
   type A2AAcceptanceEnvironment,
+  type A2AAcceptanceAnalysis,
   type A2AAcceptanceProfile,
   type A2ADataClassification,
   type A2ARetentionMode,
@@ -15,7 +16,7 @@ import { downloadText } from "../download";
 
 interface A2AAcceptancePackProps {
   blueprint: Blueprint;
-  agentCard: A2AAgentCard;
+  agentCard: A2AAgentCard | undefined;
 }
 
 const environments: A2AAcceptanceEnvironment[] = [
@@ -30,6 +31,19 @@ const dataClassifications: A2ADataClassification[] = [
   "confidential",
   "restricted",
 ];
+const unavailableAnalysis: A2AAcceptanceAnalysis = {
+  status: "invalid",
+  counts: { error: 1, warning: 0, pass: 0 },
+  findings: [
+    {
+      severity: "error",
+      code: "AGENT_CARD_REQUIRED",
+      path: "$.agentCard",
+      message:
+        "Complete a valid draft Agent Card before defining implementation acceptance.",
+    },
+  ],
+};
 
 function numberInputValue(value: number): number {
   return Number.isNaN(value) ? 0 : value;
@@ -44,7 +58,10 @@ function A2AAcceptancePack({ blueprint, agentCard }: A2AAcceptancePackProps) {
     "Name the acceptance owner and support contact to create a plan. No tests will run in this browser."
   );
   const analysis = useMemo(
-    () => validateA2AAcceptance(blueprint, agentCard, profile, generatedAt),
+    () =>
+      agentCard
+        ? validateA2AAcceptance(blueprint, agentCard, profile, generatedAt)
+        : unavailableAnalysis,
     [agentCard, blueprint, generatedAt, profile]
   );
 
@@ -123,10 +140,11 @@ function A2AAcceptancePack({ blueprint, agentCard }: A2AAcceptancePackProps) {
 
       <div className="acceptance-grid">
         <form
-          className="a2a-profile acceptance-profile"
+          aria-disabled={!agentCard}
+          className={`a2a-profile acceptance-profile${agentCard ? "" : " is-disabled"}`}
           onSubmit={event => event.preventDefault()}
         >
-          <fieldset>
+          <fieldset disabled={!agentCard}>
             <legend>Acceptance owner profile</legend>
             <p>
               Declare the environment, operational limits, and data decisions
@@ -291,7 +309,7 @@ function A2AAcceptancePack({ blueprint, agentCard }: A2AAcceptancePackProps) {
             </div>
           </fieldset>
 
-          <fieldset className="capability-options">
+          <fieldset className="capability-options" disabled={!agentCard}>
             <legend>Data path</legend>
             <label>
               <input
@@ -314,11 +332,13 @@ function A2AAcceptancePack({ blueprint, agentCard }: A2AAcceptancePackProps) {
             <div>
               <p className="panel-label">Plan readiness</p>
               <h4>
-                {analysis.status === "invalid"
-                  ? "Owner decisions required"
-                  : analysis.status === "review"
-                    ? "Plan ready with caveats"
-                    : "Plan ready to execute elsewhere"}
+                {!agentCard
+                  ? "Complete the draft Agent Card first"
+                  : analysis.status === "invalid"
+                    ? "Owner decisions required"
+                    : analysis.status === "review"
+                      ? "Plan ready with caveats"
+                      : "Plan ready to execute elsewhere"}
               </h4>
             </div>
             <span className={`status-badge status-${analysis.status}`}>
@@ -384,7 +404,9 @@ function A2AAcceptancePack({ blueprint, agentCard }: A2AAcceptancePackProps) {
       </div>
 
       <p aria-live="polite" className="run-notice a2a-notice">
-        {notice}
+        {agentCard
+          ? notice
+          : "Acceptance inputs are paused until the draft Agent Card is valid; completed values remain in this browser."}
       </p>
     </section>
   );

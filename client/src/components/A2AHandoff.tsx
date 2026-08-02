@@ -344,12 +344,7 @@ function A2AHandoff({ blueprint }: A2AHandoffProps) {
         {notice}
       </p>
 
-      {analysis.agentCard ? (
-        <A2AAcceptancePack
-          agentCard={analysis.agentCard}
-          blueprint={blueprint}
-        />
-      ) : null}
+      <A2AAcceptancePack agentCard={analysis.agentCard} blueprint={blueprint} />
     </section>
   );
 }

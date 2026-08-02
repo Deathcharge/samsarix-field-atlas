@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import Ajv2020 from "ajv/dist/2020.js";
+import addFormats from "ajv-formats";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -68,6 +70,31 @@ describe("A2A acceptance contract", () => {
     expect(first.manifest).not.toHaveProperty("result");
     expect(JSON.stringify(first.manifest)).not.toMatch(
       /password|api.?key|access.?token/i
+    );
+  });
+
+  it("keeps additive profile fields out of its schema-conformant manifest", () => {
+    const { blueprint, card, profile } = fixture();
+    const analysis = validateA2AAcceptance(
+      blueprint,
+      card,
+      { ...profile, futureOwnerNote: "not interpreted by v1" },
+      generatedAt
+    );
+    const schema = readFixture<object>("schema/a2a-acceptance.schema.json");
+    const ajv = new Ajv2020({ allErrors: true, strict: true });
+    addFormats(ajv);
+    const conforms = ajv.compile(schema);
+
+    expect(analysis.status).toBe("review");
+    expect(analysis.findings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "UNRECOGNIZED_PROFILE_FIELD" }),
+      ])
+    );
+    expect(analysis.manifest?.acceptance).not.toHaveProperty("futureOwnerNote");
+    expect(conforms(analysis.manifest), JSON.stringify(conforms.errors)).toBe(
+      true
     );
   });
 

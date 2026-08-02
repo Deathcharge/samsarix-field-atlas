@@ -270,11 +270,11 @@ Local release evidence on Windows with Node `v24.12.0` and pnpm `11.17.0`:
 
 | Command or check                   | Result                                                                                                                                                   |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm verify`                      | Passed lint, formatting, strict types, 50 tests, coverage thresholds, all three committed fixture checks, and client/server/three-CLI production builds. |
-| Coverage                           | 82.82% statements, 77.56% branches, 81.77% functions, and 83.64% lines.                                                                                  |
+| `pnpm verify`                      | Passed lint, formatting, strict types, 51 tests, coverage thresholds, all three committed fixture checks, and client/server/three-CLI production builds. |
+| Coverage                           | 83.08% statements, 77.96% branches, 81.77% functions, and 83.94% lines.                                                                                  |
 | `pnpm validate:acceptance-example` | Passed three truth/profile checks; the generated 22-case incident plan exactly matched the committed fixture in strict mode.                             |
-| `pnpm build`                       | Passed; client JS was 276.94 kB / 84.42 kB gzip, CSS was 28.63 kB / 6.32 kB gzip, server was 4.2 kB, and acceptance CLI was 48,392 bytes.                |
-| Acceptance CLI artifact            | `dist/atlas-acceptance.js` SHA-256 was `b4fb0513cd652cb15c1ba9d1dc586a5cdf9a4e6da6a2b37113b2303bf513fb14`.                                               |
+| `pnpm build`                       | Passed; client JS was 278.06 kB / 84.72 kB gzip, CSS was 28.63 kB / 6.32 kB gzip, server was 4.2 kB, and acceptance CLI was 49,518 bytes.                |
+| Acceptance CLI artifact            | `dist/atlas-acceptance.js` SHA-256 was `774d4c6e52ef45574968d5b0186143083da7258a7433067b3cded966b7e1dcbf`.                                               |
 | `pnpm audit --prod`                | Passed with no known production vulnerabilities.                                                                                                         |
 | React best-practices review        | Passed the applicable local-state, derived-state, component-boundary, controlled-input, accessibility, and rendering checklist.                          |
 

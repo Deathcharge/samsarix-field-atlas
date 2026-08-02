@@ -179,6 +179,21 @@ describe("Samsarix Field Atlas", () => {
       target: { value: "support@samsarix.com" },
     });
 
+    fireEvent.change(screen.getByLabelText(/service endpoint/i), {
+      target: { value: "https://agent.example.com/a2a?token=unsafe" },
+    });
+    expect(screen.getByLabelText(/acceptance owner/i)).toBeDisabled();
+    expect(screen.getByLabelText(/acceptance owner/i)).toHaveValue(
+      "Release Team"
+    );
+    fireEvent.change(screen.getByLabelText(/service endpoint/i), {
+      target: { value: "https://agent.example.com/a2a" },
+    });
+    expect(screen.getByLabelText(/acceptance owner/i)).toBeEnabled();
+    expect(screen.getByLabelText(/acceptance owner/i)).toHaveValue(
+      "Release Team"
+    );
+
     expect(
       screen.getByRole("heading", { name: /plan ready to execute elsewhere/i })
     ).toBeVisible();

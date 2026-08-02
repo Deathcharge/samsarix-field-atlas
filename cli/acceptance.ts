@@ -2,8 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 import { resolve } from "node:path";
 
 import { validateA2AAcceptance } from "../client/src/acceptance";
-import { validateBlueprint, type Blueprint } from "../client/src/blueprint";
-import { readJsonFile, terminalText } from "./shared";
+import { failUsage, readBlueprint, readJsonFile, terminalText } from "./shared";
 
 interface CliOptions {
   blueprintFile: string;
@@ -20,10 +19,6 @@ const valueFlags = new Set([
   "--generated-at",
   "--check",
 ]);
-
-function failUsage(message: string): never {
-  throw new Error(`USAGE: ${message}`);
-}
 
 function parseArguments(argumentsList: string[]): CliOptions {
   const values = new Map<string, string>();
@@ -70,18 +65,6 @@ function parseArguments(argumentsList: string[]): CliOptions {
     strict,
     ...(values.has("--check") ? { checkFile: values.get("--check") } : {}),
   };
-}
-
-function readBlueprint(path: string): Blueprint {
-  const analysis = validateBlueprint(readJsonFile(path));
-  if (!analysis.blueprint || analysis.status === "invalid") {
-    const detail = analysis.findings
-      .filter(finding => finding.severity === "error")
-      .map(finding => `${finding.code} ${finding.path} ${finding.message}`)
-      .join("; ");
-    throw new Error(`Source blueprint is invalid. ${detail}`);
-  }
-  return analysis.blueprint;
 }
 
 function usage(): string {
