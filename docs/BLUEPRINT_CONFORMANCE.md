@@ -11,14 +11,15 @@ Samsarix Field Atlas treats a coordination design as a reviewable data contract 
 
 ## Browser workflow
 
-1. Choose a bundled scenario and select **Check current scenario**, or select **Import JSON** for a local v1 file.
+1. Choose a bundled scenario and select **Check current scenario**, select **Import JSON** for a local v1 file, or open **Scenario Studio** to adapt the selected scenario through a guided form.
 2. Review the result:
    - **ready** means the known v1 contract is internally consistent;
    - **review** means the structure is valid but one or more governance warnings need an explicit decision;
    - **invalid** means the blueprint cannot be treated as a v1 contract.
-3. Export the Markdown review packet when the contract is structurally valid, or export SARIF 2.1.0 for any result.
+3. From Scenario Studio, resolve live errors and create a validated workbench snapshot or export the authored JSON directly.
+4. Export the Markdown review packet when the workbench contract is structurally valid, or export SARIF 2.1.0 for any workbench result.
 
-Files are limited to 1 MiB. Parsing, validation, and Markdown generation happen in browser memory. Field Atlas does not upload or persist imported content.
+Files are limited to 1 MiB and must contain valid UTF-8 JSON. Parsing, authoring, validation, and Markdown generation happen in browser memory. Field Atlas does not upload or persist imported content or authored drafts. See [Scenario Studio](SCENARIO_STUDIO.md) for its derived fields and proof boundary.
 
 ## Command-line workflow
 

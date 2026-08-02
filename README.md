@@ -2,11 +2,11 @@
 
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
-The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. The workbench validates that blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, binds an externally generated official A2A TCK report to a review receipt, and records case-by-case owner dispositions without authenticating them or inventing authority.
+The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. Scenario Studio lets evaluators adapt those scenarios through a guided local editor. The workbench validates the resulting blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, binds an externally generated official A2A TCK report to a review receipt, and records case-by-case owner dispositions without authenticating them or inventing authority.
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, authenticated signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, schema-validated local authoring studio, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, authenticated signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
 
 ## Fastest successful path
 
@@ -32,19 +32,20 @@ No environment variables, API keys, accounts, databases, or companion repositori
 3. Select **Run trace** to reveal each role, evidence artifact, and trust boundary in order.
 4. Cancel and retry safely if you want to change scenarios.
 5. After completion, select **Export JSON** to download an implementation-neutral blueprint.
-6. In **Blueprint workbench**, check the current scenario or import any v1 blueprint.
-7. Resolve structural errors and governance warnings, then export the Markdown review packet for a decision owner.
-8. Complete the runtime-owner profile to map a valid scenario to a draft A2A 1.0 Agent Card.
-9. Export the draft card and implementation checklist for a server owner.
-10. Complete the acceptance-owner profile with environment, limits, retention, classification, and processor decisions.
-11. Export the `plan-not-run` JSON manifest and Markdown execution checklist.
-12. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit.
-13. Import the TCK `compatibility.json`, supply owner-asserted full revision provenance, and export an `owner-review-required` evidence receipt.
-14. In **Record owner dispositions**, review every planned case or import a bounded review profile.
-15. Record accepted, rejected, waived, or pending outcomes with credential-free evidence references and required exception rationale.
-16. Export the JSON review ledger and Markdown packet. Treat the named owners and decision as assertions until an external authority authenticates them.
+6. In **Blueprint workbench**, check the current scenario, import any v1 blueprint, or open **Scenario Studio** to adapt the selected scenario locally.
+7. In the Studio, edit success criteria and ordered handoffs, resolve live contract errors, then export JSON or create a validated workbench snapshot.
+8. Resolve workbench governance warnings, then export the Markdown review packet or SARIF result for a decision owner.
+9. Complete the runtime-owner profile to map a valid scenario to a draft A2A 1.0 Agent Card.
+10. Export the draft card and implementation checklist for a server owner.
+11. Complete the acceptance-owner profile with environment, limits, retention, classification, and processor decisions.
+12. Export the `plan-not-run` JSON manifest and Markdown execution checklist.
+13. Validate the eventual running service with the official A2A Inspector and Technology Compatibility Kit.
+14. Import the TCK `compatibility.json`, supply owner-asserted full revision provenance, and export an `owner-review-required` evidence receipt.
+15. In **Record owner dispositions**, review every planned case or import a bounded review profile.
+16. Record accepted, rejected, waived, or pending outcomes with credential-free evidence references and required exception rationale.
+17. Export the JSON review ledger and Markdown packet. Treat the named owners and decision as assertions until an external authority authenticates them.
 
-The selected scenario is remembered in device-local browser storage. It contains no personal content and never leaves the device.
+The selected scenario is remembered in device-local browser storage. Scenario Studio drafts stay only in browser memory and must be exported before leaving the page. Neither leaves the device.
 
 ## What the export means
 
@@ -197,9 +198,11 @@ No production deployment is performed by this repository. Hosting configuration,
 ## Architecture
 
 ```text
-client/src/model.ts         Canonical roles, scenarios, indicators, and serializer
-            ↓
-client/src/blueprint.ts     Shared semantic validator + Markdown review packet
+client/src/model.ts           Canonical roles, scenarios, indicators, and serializer
+             ↓
+client/src/scenario-editor.ts Guided draft conversion + derived contract fields
+             ↓
+client/src/blueprint.ts       Shared semantic validator + Markdown review packet
               ↓
 client/src/a2a.ts           Owner profile checks + draft card/checklist mapping
               ↓
@@ -223,8 +226,9 @@ The product intentionally has no authentication, database, analytics, remote API
 - Scenario runs are deterministic and entirely local.
 - No analytics, cookies, remote fonts, or external data requests ship in the application.
 - Only the selected scenario ID is saved to `localStorage`.
+- Scenario Studio drafts remain in memory; valid snapshots derive role declarations, stage order, approval positions, and no-runtime claims before local export or handoff.
 - The JSON export is created in the browser and downloaded directly.
-- Imported blueprints are limited to 1 MiB, parsed in memory, rendered as text, and never uploaded or persisted.
+- Imported blueprints are limited to 1 MiB, require valid UTF-8 JSON, are parsed in memory, rendered as text, and never uploaded or persisted.
 - A2A owner-profile values are local-only, rendered as text, and never used to probe an endpoint; no credential field exists.
 - Acceptance profiles and manifests remain local-only, are bounded in the CLI, and make no test-result claim.
 - TCK JSON imports are limited to 5 MiB and hashed locally; receipts omit raw errors, test IDs, and embedded Agent Card contents, reject likely secret-bearing commands, and never claim conformance or release approval.
@@ -244,13 +248,14 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - A generated acceptance manifest is a not-yet-run consumer plan, not an official extension, TCK report, pass result, or accountable release signoff.
 - A generated TCK evidence receipt validates report structure and binds asserted provenance; it does not prove that the run occurred, authenticate the source revisions, make a conformance decision, complete non-TCK cases, or approve a release.
 - A generated review ledger can reject contradictory approvals and make missing/waived work visible, but it does not verify evidence contents, signatures, identities, authority, or the truth of an owner disposition.
-- The three bundled scenarios are representative rather than exhaustive.
+- The three bundled scenarios are representative rather than exhaustive; Scenario Studio can adapt them through the bounded 13-role reference vocabulary but does not persist drafts or define custom roles.
 - No hosted URL is guaranteed by this repository.
 
 ## Project records
 
 - [Productization assessment and release gates](docs/PRODUCTIZATION.md)
 - [Reference model and JSON contract](docs/REFERENCE_MODEL.md)
+- [Scenario Studio authoring workflow and proof boundary](docs/SCENARIO_STUDIO.md)
 - [A2A 1.0 deployment handoff and proof boundary](docs/A2A_HANDOFF.md)
 - [A2A implementation acceptance contract](docs/A2A_ACCEPTANCE.md)
 - [A2A TCK evidence receipt and owner-review boundary](docs/A2A_TCK_EVIDENCE.md)
