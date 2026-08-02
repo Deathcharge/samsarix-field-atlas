@@ -133,6 +133,37 @@ describe("Samsarix Field Atlas", () => {
     );
   });
 
+  it("exports blueprint findings as a local SARIF 2.1.0 report", async () => {
+    const createObjectUrl = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:samsarix-sarif");
+    const revokeObjectUrl = vi
+      .spyOn(URL, "revokeObjectURL")
+      .mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+      () => undefined
+    );
+    render(<App />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /check current scenario/i })
+    );
+    fireEvent.click(screen.getByRole("button", { name: /export sarif/i }));
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(/SARIF 2\.1\.0 report exported locally/i)
+      ).toBeVisible()
+    );
+    expect(createObjectUrl).toHaveBeenCalledOnce();
+    const blob = createObjectUrl.mock.calls[0]?.[0];
+    expect(blob).toBeInstanceOf(Blob);
+    expect((blob as Blob).type).toBe("application/sarif+json");
+    await waitFor(() =>
+      expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-sarif")
+    );
+  });
+
   it("turns a valid blueprint into an explicit A2A implementation handoff", async () => {
     const createObjectUrl = vi
       .spyOn(URL, "createObjectURL")

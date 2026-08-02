@@ -8,6 +8,7 @@ import {
 } from "../blueprint";
 import { downloadText } from "../download";
 import { createBlueprint } from "../model";
+import { createBlueprintSarif } from "../sarif";
 import A2AHandoff from "./A2AHandoff";
 
 const maximumBlueprintBytes = 1_048_576;
@@ -119,6 +120,23 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
   function exportAnalyzedReviewPacket() {
     if (analysis?.blueprint) {
       exportReviewPacket(analysis.blueprint);
+    }
+  }
+
+  async function exportSarifReport() {
+    if (!analysis) return;
+    try {
+      const report = await createBlueprintSarif(analysis, {
+        artifactUri: sourceName || "blueprint.json",
+      });
+      downloadText(
+        `${JSON.stringify(report, null, 2)}\n`,
+        `samsarix-${analysis.blueprint?.scenario.id ?? "blueprint"}-conformance.sarif.json`,
+        "application/sarif+json"
+      );
+      setNotice("SARIF 2.1.0 report exported locally. Nothing was uploaded.");
+    } catch {
+      setNotice("The browser could not create the SARIF report.");
     }
   }
 
@@ -269,14 +287,23 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
 
               <div className="result-footer">
                 <span>Source: {sourceName}</span>
-                <button
-                  className="button button-secondary"
-                  disabled={!analysis.blueprint}
-                  onClick={exportAnalyzedReviewPacket}
-                  type="button"
-                >
-                  Export review packet
-                </button>
+                <div className="result-actions">
+                  <button
+                    className="button button-secondary"
+                    onClick={exportSarifReport}
+                    type="button"
+                  >
+                    Export SARIF
+                  </button>
+                  <button
+                    className="button button-secondary"
+                    disabled={!analysis.blueprint}
+                    onClick={exportAnalyzedReviewPacket}
+                    type="button"
+                  >
+                    Export review packet
+                  </button>
+                </div>
               </div>
             </>
           )}

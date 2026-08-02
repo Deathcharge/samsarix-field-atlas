@@ -131,9 +131,10 @@ The CLI uses the same semantic validator as the browser workbench:
 pnpm blueprint:validate examples/incident.blueprint.json
 pnpm blueprint:validate examples/incident.blueprint.json --strict
 pnpm blueprint:validate examples/incident.blueprint.json --json
+pnpm --silent blueprint:validate examples/incident.blueprint.json --strict --sarif
 ```
 
-Normal mode exits successfully for a valid contract with review warnings. `--strict` turns warnings into a non-zero CI result. Invalid JSON, unsupported versions, broken role references, contradictory runtime claims, and misaligned approval gates always fail.
+Normal mode exits successfully for a valid contract with review warnings. `--strict` turns warnings into a non-zero CI result. Invalid JSON, unsupported versions, broken role references, contradictory runtime claims, and misaligned approval gates always fail. `--sarif` emits portable SARIF 2.1.0 without uploading it; see [Blueprint SARIF reporting](docs/SARIF_REPORTING.md).
 
 ## Development commands
 
@@ -146,7 +147,8 @@ Normal mode exits successfully for a valid contract with review warnings. `--str
 | `pnpm test`                          | Run model, component, and server tests once                                           |
 | `pnpm test:coverage`                 | Run tests with enforced coverage thresholds                                           |
 | `pnpm build`                         | Build static assets, the optional Node release server, and all five CLIs              |
-| `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional `--strict` or `--json`                          |
+| `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional strict, JSON, or SARIF output                   |
+| `pnpm validate:sarif-example`        | Check the deterministic strict-ready SARIF report against its committed fixture       |
 | `pnpm blueprint:a2a <file> ...`      | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
 | `pnpm validate:a2a-example`          | Check the deterministic incident Agent Card mapping against its committed fixture     |
 | `pnpm blueprint:acceptance ...`      | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |

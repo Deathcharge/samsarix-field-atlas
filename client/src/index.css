@@ -1500,6 +1500,13 @@ button.button {
   white-space: nowrap;
 }
 
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
 .workbench-notice {
   border: 1px solid var(--line);
   border-top: 0;
@@ -2289,6 +2296,10 @@ button.button {
   }
 
   .result-footer .button {
+    width: 100%;
+  }
+
+  .result-actions {
     width: 100%;
   }
 

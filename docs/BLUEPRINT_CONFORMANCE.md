@@ -16,7 +16,7 @@ Samsarix Field Atlas treats a coordination design as a reviewable data contract 
    - **ready** means the known v1 contract is internally consistent;
    - **review** means the structure is valid but one or more governance warnings need an explicit decision;
    - **invalid** means the blueprint cannot be treated as a v1 contract.
-3. Export the Markdown review packet when the contract is structurally valid.
+3. Export the Markdown review packet when the contract is structurally valid, or export SARIF 2.1.0 for any result.
 
 Files are limited to 1 MiB. Parsing, validation, and Markdown generation happen in browser memory. Field Atlas does not upload or persist imported content.
 
@@ -28,9 +28,10 @@ From a frozen install:
 pnpm blueprint:validate examples/incident.blueprint.json
 pnpm blueprint:validate examples/incident.blueprint.json --strict
 pnpm blueprint:validate examples/incident.blueprint.json --json
+pnpm --silent blueprint:validate examples/incident.blueprint.json --strict --sarif
 ```
 
-Options can be combined. `--json` emits a machine-readable result without echoing the imported blueprint.
+`--json` emits a Field Atlas machine result. `--sarif` emits standard SARIF 2.1.0 with errors and warnings, stable fingerprints, the source artifact URI, and JSONPath logical locations. The two output modes are mutually exclusive. `--check <expected.sarif.json>` can enforce exact SARIF fixture stability. See [Blueprint SARIF reporting](SARIF_REPORTING.md).
 
 | Exit | Meaning                                                                    |
 | ---: | -------------------------------------------------------------------------- |
@@ -71,6 +72,7 @@ A ready result does not prove that evidence exists, a person approved an action,
 
 - [`schema/samsarix-field-atlas.v1.schema.json`](../schema/samsarix-field-atlas.v1.schema.json) is the portable JSON Schema shape.
 - [`examples/incident.blueprint.json`](../examples/incident.blueprint.json) is a complete strict-mode fixture.
+- [`examples/incident.blueprint.sarif.json`](../examples/incident.blueprint.sarif.json) is its exact strict-ready SARIF 2.1.0 result.
 - [`client/src/blueprint.ts`](../client/src/blueprint.ts) is the normative semantic checker for this repository.
 
 JSON Schema captures the portable shape. The shared validator adds cross-field semantics such as reference integrity, ordered stages, approval alignment, and high-risk human oversight.
