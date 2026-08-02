@@ -1,5 +1,12 @@
 import { realpathSync } from "node:fs";
-import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
+import {
+  basename,
+  dirname,
+  isAbsolute,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
 import {
@@ -119,7 +126,7 @@ async function main(): Promise<number> {
       strict,
       sources,
       {
-        uri: inputFile,
+        uri: basename(manifestPath),
         bytes: manifestFile.bytes,
         analysis: manifestAnalysis,
       }

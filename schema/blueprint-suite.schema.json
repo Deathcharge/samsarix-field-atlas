@@ -55,7 +55,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 512,
-            "pattern": "^[a-zA-Z0-9._-]+(?:/[a-zA-Z0-9._-]+)*\\.json$"
+            "pattern": "^(?!\\.{1,2}(?:/|$))[a-zA-Z0-9._-]+(?:/(?!\\.{1,2}(?:/|$))[a-zA-Z0-9._-]+)*\\.json$"
           },
           "tags": {
             "type": "array",

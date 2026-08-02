@@ -6,14 +6,13 @@ import {
   type Blueprint,
   type BlueprintAnalysis,
 } from "../blueprint";
+import { readBlueprintFile } from "../blueprint-file";
 import { downloadText } from "../download";
 import { createBlueprint } from "../model";
 import { createBlueprintSarif } from "../sarif";
 import A2AHandoff from "./A2AHandoff";
 import BlueprintSuiteWorkbench from "./BlueprintSuiteWorkbench";
 import ScenarioEditor from "./ScenarioEditor";
-
-const maximumBlueprintBytes = 1_048_576;
 
 function failedImport(message: string): BlueprintAnalysis {
   return {
@@ -94,7 +93,8 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
     event.currentTarget.value = "";
     if (!file) return;
 
-    if (file.size > maximumBlueprintBytes) {
+    const result = await readBlueprintFile(file);
+    if (!result.ok && result.reason === "too-large") {
       const failure = failedImport("Blueprint files must be 1 MiB or smaller.");
       setAnalysis(failure);
       setSourceName(file.name);
@@ -102,18 +102,16 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
       return;
     }
 
-    try {
-      const bytes = await file.arrayBuffer();
-      const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-      analyze(JSON.parse(text) as unknown, file.name);
-    } catch {
+    if (!result.ok) {
       const failure = failedImport(
         "The selected file must contain valid UTF-8 JSON."
       );
       setAnalysis(failure);
       setSourceName(file.name);
       setNotice(`${file.name} could not be parsed as UTF-8 JSON.`);
+      return;
     }
+    analyze(result.value, file.name);
   }
 
   function exportReviewPacket(blueprint: Blueprint) {

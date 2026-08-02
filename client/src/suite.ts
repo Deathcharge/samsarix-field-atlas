@@ -119,11 +119,12 @@ function checkAllowedFields(
 ) {
   for (const key of Object.keys(value)) {
     if (!allowed.includes(key)) {
+      const reportedKey = key.length > 128 ? `${key.slice(0, 128)}…` : key;
       addFinding(
         findings,
         "warning",
         "UNRECOGNIZED_SUITE_FIELD",
-        `${path}.${key}`,
+        `${path}.${reportedKey}`,
         "This additive field is not interpreted by Field Atlas suite v1."
       );
     }

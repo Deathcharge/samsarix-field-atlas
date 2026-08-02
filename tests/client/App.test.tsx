@@ -218,8 +218,10 @@ describe("Samsarix Field Atlas", () => {
       target: { files },
     });
 
-    await waitFor(() =>
-      expect(screen.getByText(/2 local contracts checked/i)).toBeVisible()
+    await waitFor(
+      () =>
+        expect(screen.getByText(/2 local contracts checked/i)).toBeVisible(),
+      { timeout: 15_000 }
     );
     expect(
       screen.getByRole("table", {

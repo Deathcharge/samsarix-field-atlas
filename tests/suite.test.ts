@@ -46,7 +46,12 @@ describe("blueprint suites", () => {
       tags: ["high-risk", "high-risk"],
     };
     const analysis = validateBlueprintSuiteManifest(value);
+    const ajv = new Ajv2020({ allErrors: true, strict: true });
+    const validate = ajv.compile(
+      fixture("schema/blueprint-suite.schema.json") as object
+    );
 
+    expect(validate(value)).toBe(false);
     expect(analysis.status).toBe("invalid");
     expect(analysis.findings.map(finding => finding.code)).toEqual(
       expect.arrayContaining([
@@ -71,6 +76,36 @@ describe("blueprint suites", () => {
         path: "$.releaseChannel",
       })
     );
+  });
+
+  it("bounds additive-field paths to the public report limit", async () => {
+    const longKey = "x".repeat(2_000);
+    const value = { ...manifest(), [longKey]: true };
+    const analysis = validateBlueprintSuiteManifest(value);
+    const blueprint = createBlueprint("incident", "2026-08-01T12:00:00.000Z");
+    const report = await createBlueprintSuiteReport(
+      manifest().suite,
+      false,
+      [
+        {
+          entryId: "incident",
+          artifactUri: "incident.json",
+          tags: [],
+          value: blueprint,
+        },
+      ],
+      {
+        uri: "suite.json",
+        bytes: new TextEncoder().encode(JSON.stringify(value)),
+        analysis,
+      }
+    );
+    const finding = report.source.manifest?.findings.find(
+      candidate => candidate.code === "UNRECOGNIZED_SUITE_FIELD"
+    );
+
+    expect(finding?.path.endsWith("…")).toBe(true);
+    expect(finding?.path.length).toBeLessThanOrEqual(1_024);
   });
 
   it("promotes manifest warnings under the committed strict policy", async () => {

@@ -35,7 +35,7 @@ export function readFileWithLimit(
       );
     }
 
-    const buffer = Buffer.allocUnsafe(maximumBytes + 1);
+    const buffer = Buffer.allocUnsafe(status.size + 1);
     let bytesRead = 0;
     while (bytesRead < buffer.length) {
       const count = readSync(
@@ -47,6 +47,9 @@ export function readFileWithLimit(
       );
       if (count === 0) break;
       bytesRead += count;
+    }
+    if (bytesRead > status.size) {
+      throw new Error(`${absolutePath} changed while it was being read.`);
     }
     if (bytesRead > maximumBytes) {
       throw new Error(

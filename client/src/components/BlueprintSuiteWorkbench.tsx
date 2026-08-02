@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent } from "react";
 
+import { readBlueprintFile } from "../blueprint-file";
 import { downloadText } from "../download";
 import {
   createBlueprintSuiteReport,
@@ -7,7 +8,6 @@ import {
   type BlueprintSuiteSource,
 } from "../suite";
 
-const maximumBlueprintBytes = 1_048_576;
 const maximumBrowserSuiteEntries = 16;
 
 function entryId(filename: string, index: number): string {
@@ -29,28 +29,24 @@ async function readSource(
     artifactUri: file.name,
     tags: [],
   };
-  if (file.size > maximumBlueprintBytes) {
-    return {
-      ...base,
-      importError: "Blueprint files must be 1 MiB or smaller.",
-    };
-  }
-
-  try {
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    try {
-      const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-      return { ...base, bytes, value: JSON.parse(text) as unknown };
-    } catch {
+  const result = await readBlueprintFile(file);
+  if (!result.ok) {
+    if (result.reason === "too-large") {
       return {
         ...base,
-        bytes,
-        importError: "The suite entry must contain valid UTF-8 JSON.",
+        importError: "Blueprint files must be 1 MiB or smaller.",
       };
     }
-  } catch {
-    return { ...base, importError: "The browser could not read this file." };
+    if (result.reason === "read-failed") {
+      return { ...base, importError: "The browser could not read this file." };
+    }
+    return {
+      ...base,
+      bytes: result.bytes,
+      importError: "The suite entry must contain valid UTF-8 JSON.",
+    };
   }
+  return { ...base, bytes: result.bytes, value: result.value };
 }
 
 function BlueprintSuiteWorkbench() {

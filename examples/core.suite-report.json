@@ -11,7 +11,7 @@
   },
   "source": {
     "manifest": {
-      "uri": "examples/core.suite.json",
+      "uri": "core.suite.json",
       "sha256": "49d2649b86ae6d067d24e6aaa95bba98914e735288423e17cf743a99cff9d089",
       "status": "ready",
       "validationStatus": "ready",
