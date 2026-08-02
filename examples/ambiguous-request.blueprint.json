@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "samsarix-field-atlas/1",
+  "mode": "illustrative-reference",
+  "generatedAt": "2026-08-01T12:00:00.000Z",
+  "scenario": {
+    "id": "ambiguous-request",
+    "title": "Clarify an ambiguous request",
+    "risk": "medium",
+    "objective": "Reach a useful next step without fabricating user needs or inflating an uncertain request into a platform.",
+    "successCriteria": [
+      "The affected person and desired outcome are concrete",
+      "Assumptions are visible",
+      "The smallest useful product slice is named",
+      "Deferred ideas stay outside the committed scope"
+    ]
+  },
+  "indicators": {
+    "note": "Illustrative coordination indicators, not telemetry.",
+    "baseline": {
+      "harmony": 0.46,
+      "resilience": 0.61,
+      "prana": 0.58,
+      "drishti": 0.31,
+      "klesha": 0.53
+    },
+    "outcome": {
+      "harmony": 0.84,
+      "resilience": 0.69,
+      "prana": 0.58,
+      "drishti": 0.81,
+      "klesha": 0.18
+    }
+  },
+  "agents": [
+    {
+      "id": "kael",
+      "name": "Kael",
+      "layer": "consciousness",
+      "role": "Ethical reasoning",
+      "responsibility": "Turns owner intent and human impact into decision constraints."
+    },
+    {
+      "id": "lumina",
+      "name": "Lumina",
+      "layer": "consciousness",
+      "role": "Empathic resonance",
+      "responsibility": "Represents affected people, communication needs, and care."
+    },
+    {
+      "id": "aether",
+      "name": "Aether",
+      "layer": "consciousness",
+      "role": "Flow dynamics",
+      "responsibility": "Shapes an ordered flow and spots coordination friction."
+    },
+    {
+      "id": "grok",
+      "name": "Grok",
+      "layer": "operational",
+      "role": "Pattern recognition",
+      "responsibility": "Connects evidence, anomalies, and likely failure modes."
+    },
+    {
+      "id": "agni",
+      "name": "Agni",
+      "layer": "operational",
+      "role": "Transformation",
+      "responsibility": "Converts a settled direction into a concrete change proposal."
+    },
+    {
+      "id": "sangha",
+      "name": "SanghaCore",
+      "layer": "integration",
+      "role": "Collective unity",
+      "responsibility": "Reconciles specialist outputs into one accountable decision."
+    },
+    {
+      "id": "shadow",
+      "name": "Shadow",
+      "layer": "integration",
+      "role": "Memory archive",
+      "responsibility": "Preserves context, deferred work, and reusable lessons."
+    },
+    {
+      "id": "entityx",
+      "name": "EntityX",
+      "layer": "integration",
+      "role": "Introspective companion",
+      "responsibility": "Surfaces assumptions and asks what the system may have missed."
+    }
+  ],
+  "trace": [
+    {
+      "order": 1,
+      "agentId": "lumina",
+      "title": "Name the person and impact",
+      "action": "Translate the request into a concrete user, situation, frustration, and desired change.",
+      "boundary": null,
+      "evidence": "Human-centered problem frame"
+    },
+    {
+      "order": 2,
+      "agentId": "entityx",
+      "title": "Expose hidden assumptions",
+      "action": "Separate supplied facts from guesses, preferences, and questions that still need an owner.",
+      "boundary": null,
+      "evidence": "Assumption ledger"
+    },
+    {
+      "order": 3,
+      "agentId": "grok",
+      "title": "Recognize the product pattern",
+      "action": "Match the problem to proven product shapes without copying a larger platform by default.",
+      "boundary": null,
+      "evidence": "Candidate product shapes"
+    },
+    {
+      "order": 4,
+      "agentId": "kael",
+      "title": "Set the decision boundaries",
+      "action": "Define what would be misleading, harmful, or unjustified given the available evidence.",
+      "boundary": "policy",
+      "evidence": "Product constraints"
+    },
+    {
+      "order": 5,
+      "agentId": "aether",
+      "title": "Shape the smallest complete journey",
+      "action": "Order onboarding, core action, output, failure handling, and the next user decision.",
+      "boundary": null,
+      "evidence": "Vertical-slice journey"
+    },
+    {
+      "order": 6,
+      "agentId": "sangha",
+      "title": "Reconcile scope and tradeoffs",
+      "action": "Compose one direction and preserve meaningful dissent as explicit acceptance risks.",
+      "boundary": "human",
+      "evidence": "Owner decision brief"
+    },
+    {
+      "order": 7,
+      "agentId": "agni",
+      "title": "Transform direction into a test",
+      "action": "Define a reversible implementation slice and the evidence that would justify expansion.",
+      "boundary": "tool",
+      "evidence": "Validation-ready slice"
+    },
+    {
+      "order": 8,
+      "agentId": "shadow",
+      "title": "Preserve the learning boundary",
+      "action": "Record chosen scope, deferred ideas, and the conditions that would reopen the decision.",
+      "boundary": "memory",
+      "evidence": "Decision memory"
+    }
+  ],
+  "runtime": {
+    "executesAgents": false,
+    "callsExternalServices": false,
+    "storesRemoteData": false,
+    "requiresHumanApprovalAt": [6]
+  }
+}

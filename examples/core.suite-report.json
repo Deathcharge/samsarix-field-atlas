@@ -1,0 +1,215 @@
+{
+  "schemaVersion": "samsarix-field-atlas/suite-report/1",
+  "mode": "contract-conformance-report",
+  "suite": {
+    "id": "core-reference-scenarios",
+    "title": "Core reference scenarios",
+    "description": "Strict conformance coverage for the three built-in Samsarix Field Atlas coordination scenarios."
+  },
+  "policy": {
+    "strict": true
+  },
+  "source": {
+    "manifest": {
+      "uri": "examples/core.suite.json",
+      "sha256": "49d2649b86ae6d067d24e6aaa95bba98914e735288423e17cf743a99cff9d089",
+      "status": "ready",
+      "validationStatus": "ready",
+      "counts": {
+        "error": 0,
+        "warning": 0,
+        "pass": 2
+      },
+      "findings": [
+        {
+          "severity": "pass",
+          "code": "SUITE_MANIFEST_CONFORMANT",
+          "path": "$",
+          "message": "3 bounded blueprint entries are declared."
+        },
+        {
+          "severity": "pass",
+          "code": "SUITE_PATHS_PORTABLE",
+          "path": "$.entries",
+          "message": "All blueprint paths are portable, relative JSON paths without traversal syntax."
+        }
+      ]
+    }
+  },
+  "summary": {
+    "status": "ready",
+    "cases": {
+      "total": 3,
+      "ready": 3,
+      "review": 0,
+      "invalid": 0
+    },
+    "findings": {
+      "error": 0,
+      "warning": 0,
+      "pass": 14
+    }
+  },
+  "cases": [
+    {
+      "id": "breaking-change",
+      "artifact": {
+        "uri": "breaking-change.blueprint.json",
+        "sha256": "3fa2c93dddfced8629618f818d4087811b746a8f7f76d1d861379a3f9b0d0261",
+        "bytes": 5139
+      },
+      "tags": ["release", "high-risk"],
+      "status": "ready",
+      "validationStatus": "ready",
+      "scenario": {
+        "id": "breaking-change",
+        "title": "Ship a breaking change",
+        "risk": "high"
+      },
+      "counts": {
+        "error": 0,
+        "warning": 0,
+        "pass": 4
+      },
+      "metrics": {
+        "roles": 8,
+        "stages": 8,
+        "humanGates": 2,
+        "evidenceArtifacts": 8
+      },
+      "findings": [
+        {
+          "code": "SCHEMA_CONFORMANT",
+          "severity": "pass",
+          "path": "$",
+          "message": "Required v1 fields, types, limits, and references are internally consistent."
+        },
+        {
+          "code": "EVIDENCE_NAMED",
+          "severity": "pass",
+          "path": "$.trace",
+          "message": "All 8 stages name an expected evidence artifact."
+        },
+        {
+          "code": "AUTHORITY_ALIGNED",
+          "severity": "pass",
+          "path": "$.runtime.requiresHumanApprovalAt",
+          "message": "2 human approval gates are aligned with the trace."
+        },
+        {
+          "code": "RUNTIME_DISCLOSED",
+          "severity": "pass",
+          "path": "$.runtime",
+          "message": "The reference truthfully disclaims execution, external calls, and remote storage."
+        }
+      ]
+    },
+    {
+      "id": "incident",
+      "artifact": {
+        "uri": "incident.blueprint.json",
+        "sha256": "8b9ac3159aca8495bba2bed70494821de01bc017781cbfa4cfdfdd744c5fad41",
+        "bytes": 5004
+      },
+      "tags": ["operations", "high-risk"],
+      "status": "ready",
+      "validationStatus": "ready",
+      "scenario": {
+        "id": "incident",
+        "title": "Triage a production incident",
+        "risk": "high"
+      },
+      "counts": {
+        "error": 0,
+        "warning": 0,
+        "pass": 4
+      },
+      "metrics": {
+        "roles": 8,
+        "stages": 8,
+        "humanGates": 1,
+        "evidenceArtifacts": 8
+      },
+      "findings": [
+        {
+          "code": "SCHEMA_CONFORMANT",
+          "severity": "pass",
+          "path": "$",
+          "message": "Required v1 fields, types, limits, and references are internally consistent."
+        },
+        {
+          "code": "EVIDENCE_NAMED",
+          "severity": "pass",
+          "path": "$.trace",
+          "message": "All 8 stages name an expected evidence artifact."
+        },
+        {
+          "code": "AUTHORITY_ALIGNED",
+          "severity": "pass",
+          "path": "$.runtime.requiresHumanApprovalAt",
+          "message": "1 human approval gate is aligned with the trace."
+        },
+        {
+          "code": "RUNTIME_DISCLOSED",
+          "severity": "pass",
+          "path": "$.runtime",
+          "message": "The reference truthfully disclaims execution, external calls, and remote storage."
+        }
+      ]
+    },
+    {
+      "id": "ambiguous-request",
+      "artifact": {
+        "uri": "ambiguous-request.blueprint.json",
+        "sha256": "dde8e1df0cafc9e287d60db5d44d2291d76cca7de75a0f46c0b173676f8e7195",
+        "bytes": 5071
+      },
+      "tags": ["product", "medium-risk"],
+      "status": "ready",
+      "validationStatus": "ready",
+      "scenario": {
+        "id": "ambiguous-request",
+        "title": "Clarify an ambiguous request",
+        "risk": "medium"
+      },
+      "counts": {
+        "error": 0,
+        "warning": 0,
+        "pass": 4
+      },
+      "metrics": {
+        "roles": 8,
+        "stages": 8,
+        "humanGates": 1,
+        "evidenceArtifacts": 8
+      },
+      "findings": [
+        {
+          "code": "SCHEMA_CONFORMANT",
+          "severity": "pass",
+          "path": "$",
+          "message": "Required v1 fields, types, limits, and references are internally consistent."
+        },
+        {
+          "code": "EVIDENCE_NAMED",
+          "severity": "pass",
+          "path": "$.trace",
+          "message": "All 8 stages name an expected evidence artifact."
+        },
+        {
+          "code": "AUTHORITY_ALIGNED",
+          "severity": "pass",
+          "path": "$.runtime.requiresHumanApprovalAt",
+          "message": "1 human approval gate is aligned with the trace."
+        },
+        {
+          "code": "RUNTIME_DISCLOSED",
+          "severity": "pass",
+          "path": "$.runtime",
+          "message": "The reference truthfully disclaims execution, external calls, and remote storage."
+        }
+      ]
+    }
+  ],
+  "proofBoundary": "Field Atlas checked local contract structure and exact imported bytes; it did not execute agents, call services, authenticate owners, verify evidence, or approve a release."
+}

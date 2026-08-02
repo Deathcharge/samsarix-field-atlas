@@ -10,6 +10,7 @@ import { downloadText } from "../download";
 import { createBlueprint } from "../model";
 import { createBlueprintSarif } from "../sarif";
 import A2AHandoff from "./A2AHandoff";
+import BlueprintSuiteWorkbench from "./BlueprintSuiteWorkbench";
 import ScenarioEditor from "./ScenarioEditor";
 
 const maximumBlueprintBytes = 1_048_576;
@@ -329,6 +330,8 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
           )}
         </div>
       </div>
+
+      <BlueprintSuiteWorkbench />
 
       <p aria-live="polite" className="run-notice workbench-notice">
         {notice}

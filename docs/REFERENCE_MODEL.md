@@ -79,3 +79,5 @@ The following excerpt is intentionally abridged. Use the complete, strict-valid 
 Consumers should reject unknown major schema versions and tolerate unknown additive fields within version 1. The reference validator reports additive fields as warnings so an owner can confirm their meaning. Consumers must treat every string as untrusted data, validate array sizes, and never evaluate or execute exported content.
 
 The canonical serializer lives in `client/src/model.ts`; the shared TypeScript definitions, semantic validator, and review-packet generator live in `client/src/blueprint.ts`. They are protected by the model and application test suites.
+
+When several blueprints must remain conformant under one policy, use the separate [`samsarix-field-atlas/suite/1`](BLUEPRINT_SUITES.md) manifest. A suite groups blueprint artifacts but does not change, extend, or execute the v1 blueprint contract.
