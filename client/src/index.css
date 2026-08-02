@@ -2146,6 +2146,92 @@ button.button {
   font-size: 0.76rem;
 }
 
+.suite-diff-workbench {
+  background:
+    linear-gradient(145deg, rgba(101, 226, 212, 0.045), transparent 42%),
+    rgba(17, 20, 15, 0.72);
+}
+
+.suite-diff-sources {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+}
+
+.suite-diff-sources > div {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--paper-raised);
+}
+
+.suite-diff-sources span,
+.suite-diff-sources small {
+  color: var(--ink-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.65rem;
+}
+
+.suite-diff-sources span {
+  text-transform: uppercase;
+}
+
+.suite-diff-sources strong {
+  overflow: hidden;
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suite-diff-result.is-fail {
+  border-color: rgba(255, 123, 99, 0.52);
+}
+
+.suite-diff-summary {
+  flex-wrap: wrap;
+}
+
+.suite-diff-table {
+  min-width: 58rem;
+}
+
+.suite-diff-table tbody tr {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 3.8rem;
+}
+
+.impact-badge {
+  display: inline-flex;
+  padding: 0.18rem 0.42rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.impact-regression,
+.impact-mixed {
+  border-color: rgba(255, 123, 99, 0.52);
+  color: var(--coral);
+}
+
+.impact-review {
+  border-color: rgba(255, 209, 116, 0.48);
+  color: var(--yellow);
+}
+
+.impact-improvement {
+  border-color: rgba(101, 226, 212, 0.5);
+  color: var(--cyan);
+}
+
 .a2a-handoff {
   margin-top: 2rem;
   overflow: hidden;
@@ -3028,6 +3114,10 @@ button.button {
   .suite-summary {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .suite-diff-sources {
+    grid-template-columns: 1fr;
   }
 
   .a2a-heading,

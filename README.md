@@ -148,6 +148,18 @@ pnpm blueprint:suite examples/core.suite.json --check examples/core.suite-report
 
 The suite CLI resolves portable relative paths, rejects traversal (including symlink escapes), checks up to 64 files with the shared semantic validator, hashes exact imported bytes, and emits one deterministic aggregate report. The browser workbench can batch-review up to 16 selected files without uploading them. See [Blueprint suites](docs/BLUEPRINT_SUITES.md).
 
+## Compare a suite baseline
+
+Compare a known suite report with a candidate by stable case ID:
+
+```bash
+pnpm blueprint:suite-diff \
+  examples/core.suite-report.json \
+  examples/core-candidate.suite-report.json
+```
+
+The comparator validates both imported reports, binds their exact bytes, and classifies added, removed, modified, unchanged, regressed, improved, mixed, and review-only cases. By default regressions fail; `--fail-on-change` also blocks additions, improvements, metadata, policy, manifest, and content drift. The browser offers the same local comparison and JSON export. See [baseline comparison semantics](docs/BLUEPRINT_SUITES.md#baseline-comparison).
+
 ## Development commands
 
 | Command                              | Purpose                                                                               |
@@ -158,11 +170,13 @@ The suite CLI resolves portable relative paths, rejects traversal (including sym
 | `pnpm check`                         | Run the strict TypeScript compiler check                                              |
 | `pnpm test`                          | Run model, component, and server tests once                                           |
 | `pnpm test:coverage`                 | Run tests with enforced coverage thresholds                                           |
-| `pnpm build`                         | Build static assets, the optional Node release server, and all six CLIs               |
+| `pnpm build`                         | Build static assets, the optional Node release server, and all seven CLIs             |
 | `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional strict, JSON, or SARIF output                   |
 | `pnpm blueprint:suite <manifest>`    | Batch-check a bounded suite and optionally compare its deterministic report           |
+| `pnpm blueprint:suite-diff <a> <b>`  | Compare two suite reports and fail on regressions or, optionally, any change          |
 | `pnpm validate:sarif-example`        | Check the deterministic strict-ready SARIF report against its committed fixture       |
 | `pnpm validate:suite-example`        | Check all three core scenarios against the committed strict-ready suite report        |
+| `pnpm validate:suite-diff-example`   | Reproduce the candidate report and deterministic baseline comparison fixture          |
 | `pnpm blueprint:a2a <file> ...`      | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
 | `pnpm validate:a2a-example`          | Check the deterministic incident Agent Card mapping against its committed fixture     |
 | `pnpm blueprint:acceptance ...`      | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |
@@ -187,6 +201,7 @@ The build produces:
 - `dist/index.js`: a small Express server with `/healthz`, strict browser security headers, bounded timeouts, and graceful shutdown.
 - `dist/atlas-validate.js`: the bundled, dependency-free blueprint validation CLI.
 - `dist/atlas-suite.js`: the bundled, dependency-free blueprint suite and report CLI.
+- `dist/atlas-suite-diff.js`: the bundled, dependency-free suite baseline comparison CLI.
 - `dist/atlas-a2a.js`: the bundled, dependency-free A2A draft generation and fixture-check CLI.
 - `dist/atlas-acceptance.js`: the bundled, dependency-free A2A acceptance-plan and fixture-check CLI.
 - `dist/atlas-tck-evidence.js`: the bundled, dependency-free A2A TCK evidence receipt and fixture-check CLI.

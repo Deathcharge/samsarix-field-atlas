@@ -1,0 +1,270 @@
+{
+  "schemaVersion": "samsarix-field-atlas/suite-diff/1",
+  "mode": "contract-conformance-diff",
+  "policy": {
+    "failOn": "regression"
+  },
+  "source": {
+    "baseline": {
+      "uri": "core.suite-report.json",
+      "sha256": "52994c82ddadbde841ebf5abfd7ef6b1a057dfea67186b26d7827fd680728f87",
+      "suite": {
+        "id": "core-reference-scenarios",
+        "title": "Core reference scenarios",
+        "description": "Strict conformance coverage for the three built-in Samsarix Field Atlas coordination scenarios."
+      },
+      "strict": true,
+      "status": "ready",
+      "manifestSha256": "49d2649b86ae6d067d24e6aaa95bba98914e735288423e17cf743a99cff9d089"
+    },
+    "candidate": {
+      "uri": "core-candidate.suite-report.json",
+      "sha256": "3a8f7be1558ea8f5ef215f5f841e1ad49fd3d41f37cc4dfc7c1fe1061ef1786e",
+      "suite": {
+        "id": "core-reference-scenarios",
+        "title": "Core reference scenarios",
+        "description": "Strict conformance coverage for the three built-in Samsarix Field Atlas coordination scenarios."
+      },
+      "strict": true,
+      "status": "ready",
+      "manifestSha256": "1475d087adb86087692ddeed3a21aaa35ede7f8880170ec7de3f5f0ae20b4690"
+    }
+  },
+  "summary": {
+    "outcome": "review",
+    "gate": "pass",
+    "reportImpact": "none",
+    "suiteMetadataChanged": false,
+    "policyChanged": false,
+    "manifestChanged": true,
+    "cases": {
+      "baseline": 3,
+      "candidate": 3,
+      "total": 3,
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "unchanged": 2
+    },
+    "impact": {
+      "regression": 0,
+      "improvement": 0,
+      "review": 1,
+      "mixed": 0,
+      "none": 2
+    }
+  },
+  "cases": [
+    {
+      "id": "ambiguous-request",
+      "change": "unchanged",
+      "impact": "none",
+      "differences": [],
+      "baseline": {
+        "artifact": {
+          "uri": "ambiguous-request.blueprint.json",
+          "sha256": "dde8e1df0cafc9e287d60db5d44d2291d76cca7de75a0f46c0b173676f8e7195",
+          "bytes": 5071
+        },
+        "tags": ["medium-risk", "product"],
+        "status": "ready",
+        "validationStatus": "ready",
+        "scenario": {
+          "id": "ambiguous-request",
+          "title": "Clarify an ambiguous request",
+          "risk": "medium"
+        },
+        "counts": {
+          "error": 0,
+          "warning": 0,
+          "pass": 4
+        },
+        "metrics": {
+          "roles": 8,
+          "stages": 8,
+          "humanGates": 1,
+          "evidenceArtifacts": 8
+        },
+        "findingCodes": [
+          "AUTHORITY_ALIGNED",
+          "EVIDENCE_NAMED",
+          "RUNTIME_DISCLOSED",
+          "SCHEMA_CONFORMANT"
+        ]
+      },
+      "candidate": {
+        "artifact": {
+          "uri": "ambiguous-request.blueprint.json",
+          "sha256": "dde8e1df0cafc9e287d60db5d44d2291d76cca7de75a0f46c0b173676f8e7195",
+          "bytes": 5071
+        },
+        "tags": ["medium-risk", "product"],
+        "status": "ready",
+        "validationStatus": "ready",
+        "scenario": {
+          "id": "ambiguous-request",
+          "title": "Clarify an ambiguous request",
+          "risk": "medium"
+        },
+        "counts": {
+          "error": 0,
+          "warning": 0,
+          "pass": 4
+        },
+        "metrics": {
+          "roles": 8,
+          "stages": 8,
+          "humanGates": 1,
+          "evidenceArtifacts": 8
+        },
+        "findingCodes": [
+          "AUTHORITY_ALIGNED",
+          "EVIDENCE_NAMED",
+          "RUNTIME_DISCLOSED",
+          "SCHEMA_CONFORMANT"
+        ]
+      }
+    },
+    {
+      "id": "breaking-change",
+      "change": "unchanged",
+      "impact": "none",
+      "differences": [],
+      "baseline": {
+        "artifact": {
+          "uri": "breaking-change.blueprint.json",
+          "sha256": "3fa2c93dddfced8629618f818d4087811b746a8f7f76d1d861379a3f9b0d0261",
+          "bytes": 5139
+        },
+        "tags": ["high-risk", "release"],
+        "status": "ready",
+        "validationStatus": "ready",
+        "scenario": {
+          "id": "breaking-change",
+          "title": "Ship a breaking change",
+          "risk": "high"
+        },
+        "counts": {
+          "error": 0,
+          "warning": 0,
+          "pass": 4
+        },
+        "metrics": {
+          "roles": 8,
+          "stages": 8,
+          "humanGates": 2,
+          "evidenceArtifacts": 8
+        },
+        "findingCodes": [
+          "AUTHORITY_ALIGNED",
+          "EVIDENCE_NAMED",
+          "RUNTIME_DISCLOSED",
+          "SCHEMA_CONFORMANT"
+        ]
+      },
+      "candidate": {
+        "artifact": {
+          "uri": "breaking-change.blueprint.json",
+          "sha256": "3fa2c93dddfced8629618f818d4087811b746a8f7f76d1d861379a3f9b0d0261",
+          "bytes": 5139
+        },
+        "tags": ["high-risk", "release"],
+        "status": "ready",
+        "validationStatus": "ready",
+        "scenario": {
+          "id": "breaking-change",
+          "title": "Ship a breaking change",
+          "risk": "high"
+        },
+        "counts": {
+          "error": 0,
+          "warning": 0,
+          "pass": 4
+        },
+        "metrics": {
+          "roles": 8,
+          "stages": 8,
+          "humanGates": 2,
+          "evidenceArtifacts": 8
+        },
+        "findingCodes": [
+          "AUTHORITY_ALIGNED",
+          "EVIDENCE_NAMED",
+          "RUNTIME_DISCLOSED",
+          "SCHEMA_CONFORMANT"
+        ]
+      }
+    },
+    {
+      "id": "incident",
+      "change": "modified",
+      "impact": "review",
+      "differences": ["tags"],
+      "baseline": {
+        "artifact": {
+          "uri": "incident.blueprint.json",
+          "sha256": "8b9ac3159aca8495bba2bed70494821de01bc017781cbfa4cfdfdd744c5fad41",
+          "bytes": 5004
+        },
+        "tags": ["high-risk", "operations"],
+        "status": "ready",
+        "validationStatus": "ready",
+        "scenario": {
+          "id": "incident",
+          "title": "Triage a production incident",
+          "risk": "high"
+        },
+        "counts": {
+          "error": 0,
+          "warning": 0,
+          "pass": 4
+        },
+        "metrics": {
+          "roles": 8,
+          "stages": 8,
+          "humanGates": 1,
+          "evidenceArtifacts": 8
+        },
+        "findingCodes": [
+          "AUTHORITY_ALIGNED",
+          "EVIDENCE_NAMED",
+          "RUNTIME_DISCLOSED",
+          "SCHEMA_CONFORMANT"
+        ]
+      },
+      "candidate": {
+        "artifact": {
+          "uri": "incident.blueprint.json",
+          "sha256": "8b9ac3159aca8495bba2bed70494821de01bc017781cbfa4cfdfdd744c5fad41",
+          "bytes": 5004
+        },
+        "tags": ["high-risk", "operations", "release-critical"],
+        "status": "ready",
+        "validationStatus": "ready",
+        "scenario": {
+          "id": "incident",
+          "title": "Triage a production incident",
+          "risk": "high"
+        },
+        "counts": {
+          "error": 0,
+          "warning": 0,
+          "pass": 4
+        },
+        "metrics": {
+          "roles": 8,
+          "stages": 8,
+          "humanGates": 1,
+          "evidenceArtifacts": 8
+        },
+        "findingCodes": [
+          "AUTHORITY_ALIGNED",
+          "EVIDENCE_NAMED",
+          "RUNTIME_DISCLOSED",
+          "SCHEMA_CONFORMANT"
+        ]
+      }
+    }
+  ],
+  "proofBoundary": "Field Atlas compared two local conformance reports and their exact imported bytes; it did not execute agents, evaluate runtime quality, verify source artifacts beyond report consistency, authenticate owners, or approve a release."
+}

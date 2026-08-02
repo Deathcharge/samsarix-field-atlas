@@ -81,3 +81,5 @@ Consumers should reject unknown major schema versions and tolerate unknown addit
 The canonical serializer lives in `client/src/model.ts`; the shared TypeScript definitions, semantic validator, and review-packet generator live in `client/src/blueprint.ts`. They are protected by the model and application test suites.
 
 When several blueprints must remain conformant under one policy, use the separate [`samsarix-field-atlas/suite/1`](BLUEPRINT_SUITES.md) manifest. A suite groups blueprint artifacts but does not change, extend, or execute the v1 blueprint contract.
+
+When a candidate collection must be reviewed against a known report baseline, use the separate [`samsarix-field-atlas/suite-diff/1`](BLUEPRINT_SUITES.md#baseline-comparison) artifact. It aligns report cases by stable entry ID and classifies conformance drift without changing either blueprint, re-running a target, or making a release decision.

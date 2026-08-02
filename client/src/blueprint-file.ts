@@ -21,9 +21,10 @@ export type BlueprintFileReadResult =
     };
 
 export async function readBlueprintFile(
-  file: File
+  file: File,
+  maximumBytes = maximumBlueprintBytes
 ): Promise<BlueprintFileReadResult> {
-  if (file.size > maximumBlueprintBytes) {
+  if (file.size > maximumBytes) {
     return { ok: false, reason: "too-large" };
   }
 
