@@ -1,0 +1,392 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:samsarix:field-atlas:suite-diff:1",
+  "title": "Samsarix Field Atlas blueprint suite diff v1",
+  "description": "A deterministic comparison of two internally consistent suite reports, bound by exact-byte SHA-256, without runtime or release-approval claims.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "mode",
+    "policy",
+    "source",
+    "summary",
+    "cases",
+    "proofBoundary"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "samsarix-field-atlas/suite-diff/1"
+    },
+    "mode": {
+      "const": "contract-conformance-diff"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failOn"],
+      "properties": {
+        "failOn": { "enum": ["regression", "change"] }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "candidate"],
+      "properties": {
+        "baseline": { "$ref": "#/$defs/source" },
+        "candidate": { "$ref": "#/$defs/source" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "gate",
+        "reportImpact",
+        "suiteMetadataChanged",
+        "policyChanged",
+        "manifestChanged",
+        "cases",
+        "impact"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": ["regression", "review", "improvement", "unchanged"]
+        },
+        "gate": { "enum": ["pass", "fail"] },
+        "reportImpact": {
+          "enum": ["regression", "improvement", "none"]
+        },
+        "suiteMetadataChanged": { "type": "boolean" },
+        "policyChanged": { "type": "boolean" },
+        "manifestChanged": { "type": "boolean" },
+        "cases": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baseline",
+            "candidate",
+            "total",
+            "added",
+            "removed",
+            "modified",
+            "unchanged"
+          ],
+          "properties": {
+            "baseline": { "$ref": "#/$defs/suiteCaseCount" },
+            "candidate": { "$ref": "#/$defs/suiteCaseCount" },
+            "total": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 128
+            },
+            "added": { "$ref": "#/$defs/unionCaseCount" },
+            "removed": { "$ref": "#/$defs/unionCaseCount" },
+            "modified": { "$ref": "#/$defs/unionCaseCount" },
+            "unchanged": { "$ref": "#/$defs/unionCaseCount" }
+          }
+        },
+        "impact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["regression", "improvement", "review", "mixed", "none"],
+          "properties": {
+            "regression": { "$ref": "#/$defs/unionCaseCount" },
+            "improvement": { "$ref": "#/$defs/unionCaseCount" },
+            "review": { "$ref": "#/$defs/unionCaseCount" },
+            "mixed": { "$ref": "#/$defs/unionCaseCount" },
+            "none": { "$ref": "#/$defs/unionCaseCount" }
+          }
+        }
+      }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": { "$ref": "#/$defs/case" }
+    },
+    "proofBoundary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": ["invalid", "review", "ready"]
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullableSha256": {
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/sha256" }]
+    },
+    "suiteCaseCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64
+    },
+    "unionCaseCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 128
+    },
+    "suiteMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "description"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "uri",
+        "sha256",
+        "suite",
+        "strict",
+        "status",
+        "manifestSha256"
+      ],
+      "properties": {
+        "uri": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "suite": { "$ref": "#/$defs/suiteMetadata" },
+        "strict": { "type": "boolean" },
+        "status": { "$ref": "#/$defs/status" },
+        "manifestSha256": { "$ref": "#/$defs/nullableSha256" }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["error", "warning", "pass"],
+      "properties": {
+        "error": { "type": "integer", "minimum": 0 },
+        "warning": { "type": "integer", "minimum": 0 },
+        "pass": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "sha256", "bytes"],
+      "properties": {
+        "uri": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "sha256": { "$ref": "#/$defs/nullableSha256" },
+        "bytes": {
+          "anyOf": [
+            { "type": "null" },
+            { "type": "integer", "minimum": 0, "maximum": 1048576 }
+          ]
+        }
+      }
+    },
+    "scenario": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "title", "risk"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 240
+            },
+            "risk": { "enum": ["low", "medium", "high"] }
+          }
+        }
+      ]
+    },
+    "metrics": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["roles", "stages", "humanGates", "evidenceArtifacts"],
+          "properties": {
+            "roles": { "type": "integer", "minimum": 0, "maximum": 64 },
+            "stages": { "type": "integer", "minimum": 0, "maximum": 128 },
+            "humanGates": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 128
+            },
+            "evidenceArtifacts": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 128
+            }
+          }
+        }
+      ]
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "tags",
+        "status",
+        "validationStatus",
+        "scenario",
+        "counts",
+        "metrics",
+        "findingCodes"
+      ],
+      "properties": {
+        "artifact": { "$ref": "#/$defs/artifact" },
+        "tags": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z][a-z0-9-]*$"
+          }
+        },
+        "status": { "$ref": "#/$defs/status" },
+        "validationStatus": { "$ref": "#/$defs/status" },
+        "scenario": { "$ref": "#/$defs/scenario" },
+        "counts": { "$ref": "#/$defs/counts" },
+        "metrics": { "$ref": "#/$defs/metrics" },
+        "findingCodes": {
+          "type": "array",
+          "maxItems": 1024,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+        }
+      }
+    },
+    "nullableSnapshot": {
+      "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/snapshot" }]
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "change",
+        "impact",
+        "differences",
+        "baseline",
+        "candidate"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "change": { "enum": ["added", "removed", "modified", "unchanged"] },
+        "impact": {
+          "enum": ["regression", "improvement", "review", "mixed", "none"]
+        },
+        "differences": {
+          "type": "array",
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "artifact-uri",
+              "artifact-content",
+              "tags",
+              "status",
+              "validation-status",
+              "scenario",
+              "finding-counts",
+              "findings",
+              "metrics"
+            ]
+          }
+        },
+        "baseline": { "$ref": "#/$defs/nullableSnapshot" },
+        "candidate": { "$ref": "#/$defs/nullableSnapshot" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["change"],
+            "properties": { "change": { "const": "added" } }
+          },
+          "then": {
+            "properties": {
+              "impact": { "enum": ["regression", "review"] },
+              "differences": { "type": "array", "maxItems": 0 },
+              "baseline": { "type": "null" },
+              "candidate": { "$ref": "#/$defs/snapshot" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["change"],
+            "properties": { "change": { "const": "removed" } }
+          },
+          "then": {
+            "properties": {
+              "impact": { "const": "regression" },
+              "differences": { "type": "array", "maxItems": 0 },
+              "baseline": { "$ref": "#/$defs/snapshot" },
+              "candidate": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["change"],
+            "properties": { "change": { "const": "modified" } }
+          },
+          "then": {
+            "properties": {
+              "impact": {
+                "enum": ["regression", "improvement", "review", "mixed"]
+              },
+              "differences": { "type": "array", "minItems": 1 },
+              "baseline": { "$ref": "#/$defs/snapshot" },
+              "candidate": { "$ref": "#/$defs/snapshot" }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["change"],
+            "properties": { "change": { "const": "unchanged" } }
+          },
+          "then": {
+            "properties": {
+              "impact": { "const": "none" },
+              "differences": { "type": "array", "maxItems": 0 },
+              "baseline": { "$ref": "#/$defs/snapshot" },
+              "candidate": { "$ref": "#/$defs/snapshot" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

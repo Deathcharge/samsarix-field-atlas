@@ -12,6 +12,7 @@ import { createBlueprint } from "../model";
 import { createBlueprintSarif } from "../sarif";
 import A2AHandoff from "./A2AHandoff";
 import BlueprintSuiteWorkbench from "./BlueprintSuiteWorkbench";
+import BlueprintSuiteDiffWorkbench from "./BlueprintSuiteDiffWorkbench";
 import ScenarioEditor from "./ScenarioEditor";
 
 function failedImport(message: string): BlueprintAnalysis {
@@ -330,6 +331,8 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
       </div>
 
       <BlueprintSuiteWorkbench />
+
+      <BlueprintSuiteDiffWorkbench />
 
       <p aria-live="polite" className="run-notice workbench-notice">
         {notice}

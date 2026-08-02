@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import {
   act,
   fireEvent,
@@ -235,6 +238,67 @@ describe("Samsarix Field Atlas", () => {
     expect(
       screen.getByRole("button", { name: /export suite report/i })
     ).toBeEnabled();
+  });
+
+  it("compares suite-report baselines and tightens the local change gate", async () => {
+    const baselineText = readFileSync(
+      resolve(process.cwd(), "examples/core.suite-report.json"),
+      "utf8"
+    );
+    const candidateText = readFileSync(
+      resolve(process.cwd(), "examples/core-candidate.suite-report.json"),
+      "utf8"
+    );
+    const baseline = new File([baselineText], "core.suite-report.json", {
+      type: "application/json",
+    });
+    const candidate = new File(
+      [candidateText],
+      "core-candidate.suite-report.json",
+      { type: "application/json" }
+    );
+    for (const [file, text] of [
+      [baseline, baselineText],
+      [candidate, candidateText],
+    ] as const) {
+      Object.defineProperty(file, "arrayBuffer", {
+        configurable: true,
+        value: async () => new TextEncoder().encode(text).buffer,
+      });
+    }
+    render(<App />);
+
+    fireEvent.change(screen.getByLabelText(/import baseline suite report/i), {
+      target: { files: [baseline] },
+    });
+    await waitFor(() =>
+      expect(screen.getByText("core.suite-report.json")).toBeVisible()
+    );
+    fireEvent.change(screen.getByLabelText(/import candidate suite report/i), {
+      target: { files: [candidate] },
+    });
+
+    await waitFor(
+      () => expect(screen.getByText(/outcome is review/i)).toBeVisible(),
+      { timeout: 15_000 }
+    );
+    expect(
+      screen.getByRole("table", {
+        name: /baseline and candidate suite report comparison/i,
+      })
+    ).toBeVisible();
+    expect(screen.queryByText("release-critical")).not.toBeInTheDocument();
+    expect(screen.getByText("tags")).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /export suite comparison/i })
+    ).toBeEnabled();
+
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: /fail on any change/i })
+    );
+    await waitFor(() =>
+      expect(screen.getByText(/change gate fails/i)).toBeVisible()
+    );
   });
 
   it("turns a valid blueprint into an explicit A2A implementation handoff", async () => {

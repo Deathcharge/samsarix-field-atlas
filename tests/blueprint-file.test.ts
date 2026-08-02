@@ -58,4 +58,18 @@ describe("blueprint file reading", () => {
       reason: "read-failed",
     });
   });
+
+  it("accepts an explicit bounded limit for larger JSON artifact types", async () => {
+    const bytes = new TextEncoder().encode('{"artifact":"suite-report"}');
+    const file = fileWithBytes(bytes, "suite-report.json");
+
+    await expect(readBlueprintFile(file, bytes.byteLength)).resolves.toEqual({
+      ok: true,
+      bytes,
+      value: { artifact: "suite-report" },
+    });
+    await expect(
+      readBlueprintFile(file, bytes.byteLength - 1)
+    ).resolves.toEqual({ ok: false, reason: "too-large" });
+  });
 });

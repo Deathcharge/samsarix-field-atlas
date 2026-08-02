@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "samsarix-field-atlas/suite/1",
+  "mode": "contract-conformance-suite",
+  "suite": {
+    "id": "core-reference-scenarios",
+    "title": "Core reference scenarios",
+    "description": "Strict conformance coverage for the three built-in Samsarix Field Atlas coordination scenarios."
+  },
+  "strict": true,
+  "entries": [
+    {
+      "id": "breaking-change",
+      "path": "breaking-change.blueprint.json",
+      "tags": ["release", "high-risk"]
+    },
+    {
+      "id": "incident",
+      "path": "incident.blueprint.json",
+      "tags": ["operations", "high-risk", "release-critical"]
+    },
+    {
+      "id": "ambiguous-request",
+      "path": "ambiguous-request.blueprint.json",
+      "tags": ["product", "medium-risk"]
+    }
+  ]
+}
