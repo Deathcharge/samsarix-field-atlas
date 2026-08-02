@@ -21,6 +21,10 @@ describe("Scenario Studio", () => {
     fireEvent.change(screen.getByLabelText(/scenario id/i), {
       target: { value: "Invalid scenario ID" },
     });
+    expect(screen.getByLabelText(/scenario id/i)).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
     expect(screen.getByText(/blocked by contract errors/i)).toBeVisible();
     expect(
       screen.getByRole("button", { name: /use in workbench/i })
@@ -28,6 +32,16 @@ describe("Scenario Studio", () => {
 
     fireEvent.change(screen.getByLabelText(/scenario id/i), {
       target: { value: "customer-incident-review" },
+    });
+    fireEvent.change(screen.getByLabelText(/^title$/i), {
+      target: { value: "" },
+    });
+    expect(screen.getByLabelText(/^title$/i)).toHaveAttribute(
+      "aria-invalid",
+      "true"
+    );
+    fireEvent.change(screen.getByLabelText(/^title$/i), {
+      target: { value: "Review a customer incident" },
     });
     fireEvent.click(screen.getByRole("button", { name: /use in workbench/i }));
 
@@ -108,8 +122,26 @@ describe("Scenario Studio", () => {
     const criteria = screen.getAllByRole("textbox", {
       name: /success criterion/i,
     });
+    expect(criteria.at(-1)).toHaveAttribute("aria-invalid", "true");
     fireEvent.change(criteria.at(-1)!, {
       target: { value: "A named owner accepts the retained evidence" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /add stage/i }));
+    const stageTitles = screen.getAllByLabelText(/stage title/i);
+    const stageActions = screen.getAllByLabelText(/^action$/i);
+    const stageEvidence = screen.getAllByLabelText(/expected evidence/i);
+    expect(stageTitles.at(-1)).toHaveAttribute("aria-invalid", "true");
+    expect(stageActions.at(-1)).toHaveAttribute("aria-invalid", "true");
+    expect(stageEvidence.at(-1)).toHaveAttribute("aria-invalid", "true");
+    fireEvent.change(stageTitles.at(-1)!, {
+      target: { value: "Record owner acceptance" },
+    });
+    fireEvent.change(stageActions.at(-1)!, {
+      target: { value: "Attach the named owner's bounded decision." },
+    });
+    fireEvent.change(stageEvidence.at(-1)!, {
+      target: { value: "Owner acceptance record" },
     });
 
     fireEvent.click(

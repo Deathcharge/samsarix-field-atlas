@@ -41,7 +41,7 @@ The shared semantic validator remains authoritative. Browser authoring and impor
 
 Draft content exists only in React memory. It is not written to `localStorage`, cookies, a database, analytics, or a network request. Closing the page loses an unexported draft. The existing selected-scenario preference remains the only application value stored in `localStorage`.
 
-A ready authored blueprint proves internal consistency only. Field Atlas does not prove that the scenario is complete, a role exists in a real organization, named evidence was produced, a person approved a gate, or an implementation behaved as described. Treat exports as untrusted text/data when another system imports or renders them.
+An authored blueprint with status `ready` proves internal consistency only. Field Atlas does not prove that the scenario is complete, a role exists in a real organization, named evidence was produced, a person approved a gate, or an implementation behaved as described. Treat exports as untrusted text/data when another system imports or renders them.
 
 ## Intentional limits
 

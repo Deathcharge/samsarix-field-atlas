@@ -371,14 +371,14 @@ The editor preserves a dirty draft when the Field Lab selection changes, require
 
 Local evidence on Windows with Node `v24.12.0` and Corepack pnpm `11.17.0`:
 
-| Command or check             | Result                                                                                                                                                                              |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `corepack pnpm run verify`   | Passed lint, formatting, strict types, 12 test files / 93 tests, coverage thresholds, all six fixture checks, and client/server/five-CLI production builds.                         |
-| Coverage                     | 81.20% statements, 79.73% branches, 79.31% functions, and 82.93% lines; `scenario-editor.ts` reached 95.65% statements, 90% branches, and 100% functions/lines.                     |
-| Focused editor/browser tests | Passed six model and browser tests plus the existing app suite, including live invalid/valid transitions, immutable handoff, dirty-draft preservation, export, and UTF-8 rejection. |
-| Production build             | Client JS was 351.69 kB / 102.94 kB gzip, CSS was 40.91 kB / 8.16 kB gzip, server was 4.2 kB, and all five CLI artifacts built successfully.                                        |
-| Client artifact digests      | JS SHA-256 was `73eb9da2ca489a9b55f4099ea7eacd78c9c874d5f613de88f536382adf1f72be`; CSS SHA-256 was `fb66f82a5c7089aa2ae9b686057c728865b19cc7506f30bf5554d721bf26d5d0`.              |
-| `corepack pnpm audit --prod` | Passed with no known production vulnerabilities and no new runtime dependency.                                                                                                      |
-| React best-practices review  | Passed applicable component-boundary, derived-state, functional-update, controlled-input, stable-key, accessibility, long-list rendering, and bundle-scope checks.                  |
+| Command or check             | Result                                                                                                                                                                                                      |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `corepack pnpm run verify`   | Passed lint, formatting, strict types, 12 test files / 93 tests, coverage thresholds, all six fixture checks, and client/server/five-CLI production builds.                                                 |
+| Coverage                     | 81.93% statements, 80.06% branches, 81.27% functions, and 83.57% lines; `scenario-editor.ts` reached 95.65% statements, 90% branches, and 100% functions/lines.                                             |
+| Focused editor/browser tests | Passed six model and browser tests plus the existing app suite, including live per-field validation, immutable handoff, identical-content state retention, draft preservation, export, and UTF-8 rejection. |
+| Production build             | Client JS was 352.37 kB / 103.05 kB gzip, CSS was 41.10 kB / 8.18 kB gzip, server was 4.2 kB, and all five CLI artifacts built successfully.                                                                |
+| Client artifact digests      | JS SHA-256 was `5e8c4374c56d33c7e82c905b043ab91d33b94649ede2c03f33c9cb6af09ef042`; CSS SHA-256 was `10b6d6a114af02e4275d042ec54c75c0c7c3f602260562e1427b292a19398eed`.                                      |
+| `corepack pnpm audit --prod` | Passed with no known production vulnerabilities and no new runtime dependency.                                                                                                                              |
+| React best-practices review  | Passed applicable component-boundary, derived-state, functional-update, controlled-input, stable-key, accessibility, long-list rendering, and bundle-scope checks.                                          |
 
 This is local authoring, validation, test, and build evidence. It does not establish evaluator adoption, hosted availability, collaborative persistence, custom-role migration, or the truth of any authored evidence or approval. No deployment, account system, database, analytics, model call, or external write was added.

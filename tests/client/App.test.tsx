@@ -219,6 +219,13 @@ describe("Samsarix Field Atlas", () => {
       target: { value: "https://agent.example.com/a2a" },
     });
 
+    fireEvent.click(
+      screen.getByRole("button", { name: /check current scenario/i })
+    );
+    expect(screen.getByLabelText(/service endpoint/i)).toHaveValue(
+      "https://agent.example.com/a2a"
+    );
+
     expect(
       screen.getByRole("heading", { name: /ready to hand off/i })
     ).toBeVisible();

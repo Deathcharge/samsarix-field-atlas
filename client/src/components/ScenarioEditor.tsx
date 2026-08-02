@@ -58,6 +58,15 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
   const actionableFindings = analysis.findings.filter(
     finding => finding.severity !== "pass"
   );
+  const invalidPaths = useMemo(
+    () =>
+      new Set(
+        analysis.findings
+          .filter(finding => finding.severity === "error")
+          .map(finding => finding.path)
+      ),
+    [analysis.findings]
+  );
   const selectedScenarioChanged = sourceScenarioId !== scenarioId;
 
   function changeDraft(update: (current: ScenarioDraft) => ScenarioDraft) {
@@ -132,12 +141,10 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
 
   function addCriterion() {
     if (draft.successCriteria.length >= 32) return;
+    const draftKey = `criterion-new-${nextDraftKey.current++}`;
     changeDraft(current => ({
       ...current,
-      successCriteria: [
-        ...current.successCriteria,
-        { draftKey: `criterion-new-${nextDraftKey.current++}`, value: "" },
-      ],
+      successCriteria: [...current.successCriteria, { draftKey, value: "" }],
     }));
   }
 
@@ -167,12 +174,13 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
     if (draft.steps.length >= 128) return;
     const defaultAgent = agents.at(0);
     if (!defaultAgent) return;
+    const draftKey = `step-new-${nextDraftKey.current++}`;
     changeDraft(current => ({
       ...current,
       steps: [
         ...current.steps,
         {
-          draftKey: `step-new-${nextDraftKey.current++}`,
+          draftKey,
           agentId: defaultAgent.id,
           title: "",
           action: "",
@@ -281,9 +289,7 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
             <label>
               <span>Scenario ID</span>
               <input
-                aria-invalid={analysis.findings.some(
-                  finding => finding.path === "$.scenario.id"
-                )}
+                aria-invalid={invalidPaths.has("$.scenario.id")}
                 maxLength={128}
                 onChange={event =>
                   changeDraft(current => ({
@@ -318,6 +324,7 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
             <label>
               <span>Title</span>
               <input
+                aria-invalid={invalidPaths.has("$.scenario.title")}
                 maxLength={240}
                 onChange={event =>
                   changeDraft(current => ({
@@ -332,6 +339,7 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
             <label>
               <span>Objective</span>
               <textarea
+                aria-invalid={invalidPaths.has("$.scenario.objective")}
                 maxLength={2000}
                 onChange={event =>
                   changeDraft(current => ({
@@ -366,6 +374,9 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
                 <label>
                   <span className="sr-only">Success criterion {index + 1}</span>
                   <input
+                    aria-invalid={invalidPaths.has(
+                      `$.scenario.successCriteria[${index}]`
+                    )}
                     maxLength={500}
                     onChange={event =>
                       updateCriterion(index, event.target.value)
@@ -449,6 +460,9 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
                   <label>
                     <span>Role</span>
                     <select
+                      aria-invalid={invalidPaths.has(
+                        `$.trace[${index}].agentId`
+                      )}
                       onChange={event =>
                         updateStep(index, { agentId: event.target.value })
                       }
@@ -470,6 +484,9 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
                   <label>
                     <span>Boundary</span>
                     <select
+                      aria-invalid={invalidPaths.has(
+                        `$.trace[${index}].boundary`
+                      )}
                       onChange={event =>
                         updateStep(index, {
                           boundary: (event.target.value ||
@@ -491,6 +508,7 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
                   <label>
                     <span>Stage title</span>
                     <input
+                      aria-invalid={invalidPaths.has(`$.trace[${index}].title`)}
                       maxLength={500}
                       onChange={event =>
                         updateStep(index, { title: event.target.value })
@@ -502,6 +520,9 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
                   <label>
                     <span>Action</span>
                     <textarea
+                      aria-invalid={invalidPaths.has(
+                        `$.trace[${index}].action`
+                      )}
                       maxLength={4000}
                       onChange={event =>
                         updateStep(index, { action: event.target.value })
@@ -514,6 +535,9 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
                   <label>
                     <span>Expected evidence</span>
                     <textarea
+                      aria-invalid={invalidPaths.has(
+                        `$.trace[${index}].evidence`
+                      )}
                       maxLength={2000}
                       onChange={event =>
                         updateStep(index, { evidence: event.target.value })
@@ -539,52 +563,56 @@ function ScenarioEditor({ scenarioId, onUseBlueprint }: ScenarioEditorProps) {
             {indicatorFields.map(([key, label]) => (
               <div key={key}>
                 <strong>{label}</strong>
-                <label>
-                  <span>Baseline</span>
-                  <input
-                    max="1"
-                    min="0"
-                    onChange={event =>
-                      changeDraft(current => ({
-                        ...current,
-                        indicators: {
-                          ...current.indicators,
-                          baseline: {
-                            ...current.indicators.baseline,
-                            [key]: Number(event.target.value),
+                <div className="studio-indicator-row">
+                  <label>
+                    <span>Baseline</span>
+                    <input
+                      max="1"
+                      min="0"
+                      onChange={event =>
+                        changeDraft(current => ({
+                          ...current,
+                          indicators: {
+                            ...current.indicators,
+                            baseline: {
+                              ...current.indicators.baseline,
+                              [key]: Number(event.target.value),
+                            },
                           },
-                        },
-                      }))
-                    }
-                    step="0.01"
-                    type="range"
-                    value={draft.indicators.baseline[key]}
-                  />
+                        }))
+                      }
+                      step="0.01"
+                      type="range"
+                      value={draft.indicators.baseline[key]}
+                    />
+                  </label>
                   <output>{draft.indicators.baseline[key].toFixed(2)}</output>
-                </label>
-                <label>
-                  <span>Outcome</span>
-                  <input
-                    max="1"
-                    min="0"
-                    onChange={event =>
-                      changeDraft(current => ({
-                        ...current,
-                        indicators: {
-                          ...current.indicators,
-                          outcome: {
-                            ...current.indicators.outcome,
-                            [key]: Number(event.target.value),
+                </div>
+                <div className="studio-indicator-row">
+                  <label>
+                    <span>Outcome</span>
+                    <input
+                      max="1"
+                      min="0"
+                      onChange={event =>
+                        changeDraft(current => ({
+                          ...current,
+                          indicators: {
+                            ...current.indicators,
+                            outcome: {
+                              ...current.indicators.outcome,
+                              [key]: Number(event.target.value),
+                            },
                           },
-                        },
-                      }))
-                    }
-                    step="0.01"
-                    type="range"
-                    value={draft.indicators.outcome[key]}
-                  />
+                        }))
+                      }
+                      step="0.01"
+                      type="range"
+                      value={draft.indicators.outcome[key]}
+                    />
+                  </label>
                   <output>{draft.indicators.outcome[key].toFixed(2)}</output>
-                </label>
+                </div>
               </div>
             ))}
           </div>

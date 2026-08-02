@@ -50,6 +50,15 @@ function statusCopy(status: BlueprintAnalysis["status"]) {
   }[status];
 }
 
+function a2aHandoffKey(blueprint: Blueprint): string {
+  return JSON.stringify({
+    scenario: blueprint.scenario,
+    agents: blueprint.agents,
+    trace: blueprint.trace,
+    runtime: blueprint.runtime,
+  });
+}
+
 interface BlueprintWorkbenchProps {
   scenarioId: string;
 }
@@ -328,7 +337,7 @@ function BlueprintWorkbench({ scenarioId }: BlueprintWorkbenchProps) {
       {analysis?.blueprint ? (
         <A2AHandoff
           blueprint={analysis.blueprint}
-          key={`${analysis.blueprint.scenario.id}-${analysis.blueprint.generatedAt}`}
+          key={a2aHandoffKey(analysis.blueprint)}
         />
       ) : null}
     </section>

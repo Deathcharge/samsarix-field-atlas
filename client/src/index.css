@@ -85,6 +85,7 @@ summary:focus-visible {
   padding: 0;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
   border: 0;
   white-space: nowrap;
 }
@@ -1353,7 +1354,10 @@ button.button {
   outline-offset: 3px;
 }
 
-.studio-fields input[aria-invalid="true"] {
+.studio-fields input[aria-invalid="true"],
+.studio-fields select[aria-invalid="true"],
+.studio-fields textarea[aria-invalid="true"],
+.studio-criteria-list input[aria-invalid="true"] {
   border-color: rgba(255, 122, 100, 0.8);
 }
 
@@ -1538,15 +1542,20 @@ button.button {
   font-size: 0.72rem;
 }
 
-.studio-indicator-grid label {
+.studio-indicator-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.4rem;
 }
 
-.studio-indicator-grid label + label {
+.studio-indicator-row + .studio-indicator-row {
   margin-top: 0.65rem;
+}
+
+.studio-indicator-row label {
+  display: grid;
+  gap: 0.25rem;
 }
 
 .studio-indicator-grid label > span,
@@ -1555,8 +1564,7 @@ button.button {
   font-size: 0.6rem;
 }
 
-.studio-indicator-grid input {
-  grid-column: 1 / -1;
+.studio-indicator-row input {
   accent-color: var(--acid);
 }
 
