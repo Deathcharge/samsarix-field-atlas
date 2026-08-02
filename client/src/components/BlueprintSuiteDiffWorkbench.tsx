@@ -138,21 +138,31 @@ function BlueprintSuiteDiffWorkbench() {
     event.currentTarget.value = "";
     if (!file) return;
     setPending(true);
-    const result = await readSuiteReport(file);
-    if (!result.ok) {
-      if (side === "baseline") setBaseline(null);
-      else setCandidate(null);
-      setDiff(null);
-      setNotice(result.message);
-      setPending(false);
-      return;
-    }
+    try {
+      const result = await readSuiteReport(file);
+      if (!result.ok) {
+        if (side === "baseline") setBaseline(null);
+        else setCandidate(null);
+        setDiff(null);
+        setNotice(result.message);
+        return;
+      }
 
-    const nextBaseline = side === "baseline" ? result.value : baseline;
-    const nextCandidate = side === "candidate" ? result.value : candidate;
-    if (side === "baseline") setBaseline(result.value);
-    else setCandidate(result.value);
-    await compare(nextBaseline, nextCandidate, failOnChange);
+      const nextBaseline = side === "baseline" ? result.value : baseline;
+      const nextCandidate = side === "candidate" ? result.value : candidate;
+      if (side === "baseline") setBaseline(result.value);
+      else setCandidate(result.value);
+      await compare(nextBaseline, nextCandidate, failOnChange);
+    } catch (error) {
+      setDiff(null);
+      setNotice(
+        error instanceof Error
+          ? error.message
+          : "The browser could not import this suite report."
+      );
+    } finally {
+      setPending(false);
+    }
   }
 
   async function changePolicy(event: ChangeEvent<HTMLInputElement>) {

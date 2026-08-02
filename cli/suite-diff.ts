@@ -5,6 +5,7 @@ import {
   createBlueprintSuiteDiff,
   maximumSuiteReportBytes,
   validateBlueprintSuiteReport,
+  type BlueprintSuiteReportAnalysis,
 } from "../client/src/suite-diff";
 import { readJsonFileWithBytes, terminalText } from "./shared";
 
@@ -31,11 +32,11 @@ function failUsage(message: string): number {
   return 2;
 }
 
-function reportProblem(
+function analyzeReport(
   label: "baseline" | "candidate",
   path: string,
   value: unknown
-): ReturnType<typeof validateBlueprintSuiteReport> {
+): BlueprintSuiteReportAnalysis {
   const analysis = validateBlueprintSuiteReport(value);
   if (!analysis.report) {
     console.error(`INVALID ${label} ${terminalText(path)}`);
@@ -75,12 +76,12 @@ async function main(): Promise<number> {
       candidatePath,
       maximumSuiteReportBytes
     );
-    const baselineAnalysis = reportProblem(
+    const baselineAnalysis = analyzeReport(
       "baseline",
       baselinePath,
       baselineFile.value
     );
-    const candidateAnalysis = reportProblem(
+    const candidateAnalysis = analyzeReport(
       "candidate",
       candidatePath,
       candidateFile.value
@@ -102,18 +103,19 @@ async function main(): Promise<number> {
     );
 
     if (checkFile) {
+      const checkPath = resolve(checkFile);
       const expected = readJsonFileWithBytes(
-        checkFile,
+        checkPath,
         maximumSuiteReportBytes
       ).value;
       if (!isDeepStrictEqual(diff, expected)) {
         console.error(
-          `MISMATCH ${terminalText(resolve(checkFile))} does not match the generated suite diff.`
+          `MISMATCH ${terminalText(checkPath)} does not match the generated suite diff.`
         );
         return 1;
       }
       console.error(
-        `MATCH ${terminalText(resolve(checkFile))} matches ${diff.summary.cases.total} compared cases; outcome is ${diff.summary.outcome} and gate is ${diff.summary.gate}.`
+        `MATCH ${terminalText(checkPath)} matches ${diff.summary.cases.total} compared cases; outcome is ${diff.summary.outcome} and gate is ${diff.summary.gate}.`
       );
     } else {
       console.log(JSON.stringify(diff, null, 2));

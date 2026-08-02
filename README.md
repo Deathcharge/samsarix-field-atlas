@@ -243,7 +243,7 @@ client/src/evidence.ts      TCK report semantics + exact-byte evidence receipt
               ↓
 client/src/review.ts        Case dispositions + blocking readiness + owner decision
        ↙             ↘
-React workbench       CLI tools ───────────→ six bundled CLI artifacts
+React workbench       CLI tools ───────────→ seven bundled CLI artifacts
        ↓                    ↑
 Vite static build     schemas/ + examples/
        ↓
