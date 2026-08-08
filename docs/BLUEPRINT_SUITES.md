@@ -80,6 +80,16 @@ pnpm blueprint:suite-diff \
   examples/core.suite-report.json \
   examples/core-candidate.suite-report.json \
   --fail-on-change
+
+pnpm blueprint:suite-diff \
+  examples/core.suite-report.json \
+  examples/core-candidate.suite-report.json \
+  --format junit > suite-diff.junit.xml
+
+pnpm blueprint:suite-diff \
+  examples/core.suite-report.json \
+  examples/core-candidate.suite-report.json \
+  --format markdown > suite-diff.md
 ```
 
 Both inputs must be internally consistent `suite-report/1` artifacts with the same `suite.id`. Each is limited to 8 MiB. The comparator rejects malformed digests, unexpected fields, duplicate case IDs, inconsistent case/finding totals, fabricated summary status, and effective statuses that do not follow the report's strict policy. It hashes the exact imported report bytes, aligns cases by stable case ID, sorts the union deterministically, and treats tag order as non-semantic.
@@ -96,9 +106,42 @@ The complete output contract is [`schema/blueprint-suite-diff.schema.json`](../s
 | Ready/review coverage is added, or content, tags, metadata, or policy drift | Owner review  | Pass                    |
 | The same stable cases and interpreted fields remain                         | No difference | Pass                    |
 
-When a modified case contains both improving and regressing signals, its impact is `mixed` and the regression gate fails. `--fail-on-change` tightens the policy so additions, improvements, and review-only drift also fail; it never loosens regression handling. `--check` deep-compares the deterministic artifact with a committed fixture.
+When a modified case contains both improving and regressing signals, its impact is `mixed` and the regression gate fails. `--fail-on-change` tightens the policy so additions, improvements, and review-only drift also fail; it never loosens regression handling.
 
-The diff CLI exits `0` when its selected gate passes, `1` for a failed gate, invalid input, mismatched suite identity, or fixture mismatch, and `2` for usage errors. The browser workbench exposes the same two gate policies, comparison table, and local JSON export without uploading either report.
+`--format` accepts `json` (the default complete artifact), `junit` (a compact CI test-report projection), or `markdown` (a readable summary). All three outputs are deterministic and timestamp-free. JSON `--check` uses structural deep comparison; JUnit and Markdown `--check` require an exact UTF-8 text match. The committed fixtures are [`core.suite-diff.json`](../examples/core.suite-diff.json), [`core.suite-diff.junit.xml`](../examples/core.suite-diff.junit.xml), and [`core.suite-diff.md`](../examples/core.suite-diff.md).
+
+The JUnit projection contains one testcase for each stable case ID and one synthetic `suite-level` testcase for report, metadata, policy, and manifest signals. A testcase fails only when that signal violates the selected `regression` or `change` policy. It deliberately omits timestamps and execution durations because Field Atlas did not execute these contracts. The JSON artifact remains the source for complete snapshots and comparison counts.
+
+### CI integration
+
+GitHub Actions displays Markdown appended to the per-step `GITHUB_STEP_SUMMARY` file on the workflow summary page. A Bash step can preserve the CLI gate and publish its readable result with:
+
+```bash
+pnpm blueprint:suite-diff baseline.report.json candidate.report.json \
+  --format markdown >> "$GITHUB_STEP_SUMMARY"
+```
+
+The PowerShell equivalent is:
+
+```powershell
+pnpm blueprint:suite-diff baseline.report.json candidate.report.json `
+  --format markdown >> $env:GITHUB_STEP_SUMMARY
+```
+
+GitLab can ingest the compact projection as a unit-test report while retaining the command's non-zero gate result:
+
+```yaml
+script:
+  - pnpm blueprint:suite-diff baseline.report.json candidate.report.json --format junit > suite-diff.junit.xml
+artifacts:
+  when: always
+  reports:
+    junit: suite-diff.junit.xml
+```
+
+This follows [GitHub's job-summary environment-file contract](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#adding-a-job-summary) and [GitLab's JUnit report contract](https://docs.gitlab.com/ci/testing/unit_test_reports/). GitLab explicitly separates uploaded test reports from job status, so the CLI's exit code remains authoritative. Promptfoo similarly uses compact [JUnit output for existing CI report viewers](https://www.promptfoo.dev/docs/configuration/outputs/#junit-xml-format). Treat generated XML and Markdown as untrusted text when another system stores or renders them.
+
+The diff CLI exits `0` when its selected gate passes, `1` for a failed gate, invalid input, mismatched suite identity, or fixture mismatch, and `2` for usage errors. Producing or uploading a JUnit report does not override that result. The browser workbench exposes the same two gate policies, comparison table, and local JSON/Markdown exports without uploading either report.
 
 ## Proof boundary
 

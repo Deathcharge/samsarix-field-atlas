@@ -241,6 +241,15 @@ describe("Samsarix Field Atlas", () => {
   });
 
   it("compares suite-report baselines and tightens the local change gate", async () => {
+    const createObjectUrl = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:samsarix-suite-diff");
+    const revokeObjectUrl = vi
+      .spyOn(URL, "revokeObjectURL")
+      .mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+      () => undefined
+    );
     const baselineText = readFileSync(
       resolve(process.cwd(), "examples/core.suite-report.json"),
       "utf8"
@@ -292,6 +301,20 @@ describe("Samsarix Field Atlas", () => {
     expect(
       screen.getByRole("button", { name: /export suite comparison/i })
     ).toBeEnabled();
+    fireEvent.click(
+      screen.getByRole("button", { name: /export comparison summary/i })
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByText(/readable suite comparison summary exported locally/i)
+      ).toBeVisible()
+    );
+    const blob = createObjectUrl.mock.calls[0]?.[0];
+    expect(blob).toBeInstanceOf(Blob);
+    expect((blob as Blob).type).toBe("text/markdown");
+    await waitFor(() =>
+      expect(revokeObjectUrl).toHaveBeenCalledWith("blob:samsarix-suite-diff")
+    );
 
     fireEvent.click(
       screen.getByRole("checkbox", { name: /fail on any change/i })

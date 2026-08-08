@@ -156,9 +156,21 @@ Compare a known suite report with a candidate by stable case ID:
 pnpm blueprint:suite-diff \
   examples/core.suite-report.json \
   examples/core-candidate.suite-report.json
+
+# Compact CI test-report view
+pnpm blueprint:suite-diff \
+  examples/core.suite-report.json \
+  examples/core-candidate.suite-report.json \
+  --format junit > suite-diff.junit.xml
+
+# Human-readable CI or review summary
+pnpm blueprint:suite-diff \
+  examples/core.suite-report.json \
+  examples/core-candidate.suite-report.json \
+  --format markdown > suite-diff.md
 ```
 
-The comparator validates both imported reports, binds their exact bytes, and classifies added, removed, modified, unchanged, regressed, improved, mixed, and review-only cases. By default regressions fail; `--fail-on-change` also blocks additions, improvements, metadata, policy, manifest, and content drift. The browser offers the same local comparison and JSON export. See [baseline comparison semantics](docs/BLUEPRINT_SUITES.md#baseline-comparison).
+The comparator validates both imported reports, binds their exact bytes, and classifies added, removed, modified, unchanged, regressed, improved, mixed, and review-only cases. By default regressions fail; `--fail-on-change` also blocks additions, improvements, metadata, policy, manifest, and content drift. JSON is the complete comparison artifact, JUnit is a compact CI-viewer projection, and escaped Markdown is a readable job/review summary. The CLI exit code—not the presence of a JUnit file—enforces the gate. The browser offers the same local comparison plus JSON and Markdown exports. See [baseline comparison semantics](docs/BLUEPRINT_SUITES.md#baseline-comparison).
 
 ## Development commands
 
@@ -173,10 +185,10 @@ The comparator validates both imported reports, binds their exact bytes, and cla
 | `pnpm build`                         | Build static assets, the optional Node release server, and all seven CLIs             |
 | `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional strict, JSON, or SARIF output                   |
 | `pnpm blueprint:suite <manifest>`    | Batch-check a bounded suite and optionally compare its deterministic report           |
-| `pnpm blueprint:suite-diff <a> <b>`  | Compare two suite reports and fail on regressions or, optionally, any change          |
+| `pnpm blueprint:suite-diff <a> <b>`  | Compare suite reports; emit JSON, JUnit, or Markdown; and enforce the selected gate   |
 | `pnpm validate:sarif-example`        | Check the deterministic strict-ready SARIF report against its committed fixture       |
 | `pnpm validate:suite-example`        | Check all three core scenarios against the committed strict-ready suite report        |
-| `pnpm validate:suite-diff-example`   | Reproduce the candidate report and deterministic baseline comparison fixture          |
+| `pnpm validate:suite-diff-example`   | Reproduce the candidate report and exact JSON, JUnit, and Markdown diff fixtures      |
 | `pnpm blueprint:a2a <file> ...`      | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
 | `pnpm validate:a2a-example`          | Check the deterministic incident Agent Card mapping against its committed fixture     |
 | `pnpm blueprint:acceptance ...`      | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |

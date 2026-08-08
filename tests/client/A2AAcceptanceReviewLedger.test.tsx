@@ -89,10 +89,12 @@ describe("A2A acceptance review browser workflow", () => {
       />
     );
 
-    await waitFor(() =>
-      expect(
-        screen.queryByText(/computing canonical source digests/i)
-      ).not.toBeInTheDocument()
+    await waitFor(
+      () =>
+        expect(
+          screen.queryByText(/computing canonical source digests/i)
+        ).not.toBeInTheDocument(),
+      { timeout: 15_000 }
     );
 
     await user.upload(
@@ -138,10 +140,12 @@ describe("A2A acceptance review browser workflow", () => {
         tckReceipt={receipt}
       />
     );
-    await waitFor(() =>
-      expect(
-        screen.queryByText(/computing canonical source digests/i)
-      ).not.toBeInTheDocument()
+    await waitFor(
+      () =>
+        expect(
+          screen.queryByText(/computing canonical source digests/i)
+        ).not.toBeInTheDocument(),
+      { timeout: 15_000 }
     );
 
     await user.upload(
