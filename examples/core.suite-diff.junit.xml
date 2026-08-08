@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Samsarix Field Atlas suite diff" tests="4" failures="0" errors="0">
+  <testsuite name="Core reference scenarios" tests="4" failures="0" errors="0">
+    <properties>
+      <property name="schema" value="samsarix-field-atlas/suite-diff/1" />
+      <property name="policy.failOn" value="regression" />
+      <property name="summary.outcome" value="review" />
+      <property name="summary.gate" value="pass" />
+      <property name="source.baseline.uri" value="core.suite-report.json" />
+      <property name="source.baseline.sha256" value="52994c82ddadbde841ebf5abfd7ef6b1a057dfea67186b26d7827fd680728f87" />
+      <property name="source.candidate.uri" value="core-candidate.suite-report.json" />
+      <property name="source.candidate.sha256" value="3a8f7be1558ea8f5ef215f5f841e1ad49fd3d41f37cc4dfc7c1fe1061ef1786e" />
+    </properties>
+    <testcase classname="samsarix.suite-diff.core-reference-scenarios" name="suite-level">
+      <system-out>outcome=review; gate=pass; report-impact=none; suite-metadata-changed=false; policy-changed=false; manifest-changed=true
+Field Atlas compared two local conformance reports and their exact imported bytes; it did not execute agents, evaluate runtime quality, verify source artifacts beyond report consistency, authenticate owners, or approve a release.</system-out>
+    </testcase>
+    <testcase classname="samsarix.suite-diff.core-reference-scenarios" name="ambiguous-request">
+      <system-out>title=Clarify an ambiguous request; change=unchanged; impact=none; baseline=ready; candidate=ready; differences=none</system-out>
+    </testcase>
+    <testcase classname="samsarix.suite-diff.core-reference-scenarios" name="breaking-change">
+      <system-out>title=Ship a breaking change; change=unchanged; impact=none; baseline=ready; candidate=ready; differences=none</system-out>
+    </testcase>
+    <testcase classname="samsarix.suite-diff.core-reference-scenarios" name="incident">
+      <system-out>title=Triage a production incident; change=modified; impact=review; baseline=ready; candidate=ready; differences=tags</system-out>
+    </testcase>
+  </testsuite>
+</testsuites>

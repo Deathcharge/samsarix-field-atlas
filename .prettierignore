@@ -6,3 +6,5 @@ LICENSE.PROPRIETARY
 NOTICE.md
 *.min.js
 *.min.css
+examples/core.suite-diff.junit.xml
+examples/core.suite-diff.md

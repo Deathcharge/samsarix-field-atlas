@@ -2,34 +2,102 @@ import { basename, resolve } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
 import {
+  blueprintSuiteDiffToJUnit,
+  blueprintSuiteDiffToMarkdown,
+} from "../client/src/suite-diff-reporting";
+import {
   createBlueprintSuiteDiff,
   maximumSuiteReportBytes,
   validateBlueprintSuiteReport,
   type BlueprintSuiteReportAnalysis,
+  type BlueprintSuiteDiff,
 } from "../client/src/suite-diff";
-import { readJsonFileWithBytes, terminalText } from "./shared";
+import {
+  readFileWithLimit,
+  readJsonFileWithBytes,
+  terminalText,
+} from "./shared";
 
 const argumentsList = process.argv.slice(2);
-const failOnChange = argumentsList.includes("--fail-on-change");
-const checkIndex = argumentsList.indexOf("--check");
-const checkFile = checkIndex >= 0 ? argumentsList[checkIndex + 1] : undefined;
-const unknownFlags = argumentsList.filter(
-  argument =>
-    argument.startsWith("-") &&
-    argument !== "--fail-on-change" &&
-    argument !== "--check"
-);
-const inputFiles = argumentsList.filter(
-  (argument, index) =>
-    !argument.startsWith("-") && (checkIndex < 0 || index !== checkIndex + 1)
-);
+type OutputFormat = "json" | "junit" | "markdown";
+
+interface ParsedArguments {
+  failOnChange: boolean;
+  format: OutputFormat;
+  checkFile?: string;
+  inputFiles: string[];
+  error?: string;
+}
+
+function parseArguments(argumentsToParse: string[]): ParsedArguments {
+  const parsed: ParsedArguments = {
+    failOnChange: false,
+    format: "json",
+    inputFiles: [],
+  };
+  let formatSeen = false;
+  let checkSeen = false;
+
+  for (let index = 0; index < argumentsToParse.length; index += 1) {
+    const argument = argumentsToParse[index]!;
+    if (argument === "--fail-on-change") {
+      if (parsed.failOnChange)
+        parsed.error = "Duplicate --fail-on-change option.";
+      parsed.failOnChange = true;
+      continue;
+    }
+    if (argument === "--format") {
+      const value = argumentsToParse[index + 1];
+      if (formatSeen) parsed.error = "Duplicate --format option.";
+      if (!value || value.startsWith("-")) {
+        parsed.error = "--format requires json, junit, or markdown.";
+        continue;
+      }
+      index += 1;
+      formatSeen = true;
+      if (!(value === "json" || value === "junit" || value === "markdown")) {
+        parsed.error = `Unsupported output format: ${value}`;
+        continue;
+      }
+      parsed.format = value;
+      continue;
+    }
+    if (argument === "--check") {
+      const value = argumentsToParse[index + 1];
+      if (checkSeen) parsed.error = "Duplicate --check option.";
+      if (!value || value.startsWith("-")) {
+        parsed.error = "--check requires one expected output file.";
+        continue;
+      }
+      index += 1;
+      checkSeen = true;
+      parsed.checkFile = value;
+      continue;
+    }
+    if (argument.startsWith("-")) {
+      parsed.error = `Unknown option: ${argument}`;
+      continue;
+    }
+    parsed.inputFiles.push(argument);
+  }
+
+  return parsed;
+}
+
+const parsedArguments = parseArguments(argumentsList);
 
 function failUsage(message: string): number {
   console.error(terminalText(message));
   console.error(
-    "Usage: pnpm blueprint:suite-diff <baseline.report.json> <candidate.report.json> [--fail-on-change] [--check <expected.diff.json>]"
+    "Usage: pnpm blueprint:suite-diff <baseline.report.json> <candidate.report.json> [--fail-on-change] [--format json|junit|markdown] [--check <expected-output>]"
   );
   return 2;
+}
+
+function renderDiff(diff: BlueprintSuiteDiff, format: OutputFormat): string {
+  if (format === "junit") return blueprintSuiteDiffToJUnit(diff);
+  if (format === "markdown") return blueprintSuiteDiffToMarkdown(diff);
+  return `${JSON.stringify(diff, null, 2)}\n`;
 }
 
 function analyzeReport(
@@ -50,17 +118,12 @@ function analyzeReport(
 }
 
 async function main(): Promise<number> {
-  if (unknownFlags.length > 0) {
-    return failUsage(`Unknown option: ${unknownFlags.join(", ")}`);
-  }
-  if (checkIndex >= 0 && (!checkFile || checkFile.startsWith("-"))) {
-    return failUsage("--check requires one expected suite diff file.");
-  }
-  if (inputFiles.length !== 2) {
+  if (parsedArguments.error) return failUsage(parsedArguments.error);
+  if (parsedArguments.inputFiles.length !== 2) {
     return failUsage("Supply exactly one baseline and one candidate report.");
   }
-  const baselineInput = inputFiles[0];
-  const candidateInput = inputFiles[1];
+  const baselineInput = parsedArguments.inputFiles[0];
+  const candidateInput = parsedArguments.inputFiles[1];
   if (!baselineInput || !candidateInput) {
     return failUsage("Supply one baseline and one candidate report.");
   }
@@ -99,26 +162,33 @@ async function main(): Promise<number> {
         bytes: candidateFile.bytes,
         report: candidateAnalysis.report,
       },
-      failOnChange
+      parsedArguments.failOnChange
     );
+    const rendered = renderDiff(diff, parsedArguments.format);
 
-    if (checkFile) {
-      const checkPath = resolve(checkFile);
-      const expected = readJsonFileWithBytes(
-        checkPath,
-        maximumSuiteReportBytes
-      ).value;
-      if (!isDeepStrictEqual(diff, expected)) {
+    if (parsedArguments.checkFile) {
+      const checkPath = resolve(parsedArguments.checkFile);
+      const matches =
+        parsedArguments.format === "json"
+          ? isDeepStrictEqual(
+              diff,
+              readJsonFileWithBytes(checkPath, maximumSuiteReportBytes).value
+            )
+          : rendered ===
+            new TextDecoder("utf-8", { fatal: true }).decode(
+              readFileWithLimit(checkPath, maximumSuiteReportBytes)
+            );
+      if (!matches) {
         console.error(
-          `MISMATCH ${terminalText(checkPath)} does not match the generated suite diff.`
+          `MISMATCH ${terminalText(checkPath)} does not match the generated ${parsedArguments.format} suite diff.`
         );
         return 1;
       }
       console.error(
-        `MATCH ${terminalText(checkPath)} matches ${diff.summary.cases.total} compared cases; outcome is ${diff.summary.outcome} and gate is ${diff.summary.gate}.`
+        `MATCH ${terminalText(checkPath)} matches the ${parsedArguments.format} output for ${diff.summary.cases.total} compared cases; outcome is ${diff.summary.outcome} and gate is ${diff.summary.gate}.`
       );
     } else {
-      console.log(JSON.stringify(diff, null, 2));
+      process.stdout.write(rendered);
     }
     return diff.summary.gate === "fail" ? 1 : 0;
   } catch (error) {

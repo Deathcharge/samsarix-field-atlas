@@ -3,6 +3,7 @@ import { useState, type ChangeEvent } from "react";
 import { readBlueprintFile } from "../blueprint-file";
 import { downloadText } from "../download";
 import type { BlueprintSuiteReport } from "../suite";
+import { blueprintSuiteDiffToMarkdown } from "../suite-diff-reporting";
 import {
   createBlueprintSuiteDiff,
   maximumSuiteReportBytes,
@@ -187,6 +188,22 @@ function BlueprintSuiteDiffWorkbench() {
     }
   }
 
+  function exportSummary() {
+    if (!diff) return;
+    try {
+      downloadText(
+        blueprintSuiteDiffToMarkdown(diff),
+        "samsarix-suite-diff.md",
+        "text/markdown"
+      );
+      setNotice(
+        "Readable suite comparison summary exported locally. Nothing was uploaded."
+      );
+    } catch {
+      setNotice("The browser could not export the comparison summary.");
+    }
+  }
+
   return (
     <section
       aria-labelledby="suite-diff-workbench-title"
@@ -269,6 +286,14 @@ function BlueprintSuiteDiffWorkbench() {
           type="button"
         >
           Export suite comparison
+        </button>
+        <button
+          className="button button-secondary"
+          disabled={!diff || pending}
+          onClick={exportSummary}
+          type="button"
+        >
+          Export comparison summary
         </button>
       </div>
 

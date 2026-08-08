@@ -30,6 +30,7 @@ Current disposition: Grow the provider-neutral conformance workflow through evid
 - [x] Add a schema-validated local scenario editor after evaluator and market workflow evidence established that adapting user-owned cases is a core evaluation job; retain local-only state and the bounded reference-role vocabulary.
 - [x] Add portable multi-blueprint manifests and deterministic batch conformance reports with exact-byte bindings for repeatable browser and CI review.
 - [x] Compare internally consistent suite reports by stable case ID, expose regression and review impact in browser/CI, and bind both exact report byte streams without making a release decision.
+- [x] Project suite comparisons into deterministic JUnit for CI viewers and escaped Markdown for workflow summaries without representing contract comparison as runtime test execution.
 - [x] Map the portable contract to A2A 1.0 discovery without making A2A or any runtime canonical.
 - [x] Bind an externally generated official-format TCK JSON report to owner-asserted provenance metadata and an exact-byte owner-review receipt without turning it into a pass claim.
 - [x] Bind the plan and TCK receipt to one explicit disposition per planned case, deterministic blocking readiness, and an owner-asserted decision ledger without claiming authenticated authority.

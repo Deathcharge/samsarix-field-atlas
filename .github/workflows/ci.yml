@@ -38,3 +38,12 @@ jobs:
 
       - name: Verify product
         run: pnpm verify
+
+      - name: Publish suite comparison summary
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' }}
+        shell: bash
+        run: |
+          pnpm --silent blueprint:suite-diff \
+            examples/core.suite-report.json \
+            examples/core-candidate.suite-report.json \
+            --format markdown >> "$GITHUB_STEP_SUMMARY"
