@@ -301,6 +301,7 @@ describe("Samsarix Field Atlas", () => {
     expect(
       screen.getByRole("button", { name: /export suite comparison/i })
     ).toBeEnabled();
+    const downloadsBeforeSummary = createObjectUrl.mock.calls.length;
     fireEvent.click(
       screen.getByRole("button", { name: /export comparison summary/i })
     );
@@ -309,7 +310,7 @@ describe("Samsarix Field Atlas", () => {
         screen.getByText(/readable suite comparison summary exported locally/i)
       ).toBeVisible()
     );
-    const blob = createObjectUrl.mock.calls[0]?.[0];
+    const blob = createObjectUrl.mock.calls[downloadsBeforeSummary]?.[0];
     expect(blob).toBeInstanceOf(Blob);
     expect((blob as Blob).type).toBe("text/markdown");
     await waitFor(() =>
