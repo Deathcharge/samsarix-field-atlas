@@ -7,6 +7,15 @@ updates:
     groups:
       development-tooling:
         dependency-type: development
+    ignore:
+      # Keep the compiler and Node declarations aligned with the supported
+      # toolchain; their majors need dedicated compatibility work.
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
 
   - package-ecosystem: github-actions
     directory: /

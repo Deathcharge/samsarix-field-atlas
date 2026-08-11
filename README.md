@@ -1,12 +1,15 @@
 # Samsarix Field Atlas
 
+[![CI](https://github.com/Deathcharge/samsarix-field-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/Deathcharge/samsarix-field-atlas/actions/workflows/ci.yml)
+[Open the public Field Atlas](https://deathcharge.github.io/samsarix-field-atlas/)
+
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
 The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. Scenario Studio lets evaluators adapt those scenarios through a guided local editor. The workbench validates the resulting blueprint, compares repository-owned suites, matches exact drift against bounded expiring change intent, exports readable review evidence, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, binds an externally generated official A2A TCK report to a review receipt, and records case-by-case owner dispositions without authenticating them or inventing authority.
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, schema-validated local authoring studio, blueprint workbench, suite baseline and declared-change workflows, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. The [public Field Atlas](https://deathcharge.github.io/samsarix-field-atlas/) is an automatically published static build; genuine runtime evidence, authenticated signoff, support commitment, and adoption remain separate gates. See [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository for the v1.0.0 public reference release. The scenario lab, schema-validated local authoring studio, blueprint workbench, suite baseline and declared-change workflows, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment handoff, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. The [public Field Atlas](https://deathcharge.github.io/samsarix-field-atlas/) is an automatically published static build; genuine runtime evidence, authenticated signoff, support commitment, and adoption remain separate gates. See [Productization](docs/PRODUCTIZATION.md) and the [changelog](CHANGELOG.md).
 
 ## Fastest successful path
 
