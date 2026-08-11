@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Private security report
+    url: https://github.com/Deathcharge/samsarix-field-atlas/security/advisories/new
+    about: Report vulnerabilities privately; do not publish exploit details in an issue.
+  - name: Licensing and support contacts
+    url: https://github.com/Deathcharge/samsarix-field-atlas/blob/main/NOTICE.md
+    about: Find the Samsarix LLC commercial-licensing and support channels.
