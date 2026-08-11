@@ -8,3 +8,4 @@ NOTICE.md
 *.min.css
 examples/core.suite-diff.junit.xml
 examples/core.suite-diff.md
+examples/core.suite-change-review.md

@@ -323,6 +323,50 @@ describe("Samsarix Field Atlas", () => {
     await waitFor(() =>
       expect(screen.getByText(/change gate fails/i)).toBeVisible()
     );
+
+    const planText = readFileSync(
+      resolve(process.cwd(), "examples/core.suite-change-plan.json"),
+      "utf8"
+    );
+    const plan = new File([planText], "core.suite-change-plan.json", {
+      type: "application/json",
+    });
+    Object.defineProperty(plan, "arrayBuffer", {
+      configurable: true,
+      value: async () => new TextEncoder().encode(planText).buffer,
+    });
+    fireEvent.change(screen.getByLabelText(/declared change review date/i), {
+      target: { value: "2026-08-08" },
+    });
+    fireEvent.change(screen.getByLabelText(/import suite change plan/i), {
+      target: { files: [plan] },
+    });
+
+    await waitFor(
+      () =>
+        expect(screen.getByText(/declared intent is matched/i)).toBeVisible(),
+      { timeout: 15_000 }
+    );
+    expect(
+      screen.getByRole("table", { name: /declared and actual suite changes/i })
+    ).toBeVisible();
+    expect(screen.getByText(/baseline bound/i)).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /export change review$/i })
+    ).toBeEnabled();
+    const downloadsBeforeChangeReview = createObjectUrl.mock.calls.length;
+    fireEvent.click(
+      screen.getByRole("button", { name: /export change review$/i })
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByText(/declared change review exported locally/i)
+      ).toBeVisible()
+    );
+    const changeReviewBlob =
+      createObjectUrl.mock.calls[downloadsBeforeChangeReview]?.[0];
+    expect(changeReviewBlob).toBeInstanceOf(Blob);
+    expect((changeReviewBlob as Blob).type).toBe("application/json");
   });
 
   it("turns a valid blueprint into an explicit A2A implementation handoff", async () => {

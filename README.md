@@ -2,11 +2,11 @@
 
 Samsarix Field Atlas is a local-first coordination-design workbench for the Samsarix reference model. It lets developers, technical evaluators, and operational owners trace how 13 named roles hand work across intent, execution, safety, and memory boundaries—then validate that design as a portable contract in the browser or CI.
 
-The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. Scenario Studio lets evaluators adapt those scenarios through a guided local editor. The workbench validates the resulting blueprint, exports a readable Markdown review packet, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, binds an externally generated official A2A TCK report to a review receipt, and records case-by-case owner dispositions without authenticating them or inventing authority.
+The site is deliberately honest about its limits: it does **not** run agents, call language models, connect to an external runtime, report live status, or store data remotely. Scenario runs are deterministic browser simulations that produce a portable JSON blueprint. Scenario Studio lets evaluators adapt those scenarios through a guided local editor. The workbench validates the resulting blueprint, compares repository-owned suites, matches exact drift against bounded expiring change intent, exports readable review evidence, maps explicit runtime-owner facts to a draft A2A 1.0 Agent Card, creates a consumer-owned acceptance plan, binds an externally generated official A2A TCK report to a review receipt, and records case-by-case owner dispositions without authenticating them or inventing authority.
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, schema-validated local authoring studio, blueprint workbench, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, authenticated signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, schema-validated local authoring studio, blueprint workbench, suite baseline and declared-change workflows, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, authenticated signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
 
 ## Fastest successful path
 
@@ -172,33 +172,57 @@ pnpm blueprint:suite-diff \
 
 The comparator validates both imported reports, binds their exact bytes, and classifies added, removed, modified, unchanged, regressed, improved, mixed, and review-only cases. By default regressions fail; `--fail-on-change` also blocks additions, improvements, metadata, policy, manifest, and content drift. JSON is the complete comparison artifact, JUnit is a compact CI-viewer projection, and escaped Markdown is a readable job/review summary. The CLI exit code—not the presence of a JUnit file—enforces the gate. The browser offers the same local comparison plus JSON and Markdown exports. See [baseline comparison semantics](docs/BLUEPRINT_SUITES.md#baseline-comparison).
 
+## Declare an expected suite change
+
+When a contract change is intentional, commit a `suite-change-plan/1` instead of adding a broad ignore. The plan binds the exact baseline report, declares every expected case change and suite-level signal, requires explicit acknowledgement for regression or mixed impact, names an owner assertion and credential-free reference, and expires on a calendar date:
+
+```bash
+pnpm blueprint:suite-change \
+  examples/core.suite-report.json \
+  examples/core-candidate.suite-report.json \
+  --plan examples/core.suite-change-plan.json \
+  --as-of 2026-08-08
+
+# Human-readable, deterministic review evidence
+pnpm blueprint:suite-change \
+  examples/core.suite-report.json \
+  examples/core-candidate.suite-report.json \
+  --plan examples/core.suite-change-plan.json \
+  --as-of 2026-08-08 \
+  --format markdown
+```
+
+The command recomputes the diff from the two validated reports, hashes the exact plan bytes, and fails for expired plans, wrong suite/baseline bindings, missing declarations, unexpected drift, mismatched change/impact/dimensions, or suite-level signal differences. `--as-of` is required and recorded so fixture checks are reproducible; Field Atlas does not silently trust a machine clock. The intent gate is separate from the original comparison gate: a matching plan proves only that observed drift equals declared intent. It does not authenticate the owner, authorize an exception, or approve a release. Use repository rules and accountable review for that decision. The browser exposes the same local workflow and JSON/Markdown exports. See [declared change semantics](docs/BLUEPRINT_SUITES.md#declared-change-plans).
+
 ## Development commands
 
-| Command                              | Purpose                                                                               |
-| ------------------------------------ | ------------------------------------------------------------------------------------- |
-| `pnpm dev`                           | Start the local Vite development server on `127.0.0.1:3000`                           |
-| `pnpm lint`                          | Run ESLint across TypeScript and React code                                           |
-| `pnpm format:check`                  | Check repository formatting with Prettier                                             |
-| `pnpm check`                         | Run the strict TypeScript compiler check                                              |
-| `pnpm test`                          | Run model, component, and server tests once                                           |
-| `pnpm test:coverage`                 | Run tests with enforced coverage thresholds                                           |
-| `pnpm build`                         | Build static assets, the optional Node release server, and all seven CLIs             |
-| `pnpm blueprint:validate <file>`     | Validate a v1 blueprint with optional strict, JSON, or SARIF output                   |
-| `pnpm blueprint:suite <manifest>`    | Batch-check a bounded suite and optionally compare its deterministic report           |
-| `pnpm blueprint:suite-diff <a> <b>`  | Compare suite reports; emit JSON, JUnit, or Markdown; and enforce the selected gate   |
-| `pnpm validate:sarif-example`        | Check the deterministic strict-ready SARIF report against its committed fixture       |
-| `pnpm validate:suite-example`        | Check all three core scenarios against the committed strict-ready suite report        |
-| `pnpm validate:suite-diff-example`   | Reproduce the candidate report and exact JSON, JUnit, and Markdown diff fixtures      |
-| `pnpm blueprint:a2a <file> ...`      | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
-| `pnpm validate:a2a-example`          | Check the deterministic incident Agent Card mapping against its committed fixture     |
-| `pnpm blueprint:acceptance ...`      | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |
-| `pnpm validate:acceptance-example`   | Check the incident acceptance plan against its complete committed fixture             |
-| `pnpm blueprint:tck-evidence ...`    | Bind an official-format TCK JSON report to a deterministic owner-review receipt       |
-| `pnpm validate:tck-evidence-example` | Check the incident TCK receipt against its complete committed fixture                 |
-| `pnpm blueprint:review ...`          | Bind plan, receipt, case dispositions, and owner decision into a review ledger        |
-| `pnpm validate:review-example`       | Check the synthetic blocked review ledger against its complete committed fixture      |
-| `pnpm start`                         | Serve the completed build on `127.0.0.1:3000`                                         |
-| `pnpm verify`                        | Run lint, formatting, types, coverage, all fixture validations, and build in CI order |
+| Command                                   | Purpose                                                                               |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
+| `pnpm dev`                                | Start the local Vite development server on `127.0.0.1:3000`                           |
+| `pnpm lint`                               | Run ESLint across TypeScript and React code                                           |
+| `pnpm format:check`                       | Check repository formatting with Prettier                                             |
+| `pnpm check`                              | Run the strict TypeScript compiler check                                              |
+| `pnpm test`                               | Run model, component, and server tests once                                           |
+| `pnpm test:coverage`                      | Run tests with enforced coverage thresholds                                           |
+| `pnpm build`                              | Build static assets, the optional Node release server, and all eight CLIs             |
+| `pnpm blueprint:validate <file>`          | Validate a v1 blueprint with optional strict, JSON, or SARIF output                   |
+| `pnpm blueprint:suite <manifest>`         | Batch-check a bounded suite and optionally compare its deterministic report           |
+| `pnpm blueprint:suite-diff <a> <b>`       | Compare suite reports; emit JSON, JUnit, or Markdown; and enforce the selected gate   |
+| `pnpm blueprint:suite-change <a> <b> ...` | Match exact suite drift against a bounded expiring change plan                        |
+| `pnpm validate:sarif-example`             | Check the deterministic strict-ready SARIF report against its committed fixture       |
+| `pnpm validate:suite-example`             | Check all three core scenarios against the committed strict-ready suite report        |
+| `pnpm validate:suite-diff-example`        | Reproduce the candidate report and exact JSON, JUnit, and Markdown diff fixtures      |
+| `pnpm validate:suite-change-example`      | Reproduce the exact declared-change JSON and Markdown review fixtures                 |
+| `pnpm blueprint:a2a <file> ...`           | Generate a draft A2A 1.0 Agent Card from a valid blueprint and explicit owner profile |
+| `pnpm validate:a2a-example`               | Check the deterministic incident Agent Card mapping against its committed fixture     |
+| `pnpm blueprint:acceptance ...`           | Generate a deterministic, not-yet-run A2A implementation acceptance manifest          |
+| `pnpm validate:acceptance-example`        | Check the incident acceptance plan against its complete committed fixture             |
+| `pnpm blueprint:tck-evidence ...`         | Bind an official-format TCK JSON report to a deterministic owner-review receipt       |
+| `pnpm validate:tck-evidence-example`      | Check the incident TCK receipt against its complete committed fixture                 |
+| `pnpm blueprint:review ...`               | Bind plan, receipt, case dispositions, and owner decision into a review ledger        |
+| `pnpm validate:review-example`            | Check the synthetic blocked review ledger against its complete committed fixture      |
+| `pnpm start`                              | Serve the completed build on `127.0.0.1:3000`                                         |
+| `pnpm verify`                             | Run lint, formatting, types, coverage, all fixture validations, and build in CI order |
 
 ## Production build and distribution
 
@@ -214,6 +238,7 @@ The build produces:
 - `dist/atlas-validate.js`: the bundled, dependency-free blueprint validation CLI.
 - `dist/atlas-suite.js`: the bundled, dependency-free blueprint suite and report CLI.
 - `dist/atlas-suite-diff.js`: the bundled, dependency-free suite baseline comparison CLI.
+- `dist/atlas-suite-change.js`: the bundled, dependency-free declared suite-change review CLI.
 - `dist/atlas-a2a.js`: the bundled, dependency-free A2A draft generation and fixture-check CLI.
 - `dist/atlas-acceptance.js`: the bundled, dependency-free A2A acceptance-plan and fixture-check CLI.
 - `dist/atlas-tck-evidence.js`: the bundled, dependency-free A2A TCK evidence receipt and fixture-check CLI.
@@ -246,6 +271,8 @@ client/src/scenario-editor.ts Guided draft conversion + derived contract fields
 client/src/blueprint.ts       Shared semantic validator + Markdown review packet
              ↘
 client/src/suite.ts           Bounded manifests + exact-byte batch reports
+client/src/suite-diff.ts      Stable-case comparison + regression/change gates
+client/src/suite-change.ts    Bounded expiring intent + exact drift review
               ↓
 client/src/a2a.ts           Owner profile checks + draft card/checklist mapping
               ↓
@@ -255,7 +282,7 @@ client/src/evidence.ts      TCK report semantics + exact-byte evidence receipt
               ↓
 client/src/review.ts        Case dispositions + blocking readiness + owner decision
        ↙             ↘
-React workbench       CLI tools ───────────→ seven bundled CLI artifacts
+React workbench       CLI tools ───────────→ eight bundled CLI artifacts
        ↓                    ↑
 Vite static build     schemas/ + examples/
        ↓
@@ -273,6 +300,7 @@ The product intentionally has no authentication, database, analytics, remote API
 - The JSON export is created in the browser and downloaded directly.
 - Imported blueprints are limited to 1 MiB, require valid UTF-8 JSON, are parsed in memory, rendered as text, and never uploaded or persisted.
 - Browser suite review accepts at most 16 blueprints; CLI manifests accept at most 64 relative 1 MiB files, reject traversal and canonical-path escapes, and bind readable files by exact-byte SHA-256.
+- Declared suite-change plans are limited to 1 MiB, reject wildcard expectations and credential-bearing references, bind exact plan/baseline bytes, require an explicit review date, and never authenticate the asserted owner.
 - A2A owner-profile values are local-only, rendered as text, and never used to probe an endpoint; no credential field exists.
 - Acceptance profiles and manifests remain local-only, are bounded in the CLI, and make no test-result claim.
 - TCK JSON imports are limited to 5 MiB and hashed locally; receipts omit raw errors, test IDs, and embedded Agent Card contents, reject likely secret-bearing commands, and never claim conformance or release approval.
@@ -294,6 +322,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - A generated review ledger can reject contradictory approvals and make missing/waived work visible, but it does not verify evidence contents, signatures, identities, authority, or the truth of an owner disposition.
 - The three bundled scenarios are representative rather than exhaustive; Scenario Studio can adapt them through the bounded 13-role reference vocabulary but does not persist drafts or define custom roles.
 - Suite reports establish repeatable contract conformance and byte integrity only; they do not execute evaluations, verify named evidence, authenticate owners, or approve releases.
+- Declared change reviews establish exact agreement between observed and declared drift only; their intent gate can differ from the original comparison gate and is not authorization to bypass repository controls.
 - No hosted URL is guaranteed by this repository.
 
 ## Project records
