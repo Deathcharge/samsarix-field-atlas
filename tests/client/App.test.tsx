@@ -367,6 +367,77 @@ describe("Samsarix Field Atlas", () => {
       createObjectUrl.mock.calls[downloadsBeforeChangeReview]?.[0];
     expect(changeReviewBlob).toBeInstanceOf(Blob);
     expect((changeReviewBlob as Blob).type).toBe("application/json");
+
+    const mismatchedPlan = JSON.parse(planText) as {
+      suite: { manifestChanged: boolean };
+    };
+    mismatchedPlan.suite.manifestChanged = false;
+    const delayedPlanText = `${JSON.stringify(mismatchedPlan, null, 2)}\n`;
+    const delayedPlan = new File([], "delayed-plan.json", {
+      type: "application/json",
+    });
+    const delayedCandidate = new File([], "delayed-candidate.json", {
+      type: "application/json",
+    });
+    let resolvePlanRead!: (value: ArrayBuffer) => void;
+    let resolveCandidateRead!: (value: ArrayBuffer) => void;
+    const planRead = new Promise<ArrayBuffer>(resolve => {
+      resolvePlanRead = resolve;
+    });
+    const candidateRead = new Promise<ArrayBuffer>(resolve => {
+      resolveCandidateRead = resolve;
+    });
+    const planArrayBuffer = vi.fn(() => planRead);
+    const candidateArrayBuffer = vi.fn(() => candidateRead);
+    Object.defineProperty(delayedPlan, "arrayBuffer", {
+      configurable: true,
+      value: planArrayBuffer,
+    });
+    Object.defineProperty(delayedCandidate, "arrayBuffer", {
+      configurable: true,
+      value: candidateArrayBuffer,
+    });
+    const planInput = screen.getByLabelText(/import suite change plan/i);
+    const candidateInput = screen.getByLabelText(
+      /import candidate suite report/i
+    );
+
+    act(() => {
+      fireEvent.change(planInput, { target: { files: [delayedPlan] } });
+      fireEvent.change(candidateInput, {
+        target: { files: [delayedCandidate] },
+      });
+    });
+    expect(planArrayBuffer).toHaveBeenCalledOnce();
+    expect(candidateArrayBuffer).toHaveBeenCalledOnce();
+    expect(
+      screen.getByRole("button", { name: /export change review$/i })
+    ).toBeDisabled();
+
+    await act(async () => {
+      resolvePlanRead(new TextEncoder().encode(delayedPlanText).buffer);
+      await planRead;
+    });
+    await waitFor(
+      () =>
+        expect(screen.getByText(/declared intent is mismatch/i)).toBeVisible(),
+      { timeout: 15_000 }
+    );
+    expect(
+      screen.getByRole("button", { name: /export change review$/i })
+    ).toBeDisabled();
+
+    await act(async () => {
+      resolveCandidateRead(new TextEncoder().encode(candidateText).buffer);
+      await candidateRead;
+    });
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole("button", { name: /export change review$/i })
+        ).toBeEnabled(),
+      { timeout: 15_000 }
+    );
   });
 
   it("turns a valid blueprint into an explicit A2A implementation handoff", async () => {

@@ -146,6 +146,7 @@ function BlueprintSuiteDiffWorkbench() {
   const [reviewDate, setReviewDate] = useState("");
   const [changeReview, setChangeReview] =
     useState<BlueprintSuiteChangeReview | null>(null);
+  const [planReadPending, setPlanReadPending] = useState(false);
   const [reviewPending, setReviewPending] = useState(false);
   const reviewGeneration = useRef(0);
   const [pending, setPending] = useState(false);
@@ -155,6 +156,7 @@ function BlueprintSuiteDiffWorkbench() {
   const [reviewNotice, setReviewNotice] = useState(
     "Import a bounded change plan and set an explicit review date."
   );
+  const busy = pending || planReadPending || reviewPending;
 
   async function reviewDeclaredChange(
     nextDiff: BlueprintSuiteDiff | null,
@@ -300,7 +302,7 @@ function BlueprintSuiteDiffWorkbench() {
     const file = event.currentTarget.files?.[0];
     event.currentTarget.value = "";
     if (!file) return;
-    setReviewPending(true);
+    setPlanReadPending(true);
     try {
       const result = await readSuiteChangePlan(file);
       if (!result.ok) {
@@ -323,7 +325,7 @@ function BlueprintSuiteDiffWorkbench() {
           : "The browser could not import this change plan."
       );
     } finally {
-      setReviewPending(false);
+      setPlanReadPending(false);
     }
   }
 
@@ -334,7 +336,7 @@ function BlueprintSuiteDiffWorkbench() {
   }
 
   function exportDiff() {
-    if (!diff) return;
+    if (!diff || busy) return;
     try {
       downloadText(
         `${JSON.stringify(diff, null, 2)}\n`,
@@ -350,7 +352,7 @@ function BlueprintSuiteDiffWorkbench() {
   }
 
   function exportSummary() {
-    if (!diff) return;
+    if (!diff || busy) return;
     try {
       downloadText(
         blueprintSuiteDiffToMarkdown(diff),
@@ -366,7 +368,7 @@ function BlueprintSuiteDiffWorkbench() {
   }
 
   function exportChangeReview() {
-    if (!changeReview) return;
+    if (!changeReview || busy) return;
     try {
       downloadText(
         `${JSON.stringify(changeReview, null, 2)}\n`,
@@ -382,7 +384,7 @@ function BlueprintSuiteDiffWorkbench() {
   }
 
   function exportChangeReviewSummary() {
-    if (!changeReview) return;
+    if (!changeReview || busy) return;
     try {
       downloadText(
         blueprintSuiteChangeReviewToMarkdown(changeReview),
@@ -446,7 +448,7 @@ function BlueprintSuiteDiffWorkbench() {
             accept="application/json,.json"
             aria-label="Import baseline suite report"
             className="file-input"
-            disabled={pending}
+            disabled={busy}
             onChange={event => importReport("baseline", event)}
             type="file"
           />
@@ -457,7 +459,7 @@ function BlueprintSuiteDiffWorkbench() {
             accept="application/json,.json"
             aria-label="Import candidate suite report"
             className="file-input"
-            disabled={pending}
+            disabled={busy}
             onChange={event => importReport("candidate", event)}
             type="file"
           />
@@ -465,7 +467,7 @@ function BlueprintSuiteDiffWorkbench() {
         <label className="suite-strict-control">
           <input
             checked={failOnChange}
-            disabled={pending}
+            disabled={busy}
             onChange={changePolicy}
             type="checkbox"
           />
@@ -476,7 +478,7 @@ function BlueprintSuiteDiffWorkbench() {
         </label>
         <button
           className="button button-secondary"
-          disabled={!diff || pending}
+          disabled={!diff || busy}
           onClick={exportDiff}
           type="button"
         >
@@ -484,7 +486,7 @@ function BlueprintSuiteDiffWorkbench() {
         </button>
         <button
           className="button button-secondary"
-          disabled={!diff || pending}
+          disabled={!diff || busy}
           onClick={exportSummary}
           type="button"
         >
@@ -590,7 +592,7 @@ function BlueprintSuiteDiffWorkbench() {
                   accept="application/json,.json"
                   aria-label="Import suite change plan"
                   className="file-input"
-                  disabled={reviewPending}
+                  disabled={busy}
                   onChange={importChangePlan}
                   type="file"
                 />
@@ -599,7 +601,7 @@ function BlueprintSuiteDiffWorkbench() {
                 <span>Review date</span>
                 <input
                   aria-label="Declared change review date"
-                  disabled={reviewPending}
+                  disabled={busy}
                   onChange={changeReviewDate}
                   type="date"
                   value={reviewDate}
@@ -608,7 +610,7 @@ function BlueprintSuiteDiffWorkbench() {
               </label>
               <button
                 className="button button-secondary"
-                disabled={!changeReview || reviewPending}
+                disabled={!changeReview || busy}
                 onClick={exportChangeReview}
                 type="button"
               >
@@ -616,7 +618,7 @@ function BlueprintSuiteDiffWorkbench() {
               </button>
               <button
                 className="button button-secondary"
-                disabled={!changeReview || reviewPending}
+                disabled={!changeReview || busy}
                 onClick={exportChangeReviewSummary}
                 type="button"
               >

@@ -90,6 +90,51 @@ describe("declared suite changes", () => {
     expect(validateReview(review), JSON.stringify(validateReview.errors)).toBe(
       true
     );
+
+    const extraPlan = { ...structuredClone(plan), release: true };
+    expect(validatePlan(extraPlan)).toBe(false);
+    expect(validatePlan.errors).not.toBeNull();
+
+    const emptyModifiedDimensions = structuredClone(plan);
+    emptyModifiedDimensions.expectations[0]!.dimensions = [];
+    expect(validatePlan(emptyModifiedDimensions)).toBe(false);
+    expect(validatePlan.errors).not.toBeNull();
+
+    const unacknowledgedRegression = structuredClone(plan);
+    unacknowledgedRegression.expectations[0]!.impact = "regression";
+    expect(validatePlan(unacknowledgedRegression)).toBe(false);
+    expect(validatePlan.errors).not.toBeNull();
+
+    const normalizedReference = structuredClone(plan);
+    normalizedReference.reference = "HTTPS://example.com/change";
+    expect(validatePlan(normalizedReference)).toBe(false);
+    expect(validatePlan.errors).not.toBeNull();
+    expect(validateBlueprintSuiteChangePlan(normalizedReference).status).toBe(
+      "invalid"
+    );
+
+    for (const invalidDate of ["2026-13-01", "2026-12-32"]) {
+      const invalidExpiry = structuredClone(plan);
+      invalidExpiry.expiresOn = invalidDate;
+      expect(validatePlan(invalidExpiry)).toBe(false);
+      expect(validatePlan.errors).not.toBeNull();
+    }
+
+    const extraReview = { ...structuredClone(review), release: true };
+    expect(validateReview(extraReview)).toBe(false);
+    expect(validateReview.errors).not.toBeNull();
+
+    const invalidReviewDimensions = structuredClone(review);
+    invalidReviewDimensions.cases[0]!.expected!.dimensions = [];
+    expect(validateReview(invalidReviewDimensions)).toBe(false);
+    expect(validateReview.errors).not.toBeNull();
+
+    const invalidReviewAcknowledgement = structuredClone(review);
+    invalidReviewAcknowledgement.cases[0]!.expected!.impact = "regression";
+    invalidReviewAcknowledgement.cases[0]!.expected!.regressionAcknowledged = false;
+    expect(validateReview(invalidReviewAcknowledgement)).toBe(false);
+    expect(validateReview.errors).not.toBeNull();
+
     expect(review).toMatchObject({
       binding: {
         suiteId: { matched: true },
@@ -418,6 +463,12 @@ describe("declared suite changes", () => {
     expect(blueprintSuiteChangeReviewToMarkdown(review)).not.toMatch(
       /approved|release ready/i
     );
+
+    const emptyReview = structuredClone(review);
+    emptyReview.cases = [];
+    const emptyMarkdown = blueprintSuiteChangeReviewToMarkdown(emptyReview);
+    expect(emptyMarkdown).toContain("| — | — | — | — | — | — | — |");
+    expect(emptyMarkdown).not.toContain("| None | matched |");
 
     const escapedPlan = structuredClone(plan);
     escapedPlan.owner = "**Ops** [team]";

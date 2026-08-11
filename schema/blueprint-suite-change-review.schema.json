@@ -227,7 +227,63 @@
         },
         "regressionAcknowledged": { "type": "boolean" },
         "rationale": { "type": "string", "minLength": 20, "maxLength": 1000 }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["change"],
+            "properties": { "change": { "const": "modified" } }
+          },
+          "then": {
+            "properties": {
+              "dimensions": { "type": "array", "minItems": 1 }
+            }
+          },
+          "else": {
+            "properties": {
+              "dimensions": { "type": "array", "maxItems": 0 }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["change"],
+            "properties": { "change": { "const": "removed" } }
+          },
+          "then": {
+            "properties": { "impact": { "const": "regression" } }
+          }
+        },
+        {
+          "if": {
+            "required": ["change"],
+            "properties": { "change": { "const": "added" } }
+          },
+          "then": {
+            "properties": {
+              "impact": { "enum": ["regression", "review"] }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["impact"],
+            "properties": {
+              "impact": { "enum": ["regression", "mixed"] }
+            }
+          },
+          "then": {
+            "properties": {
+              "regressionAcknowledged": { "const": true }
+            }
+          },
+          "else": {
+            "properties": {
+              "regressionAcknowledged": { "const": false }
+            }
+          }
+        }
+      ]
     },
     "actual": {
       "type": "object",

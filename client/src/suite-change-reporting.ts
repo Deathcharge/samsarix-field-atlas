@@ -66,7 +66,7 @@ export function blueprintSuiteChangeReviewToMarkdown(
   ];
 
   if (review.cases.length === 0) {
-    lines.push("| None | matched | — | — | — | — | — |");
+    lines.push("| — | — | — | — | — | — | — |");
   } else {
     for (const entry of review.cases) {
       const expected = entry.expected

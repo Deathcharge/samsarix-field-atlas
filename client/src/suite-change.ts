@@ -139,6 +139,7 @@ export interface BlueprintSuiteChangeReview {
 const identifierPattern = /^[a-z][a-z0-9-]*$/;
 const sha256Pattern = /^[a-f0-9]{64}$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+const httpsReferencePattern = /^https:\/\/(?![^/]*@)[^/?#\s]+(?:\/[^?#\s]*)?$/;
 const urnPattern =
   /^urn:[a-z0-9][a-z0-9-]{0,31}:[a-zA-Z0-9][a-zA-Z0-9._:-]{0,511}$/;
 const maximumValidationFindings = 256;
@@ -228,6 +229,7 @@ export function isCanonicalSuiteChangeDate(value: unknown): value is string {
 function isCredentialFreeReference(value: unknown): value is string {
   if (!boundedSingleLineString(value, 5, 1_024)) return false;
   if (urnPattern.test(value)) return true;
+  if (!httpsReferencePattern.test(value)) return false;
   try {
     const parsed = new URL(value);
     return (
