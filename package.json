@@ -23,6 +23,7 @@
     "dev": "vite",
     "build": "pnpm run build:client && pnpm run build:server && pnpm run build:cli",
     "build:client": "vite build",
+    "build:pages": "vite build --mode pages",
     "build:server": "esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "build:cli": "pnpm run build:blueprint-cli && pnpm run build:suite-cli && pnpm run build:suite-diff-cli && pnpm run build:suite-change-cli && pnpm run build:a2a-cli && pnpm run build:acceptance-cli && pnpm run build:tck-evidence-cli && pnpm run build:review-cli",
     "build:blueprint-cli": "esbuild cli/validate.ts --platform=node --bundle --format=esm --log-level=error --outfile=dist/atlas-validate.js",
@@ -59,7 +60,8 @@
     "validate:acceptance-example": "pnpm blueprint:acceptance examples/incident.blueprint.json --agent-card examples/incident.a2a-agent-card.json --profile examples/incident.a2a-acceptance-profile.json --generated-at 2026-08-01T12:00:00.000Z --strict --check examples/incident.a2a-acceptance.json",
     "validate:tck-evidence-example": "pnpm blueprint:tck-evidence examples/incident.a2a-acceptance.json --tck-report examples/incident.a2a-tck-compatibility.json --profile examples/incident.a2a-tck-evidence-profile.json --generated-at 2026-08-01T13:00:00.000Z --check examples/incident.a2a-tck-receipt.json",
     "validate:review-example": "pnpm blueprint:review examples/incident.a2a-acceptance.json --tck-receipt examples/incident.a2a-tck-receipt.json --profile examples/incident.a2a-review-profile.json --generated-at 2026-08-01T14:10:00.000Z --check examples/incident.a2a-review-ledger.json",
-    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:sarif-example && pnpm run validate:suite-example && pnpm run validate:suite-diff-example && pnpm run validate:suite-change-example && pnpm run validate:a2a-example && pnpm run validate:acceptance-example && pnpm run validate:tck-evidence-example && pnpm run validate:review-example && pnpm run build"
+    "validate:pages-build": "pnpm run build:pages && git diff --exit-code -- docs/index.html docs/assets/field-atlas.min.js docs/assets/field-atlas.min.css docs/favicon.svg docs/og.png",
+    "verify": "pnpm run lint && pnpm run format:check && pnpm run check && pnpm run test:coverage && pnpm run validate:example && pnpm run validate:sarif-example && pnpm run validate:suite-example && pnpm run validate:suite-diff-example && pnpm run validate:suite-change-example && pnpm run validate:a2a-example && pnpm run validate:acceptance-example && pnpm run validate:tck-evidence-example && pnpm run validate:review-example && pnpm run build && pnpm run validate:pages-build"
   },
   "dependencies": {
     "express": "^5.2.1",

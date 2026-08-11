@@ -14,7 +14,8 @@ Current disposition: Grow the provider-neutral conformance workflow through evid
 - Keep the default branch buildable from a clean checkout and preserve exact-head CI evidence.
 - Keep Samsarix LLC branding, package identity, license metadata, and compatibility aliases internally consistent.
 - Preserve the pre-productization default under a rollback ref before merging; do not delete legacy history.
-- Review priority: approve taxonomy AGPL commercial terms and schema v1 before a static demo.
+- Review priority: keep the taxonomy, AGPL/commercial terms, and schema v1 stable as the public static demo evolves.
+- [x] Publish the local-only workbench as a reproducible subpath-safe GitHub Pages build while preserving documentation and keeping publication distinct from runtime evidence or flagship adoption.
 
 ## Release candidate
 

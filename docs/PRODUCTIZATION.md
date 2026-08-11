@@ -1,6 +1,6 @@
 # Productization record
 
-Last updated: August 2, 2026
+Last updated: August 10, 2026
 
 ## Repository assessment
 
@@ -195,9 +195,9 @@ Final command evidence is appended after implementation verification.
 
 ## Owner-, legal-, and production-blocked work
 
-1. **Public hosting:** choose a hosting account/domain, set the correct `BASE_PATH`, and authorize deployment.
-2. **Rights paperwork:** keep a signed assignment or license from Andrew John Ward to Samsarix LLC for pre-company work, and adopt a lawyer-reviewed contributor agreement before commercial relicensing of outside contributions.
-3. **Brand review:** confirm that all named-role presentation and Samsarix marks are cleared for public distribution.
+1. **Rights paperwork:** keep a signed assignment or license from Andrew John Ward to Samsarix LLC for pre-company work, and adopt a lawyer-reviewed contributor agreement before commercial relicensing of outside contributions.
+2. **Brand review:** confirm that all named-role presentation and Samsarix marks are cleared for public distribution.
+3. **Support and domain policy:** decide whether the public GitHub Pages convenience build receives an uptime/support commitment or a Samsarix-owned custom domain.
 
 ## Known risks
 
@@ -207,7 +207,7 @@ Final command evidence is appended after implementation verification.
 
 ## Distribution and sustainability
 
-The recommended first distribution is a static build on GitHub Pages or another owner-controlled static host. There are no API, database, analytics, or model costs. The optional Node server can support a container or local package where health checks are useful.
+The first distribution is now an automatic static build on GitHub Pages from `main:/docs`. There are no API, database, analytics, or model costs. The optional Node server remains available for a container or local package where health checks are useful. The public URL is a convenience distribution, not an uptime promise, authenticated control plane, or runtime-evidence source.
 
 Sustainability should begin as a portfolio and developer-education surface that leads users to owner-approved Samsarix services or support. Advertising, user tracking, subscriptions, and paid runtime features are not justified by current evidence. AGPL-3.0-only preserves a public network-copyleft path, while separately signed commercial licenses can serve organizations that need incompatible terms.
 
@@ -486,3 +486,24 @@ Local evidence on Windows with Node `v24.12.0` and pnpm `11.16.0` on August 10, 
 | React best-practices review  | Passed applicable event-driven async work, stale-result generation guards, cross-operation busy ownership, direct imports, stable keys, accessible labels/captions, local-only downloads, responsive overflow, and bundle-scope checks.                                                     |
 
 This evidence proves bounded local parsing, exact-byte integrity, deterministic matching, fixture reproduction, browser interaction, CLI gate behavior, and build integrity. It is not evidence of authenticated intent, a real exception decision, runtime execution, deployment, adoption, or release approval. No account system, database, hosted broker, model call, network probe, upload permission, or manual deployment was added.
+
+## Static publication increment
+
+The repository's existing GitHub Pages setting reported a successful `main:/docs` deployment, but the public root returned GitHub's `404 File not found` response because the documentation directory intentionally no longer contained the obsolete remote `index.html`. A green Pages workflow therefore proved only that GitHub had copied the configured source—not that the Field Atlas application was available.
+
+Field Atlas now has a separate `pages` Vite build mode that preserves every Markdown record under `docs/` while emitting the real React application to the same directory. It uses the repository subpath `/samsarix-field-atlas/`, stable committed JS/CSS names, copied local favicon/social-preview assets, no source map, and `.nojekyll`. No runtime configuration, credential, analytics script, API, backend, or data-collection permission is introduced. The default production build remains in `dist/public` with its existing optional Express server.
+
+`pnpm validate:pages-build` regenerates the publication files and fails on any tracked drift. A repository test independently requires the subpath-safe JS, CSS, and favicon references, rejects the development `/src/main.tsx` entry, checks that the build is substantial and source-map-free, and confirms that publication did not replace the productization record. Because Pages already watches `main:/docs`, a merge updates the public convenience build through the existing automatic deployment rather than a manual release command.
+
+Local evidence on Windows with Node `v24.12.0` and pnpm `11.16.0` on August 10, 2026:
+
+| Command or check            | Result                                                                                                                                                                                                                                                                           |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pre-change public check     | The configured HTTPS Pages root returned HTTP `404`; the Pages API simultaneously reported `status: built`, `build_type: legacy`, and source `main:/docs`.                                                                                                                       |
+| `pnpm verify`               | Passed lint, formatting, strict types, 18 test files / 132 tests, all existing fixture gates, client/server/eight-CLI builds, the dedicated Pages build, and the committed publication drift check.                                                                              |
+| Coverage                    | Passed all thresholds at 82.76% statements, 80.21% branches, 85.76% functions, and 84.28% lines.                                                                                                                                                                                 |
+| `pnpm build:pages`          | Preserved the documentation directory and emitted a 2.08 kB HTML entry, 406.15 kB / 116.68 kB gzip JS, and 46.74 kB / 9.07 kB gzip CSS.                                                                                                                                          |
+| Pages interaction contract  | Passed the committed-output test for the repository base path, stable local assets, absent development entry, absent source-map reference, `.nojekyll`, and retained Markdown records.                                                                                           |
+| Committed publication files | HTML was 2,089 bytes / `6439feb9fa93e4ce51d60e7528ff166c22b49355efe012aa276bf2b95c237fb4`; JS was 406,150 bytes / `42abc2353353eb52afeaf3d9a8460816ef21cb95605f6a248b1c24cc17fab37c`; CSS was 46,745 bytes / `419f16db65a4b96378d2258295d1e4205ccc6fa2f84d3db78f20122796b43a9a`. |
+
+This local evidence proves reproducible static output and the repository-to-Pages source contract. Actual publication is established only by the exact post-merge Pages run plus an HTTP check of the public HTML and its referenced assets. Public availability does not prove runtime behavior, user adoption, authenticated review, an uptime commitment, or support response.

@@ -6,7 +6,7 @@ The site is deliberately honest about its limits: it does **not** run agents, ca
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, schema-validated local authoring studio, blueprint workbench, suite baseline and declared-change workflows, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. Public deployment, genuine runtime evidence, authenticated signoff, and adoption remain owner-controlled gates; see [Productization](docs/PRODUCTIZATION.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository and a release candidate for independent evaluation. The scenario lab, schema-validated local authoring studio, blueprint workbench, suite baseline and declared-change workflows, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. The [public Field Atlas](https://deathcharge.github.io/samsarix-field-atlas/) is an automatically published static build; genuine runtime evidence, authenticated signoff, support commitment, and adoption remain separate gates. See [Productization](docs/PRODUCTIZATION.md).
 
 ## Fastest successful path
 
@@ -205,6 +205,8 @@ The command recomputes the diff from the two validated reports, hashes the exact
 | `pnpm test`                               | Run model, component, and server tests once                                           |
 | `pnpm test:coverage`                      | Run tests with enforced coverage thresholds                                           |
 | `pnpm build`                              | Build static assets, the optional Node release server, and all eight CLIs             |
+| `pnpm build:pages`                        | Rebuild the subpath-safe static site committed for automatic GitHub Pages publication |
+| `pnpm validate:pages-build`               | Rebuild Pages output and fail if committed publication files drift                    |
 | `pnpm blueprint:validate <file>`          | Validate a v1 blueprint with optional strict, JSON, or SARIF output                   |
 | `pnpm blueprint:suite <manifest>`         | Batch-check a bounded suite and optionally compare its deterministic report           |
 | `pnpm blueprint:suite-diff <a> <b>`       | Compare suite reports; emit JSON, JUnit, or Markdown; and enforce the selected gate   |
@@ -259,7 +261,7 @@ $env:BASE_PATH = "/samsarix-field-atlas/"
 pnpm build
 ```
 
-No production deployment is performed by this repository. Hosting configuration, domain ownership, and publishing remain owner actions.
+The repository also commits the deterministic `pnpm build:pages` output under `docs/`, because GitHub Pages is configured to publish `main:/docs`. The build uses `/samsarix-field-atlas/` as its asset base, preserves the Markdown records in that directory, emits stable asset names, and is checked for drift by `pnpm verify`. Merges to `main` trigger the existing automatic Pages publication; no application data, credentials, analytics, model calls, or backend are added by that static delivery path. Custom-domain ownership and any availability commitment remain owner decisions.
 
 ## Architecture
 
@@ -323,7 +325,7 @@ See [Security](SECURITY.md) for trust boundaries, reporting, and operational gui
 - The three bundled scenarios are representative rather than exhaustive; Scenario Studio can adapt them through the bounded 13-role reference vocabulary but does not persist drafts or define custom roles.
 - Suite reports establish repeatable contract conformance and byte integrity only; they do not execute evaluations, verify named evidence, authenticate owners, or approve releases.
 - Declared change reviews establish exact agreement between observed and declared drift only; their intent gate can differ from the original comparison gate and is not authorization to bypass repository controls.
-- No hosted URL is guaranteed by this repository.
+- The public GitHub Pages build is a convenience distribution without an uptime or support SLA; local builds remain the reproducible source of truth.
 
 ## Project records
 
