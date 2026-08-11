@@ -9,7 +9,7 @@ The site is deliberately honest about its limits: it does **not** run agents, ca
 
 ## Current status
 
-This is the canonical `Deathcharge/samsarix-field-atlas` repository for the v1.0.0 public reference release. The scenario lab, schema-validated local authoring studio, blueprint workbench, suite baseline and declared-change workflows, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. The [public Field Atlas](https://deathcharge.github.io/samsarix-field-atlas/) is an automatically published static build; genuine runtime evidence, authenticated signoff, support commitment, and adoption remain separate gates. See [Productization](docs/PRODUCTIZATION.md) and the [changelog](CHANGELOG.md).
+This is the canonical `Deathcharge/samsarix-field-atlas` repository for the v1.0.0 public reference release. The scenario lab, schema-validated local authoring studio, blueprint workbench, suite baseline and declared-change workflows, shared browser/CLI validators, public schemas and examples, A2A 1.0 deployment handoff, acceptance, TCK evidence, and owner-review handoffs, static production build, bounded Node server, automated tests, CI checks, public license, and commercial-licensing path are implemented. The [public Field Atlas](https://deathcharge.github.io/samsarix-field-atlas/) is an automatically published static build; genuine runtime evidence, authenticated signoff, support commitment, and adoption remain separate gates. See [Productization](docs/PRODUCTIZATION.md) and the [changelog](CHANGELOG.md).
 
 ## Fastest successful path
 
