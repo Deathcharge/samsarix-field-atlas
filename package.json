@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "description": "A local-first interactive reference for the Samsarix coordination model.",
+  "keywords": [
+    "agent-architecture",
+    "coordination",
+    "governance",
+    "local-first",
+    "samsarix"
+  ],
   "type": "module",
   "license": "AGPL-3.0-only",
   "author": {
@@ -16,6 +23,7 @@
   "bugs": {
     "url": "https://github.com/Deathcharge/samsarix-field-atlas/issues"
   },
+  "homepage": "https://deathcharge.github.io/samsarix-field-atlas/",
   "engines": {
     "node": ">=22.13.0"
   },
@@ -71,27 +79,27 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/user-event": "^14.6.3",
     "@types/express": "^5.0.6",
     "@types/node": "^22.15.30",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.4",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
     "@vitest/coverage-v8": "^4.1.10",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
-    "esbuild": "^0.28.1",
-    "eslint": "^10.8.0",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.8.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "globals": "^17.8.0",
-    "jsdom": "^30.0.0",
+    "globals": "^17.9.0",
+    "jsdom": "^30.0.1",
     "prettier": "^3.9.6",
     "typescript": "5.9.3",
-    "typescript-eslint": "^8.65.0",
-    "vite": "^8.1.5",
+    "typescript-eslint": "^8.66.0",
+    "vite": "^8.2.1",
     "vitest": "^4.1.10"
   },
   "packageManager": "pnpm@11.17.0"

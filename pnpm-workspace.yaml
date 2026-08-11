@@ -1,2 +1,7 @@
+overrides:
+  "@babel/core": 7.29.6
+  baseline-browser-mapping: 2.11.13
+  picomatch: 4.0.5
+
 allowBuilds:
   esbuild: true

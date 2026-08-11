@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: If you use Samsarix Field Atlas, please cite this software release.
+title: Samsarix Field Atlas
+type: software
+authors:
+  - family-names: Ward
+    given-names: Andrew John
+version: 1.0.0
+date-released: 2026-08-11
+repository-code: https://github.com/Deathcharge/samsarix-field-atlas
+url: https://deathcharge.github.io/samsarix-field-atlas/
+license: AGPL-3.0-only
+abstract: A local-first coordination-design workbench and portable contract reference for the Samsarix role model.
