@@ -323,6 +323,121 @@ describe("Samsarix Field Atlas", () => {
     await waitFor(() =>
       expect(screen.getByText(/change gate fails/i)).toBeVisible()
     );
+
+    const planText = readFileSync(
+      resolve(process.cwd(), "examples/core.suite-change-plan.json"),
+      "utf8"
+    );
+    const plan = new File([planText], "core.suite-change-plan.json", {
+      type: "application/json",
+    });
+    Object.defineProperty(plan, "arrayBuffer", {
+      configurable: true,
+      value: async () => new TextEncoder().encode(planText).buffer,
+    });
+    fireEvent.change(screen.getByLabelText(/declared change review date/i), {
+      target: { value: "2026-08-08" },
+    });
+    fireEvent.change(screen.getByLabelText(/import suite change plan/i), {
+      target: { files: [plan] },
+    });
+
+    await waitFor(
+      () =>
+        expect(screen.getByText(/declared intent is matched/i)).toBeVisible(),
+      { timeout: 15_000 }
+    );
+    expect(
+      screen.getByRole("table", { name: /declared and actual suite changes/i })
+    ).toBeVisible();
+    expect(screen.getByText(/baseline bound/i)).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /export change review$/i })
+    ).toBeEnabled();
+    const downloadsBeforeChangeReview = createObjectUrl.mock.calls.length;
+    fireEvent.click(
+      screen.getByRole("button", { name: /export change review$/i })
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByText(/declared change review exported locally/i)
+      ).toBeVisible()
+    );
+    const changeReviewBlob =
+      createObjectUrl.mock.calls[downloadsBeforeChangeReview]?.[0];
+    expect(changeReviewBlob).toBeInstanceOf(Blob);
+    expect((changeReviewBlob as Blob).type).toBe("application/json");
+
+    const mismatchedPlan = JSON.parse(planText) as {
+      suite: { manifestChanged: boolean };
+    };
+    mismatchedPlan.suite.manifestChanged = false;
+    const delayedPlanText = `${JSON.stringify(mismatchedPlan, null, 2)}\n`;
+    const delayedPlan = new File([], "delayed-plan.json", {
+      type: "application/json",
+    });
+    const delayedCandidate = new File([], "delayed-candidate.json", {
+      type: "application/json",
+    });
+    let resolvePlanRead!: (value: ArrayBuffer) => void;
+    let resolveCandidateRead!: (value: ArrayBuffer) => void;
+    const planRead = new Promise<ArrayBuffer>(resolve => {
+      resolvePlanRead = resolve;
+    });
+    const candidateRead = new Promise<ArrayBuffer>(resolve => {
+      resolveCandidateRead = resolve;
+    });
+    const planArrayBuffer = vi.fn(() => planRead);
+    const candidateArrayBuffer = vi.fn(() => candidateRead);
+    Object.defineProperty(delayedPlan, "arrayBuffer", {
+      configurable: true,
+      value: planArrayBuffer,
+    });
+    Object.defineProperty(delayedCandidate, "arrayBuffer", {
+      configurable: true,
+      value: candidateArrayBuffer,
+    });
+    const planInput = screen.getByLabelText(/import suite change plan/i);
+    const candidateInput = screen.getByLabelText(
+      /import candidate suite report/i
+    );
+
+    act(() => {
+      fireEvent.change(planInput, { target: { files: [delayedPlan] } });
+      fireEvent.change(candidateInput, {
+        target: { files: [delayedCandidate] },
+      });
+    });
+    expect(planArrayBuffer).toHaveBeenCalledOnce();
+    expect(candidateArrayBuffer).toHaveBeenCalledOnce();
+    expect(
+      screen.getByRole("button", { name: /export change review$/i })
+    ).toBeDisabled();
+
+    await act(async () => {
+      resolvePlanRead(new TextEncoder().encode(delayedPlanText).buffer);
+      await planRead;
+    });
+    await waitFor(
+      () =>
+        expect(screen.getByText(/declared intent is mismatch/i)).toBeVisible(),
+      { timeout: 15_000 }
+    );
+    expect(
+      screen.getByRole("button", { name: /export change review$/i })
+    ).toBeDisabled();
+
+    await act(async () => {
+      resolveCandidateRead(new TextEncoder().encode(candidateText).buffer);
+      await candidateRead;
+    });
+    await waitFor(
+      () =>
+        expect(
+          screen.getByRole("button", { name: /export change review$/i })
+        ).toBeEnabled(),
+      { timeout: 15_000 }
+    );
   });
 
   it("turns a valid blueprint into an explicit A2A implementation handoff", async () => {

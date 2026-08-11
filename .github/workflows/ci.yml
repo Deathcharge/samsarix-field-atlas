@@ -47,3 +47,14 @@ jobs:
             examples/core.suite-report.json \
             examples/core-candidate.suite-report.json \
             --format markdown >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish declared change fixture summary
+        if: ${{ !cancelled() && matrix.os == 'ubuntu-latest' }}
+        shell: bash
+        run: |
+          pnpm --silent blueprint:suite-change \
+            examples/core.suite-report.json \
+            examples/core-candidate.suite-report.json \
+            --plan examples/core.suite-change-plan.json \
+            --as-of 2026-08-08 \
+            --format markdown >> "$GITHUB_STEP_SUMMARY"

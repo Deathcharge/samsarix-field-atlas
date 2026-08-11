@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "samsarix-field-atlas/suite-change-review/1",
+  "mode": "declared-change-review",
+  "asOf": "2026-08-08",
+  "source": {
+    "plan": {
+      "uri": "core.suite-change-plan.json",
+      "sha256": "a988a71fcf60ce7a830fcb64a26dca0775c9662b41f34648dc5cb3f0f1898dac",
+      "owner": "Samsarix Platform Contracts",
+      "reference": "urn:samsarix:field-atlas:example:tag-rollout",
+      "expiresOn": "2026-09-01"
+    },
+    "comparison": {
+      "baseline": {
+        "uri": "core.suite-report.json",
+        "sha256": "52994c82ddadbde841ebf5abfd7ef6b1a057dfea67186b26d7827fd680728f87"
+      },
+      "candidate": {
+        "uri": "core-candidate.suite-report.json",
+        "sha256": "3a8f7be1558ea8f5ef215f5f841e1ad49fd3d41f37cc4dfc7c1fe1061ef1786e"
+      },
+      "outcome": "review",
+      "gate": "pass",
+      "failOn": "regression"
+    }
+  },
+  "binding": {
+    "suiteId": {
+      "expected": "core-reference-scenarios",
+      "baseline": "core-reference-scenarios",
+      "candidate": "core-reference-scenarios",
+      "matched": true
+    },
+    "baselineReportSha256": {
+      "expected": "52994c82ddadbde841ebf5abfd7ef6b1a057dfea67186b26d7827fd680728f87",
+      "actual": "52994c82ddadbde841ebf5abfd7ef6b1a057dfea67186b26d7827fd680728f87",
+      "matched": true
+    }
+  },
+  "summary": {
+    "status": "matched",
+    "gate": "pass",
+    "expired": false,
+    "cases": {
+      "expected": 1,
+      "actualChanges": 1,
+      "matched": 1,
+      "mismatched": 0,
+      "unexpected": 0,
+      "missing": 0
+    },
+    "suiteSignalsMatched": true,
+    "regressionAcknowledgements": {
+      "required": 0,
+      "present": 0
+    }
+  },
+  "cases": [
+    {
+      "id": "incident",
+      "disposition": "matched",
+      "expected": {
+        "caseId": "incident",
+        "change": "modified",
+        "impact": "review",
+        "dimensions": ["tags"],
+        "regressionAcknowledged": false,
+        "rationale": "Mark the incident scenario as release-critical without changing its executable or conformance claims."
+      },
+      "actual": {
+        "change": "modified",
+        "impact": "review",
+        "dimensions": ["tags"]
+      },
+      "mismatches": []
+    }
+  ],
+  "suite": {
+    "matched": true,
+    "mismatches": [],
+    "expected": {
+      "reportImpact": "none",
+      "suiteMetadataChanged": false,
+      "policyChanged": false,
+      "manifestChanged": true
+    },
+    "actual": {
+      "reportImpact": "none",
+      "suiteMetadataChanged": false,
+      "policyChanged": false,
+      "manifestChanged": true
+    }
+  },
+  "proofBoundary": "Field Atlas matched one bounded owner-asserted change plan against a deterministic local suite comparison as of the supplied date. It did not verify the date, authenticate the owner, authorize an exception, execute contracts, or approve a release; repository review and access controls remain authoritative."
+}

@@ -1,9 +1,17 @@
-import { useState, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 
 import { readBlueprintFile } from "../blueprint-file";
 import { downloadText } from "../download";
 import type { BlueprintSuiteReport } from "../suite";
 import { blueprintSuiteDiffToMarkdown } from "../suite-diff-reporting";
+import { blueprintSuiteChangeReviewToMarkdown } from "../suite-change-reporting";
+import {
+  createBlueprintSuiteChangeReview,
+  maximumSuiteChangePlanBytes,
+  validateBlueprintSuiteChangePlan,
+  type BlueprintSuiteChangePlan,
+  type BlueprintSuiteChangeReview,
+} from "../suite-change";
 import {
   createBlueprintSuiteDiff,
   maximumSuiteReportBytes,
@@ -15,6 +23,12 @@ interface ImportedSuiteReport {
   filename: string;
   bytes: Uint8Array;
   report: BlueprintSuiteReport;
+}
+
+interface ImportedSuiteChangePlan {
+  filename: string;
+  bytes: Uint8Array;
+  plan: BlueprintSuiteChangePlan;
 }
 
 type ReportSide = "baseline" | "candidate";
@@ -77,15 +91,122 @@ async function readSuiteReport(
   };
 }
 
+async function readSuiteChangePlan(
+  file: File
+): Promise<
+  { ok: true; value: ImportedSuiteChangePlan } | { ok: false; message: string }
+> {
+  const result = await readBlueprintFile(file, maximumSuiteChangePlanBytes);
+  if (!result.ok) {
+    if (result.reason === "too-large") {
+      return {
+        ok: false,
+        message: `${file.name} exceeds the 1 MiB change-plan limit.`,
+      };
+    }
+    if (result.reason === "read-failed") {
+      return {
+        ok: false,
+        message: `The browser could not read ${file.name}.`,
+      };
+    }
+    return {
+      ok: false,
+      message: `${file.name} is not valid UTF-8 JSON.`,
+    };
+  }
+  const analysis = validateBlueprintSuiteChangePlan(result.value);
+  if (!analysis.plan) {
+    const first = analysis.findings[0];
+    return {
+      ok: false,
+      message: first
+        ? `${file.name} is not a valid change plan: ${first.code} at ${first.path}.`
+        : `${file.name} is not a valid change plan.`,
+    };
+  }
+  return {
+    ok: true,
+    value: {
+      filename: file.name,
+      bytes: result.bytes,
+      plan: analysis.plan,
+    },
+  };
+}
+
 function BlueprintSuiteDiffWorkbench() {
   const [baseline, setBaseline] = useState<ImportedSuiteReport | null>(null);
   const [candidate, setCandidate] = useState<ImportedSuiteReport | null>(null);
   const [failOnChange, setFailOnChange] = useState(false);
   const [diff, setDiff] = useState<BlueprintSuiteDiff | null>(null);
+  const [changePlan, setChangePlan] = useState<ImportedSuiteChangePlan | null>(
+    null
+  );
+  const [reviewDate, setReviewDate] = useState("");
+  const [changeReview, setChangeReview] =
+    useState<BlueprintSuiteChangeReview | null>(null);
+  const [planReadPending, setPlanReadPending] = useState(false);
+  const [reviewPending, setReviewPending] = useState(false);
+  const reviewGeneration = useRef(0);
   const [pending, setPending] = useState(false);
   const [notice, setNotice] = useState(
     "Import a baseline and candidate suite report. Both stay in this browser."
   );
+  const [reviewNotice, setReviewNotice] = useState(
+    "Import a bounded change plan and set an explicit review date."
+  );
+  const busy = pending || planReadPending || reviewPending;
+
+  async function reviewDeclaredChange(
+    nextDiff: BlueprintSuiteDiff | null,
+    nextPlan: ImportedSuiteChangePlan | null,
+    nextReviewDate: string
+  ) {
+    const generation = reviewGeneration.current + 1;
+    reviewGeneration.current = generation;
+    if (!nextDiff || !nextPlan || nextReviewDate === "") {
+      setChangeReview(null);
+      setReviewPending(false);
+      if (!nextDiff) {
+        setReviewNotice("Compare two suite reports before reviewing a plan.");
+      } else if (!nextPlan) {
+        setReviewNotice(
+          "Import a bounded change plan to review declared intent."
+        );
+      } else {
+        setReviewNotice("Set an explicit review date to evaluate this plan.");
+      }
+      return;
+    }
+    setReviewPending(true);
+    try {
+      const review = await createBlueprintSuiteChangeReview(
+        {
+          uri: nextPlan.filename,
+          bytes: nextPlan.bytes,
+          plan: nextPlan.plan,
+        },
+        nextDiff,
+        nextReviewDate
+      );
+      if (generation !== reviewGeneration.current) return;
+      setChangeReview(review);
+      setReviewNotice(
+        `Declared intent is ${review.summary.status}; the intent gate ${review.summary.gate === "pass" ? "passes" : "fails"}. The original ${review.source.comparison.failOn} gate ${review.source.comparison.gate === "pass" ? "passes" : "fails"}.`
+      );
+    } catch (error) {
+      if (generation !== reviewGeneration.current) return;
+      setChangeReview(null);
+      setReviewNotice(
+        error instanceof Error
+          ? error.message
+          : "The browser could not review this change plan."
+      );
+    } finally {
+      if (generation === reviewGeneration.current) setReviewPending(false);
+    }
+  }
 
   async function compare(
     nextBaseline: ImportedSuiteReport | null,
@@ -98,6 +219,7 @@ function BlueprintSuiteDiffWorkbench() {
         "Import both a baseline and candidate suite report to compare them."
       );
       setPending(false);
+      await reviewDeclaredChange(null, changePlan, reviewDate);
       return;
     }
     setPending(true);
@@ -119,8 +241,10 @@ function BlueprintSuiteDiffWorkbench() {
       setNotice(
         `${nextDiff.summary.cases.total} stable case ${nextDiff.summary.cases.total === 1 ? "identity" : "identities"} compared; outcome is ${nextDiff.summary.outcome} and the ${nextDiff.policy.failOn} gate ${nextDiff.summary.gate === "pass" ? "passes" : "fails"}.`
       );
+      await reviewDeclaredChange(nextDiff, changePlan, reviewDate);
     } catch (error) {
       setDiff(null);
+      await reviewDeclaredChange(null, changePlan, reviewDate);
       setNotice(
         error instanceof Error
           ? error.message
@@ -145,6 +269,7 @@ function BlueprintSuiteDiffWorkbench() {
         if (side === "baseline") setBaseline(null);
         else setCandidate(null);
         setDiff(null);
+        await reviewDeclaredChange(null, changePlan, reviewDate);
         setNotice(result.message);
         return;
       }
@@ -156,6 +281,7 @@ function BlueprintSuiteDiffWorkbench() {
       await compare(nextBaseline, nextCandidate, failOnChange);
     } catch (error) {
       setDiff(null);
+      await reviewDeclaredChange(null, changePlan, reviewDate);
       setNotice(
         error instanceof Error
           ? error.message
@@ -172,8 +298,45 @@ function BlueprintSuiteDiffWorkbench() {
     await compare(baseline, candidate, nextFailOnChange);
   }
 
+  async function importChangePlan(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file) return;
+    setPlanReadPending(true);
+    try {
+      const result = await readSuiteChangePlan(file);
+      if (!result.ok) {
+        setChangePlan(null);
+        setChangeReview(null);
+        setReviewNotice(result.message);
+        reviewGeneration.current += 1;
+        setReviewPending(false);
+        return;
+      }
+      setChangePlan(result.value);
+      await reviewDeclaredChange(diff, result.value, reviewDate);
+    } catch (error) {
+      setChangePlan(null);
+      setChangeReview(null);
+      reviewGeneration.current += 1;
+      setReviewNotice(
+        error instanceof Error
+          ? error.message
+          : "The browser could not import this change plan."
+      );
+    } finally {
+      setPlanReadPending(false);
+    }
+  }
+
+  async function changeReviewDate(event: ChangeEvent<HTMLInputElement>) {
+    const nextReviewDate = event.currentTarget.value;
+    setReviewDate(nextReviewDate);
+    await reviewDeclaredChange(diff, changePlan, nextReviewDate);
+  }
+
   function exportDiff() {
-    if (!diff) return;
+    if (!diff || busy) return;
     try {
       downloadText(
         `${JSON.stringify(diff, null, 2)}\n`,
@@ -189,7 +352,7 @@ function BlueprintSuiteDiffWorkbench() {
   }
 
   function exportSummary() {
-    if (!diff) return;
+    if (!diff || busy) return;
     try {
       downloadText(
         blueprintSuiteDiffToMarkdown(diff),
@@ -201,6 +364,40 @@ function BlueprintSuiteDiffWorkbench() {
       );
     } catch {
       setNotice("The browser could not export the comparison summary.");
+    }
+  }
+
+  function exportChangeReview() {
+    if (!changeReview || busy) return;
+    try {
+      downloadText(
+        `${JSON.stringify(changeReview, null, 2)}\n`,
+        "samsarix-suite-change-review.json",
+        "application/json"
+      );
+      setReviewNotice(
+        "Declared change review exported locally. Nothing was uploaded."
+      );
+    } catch {
+      setReviewNotice("The browser could not export the change review.");
+    }
+  }
+
+  function exportChangeReviewSummary() {
+    if (!changeReview || busy) return;
+    try {
+      downloadText(
+        blueprintSuiteChangeReviewToMarkdown(changeReview),
+        "samsarix-suite-change-review.md",
+        "text/markdown"
+      );
+      setReviewNotice(
+        "Readable declared change review exported locally. Nothing was uploaded."
+      );
+    } catch {
+      setReviewNotice(
+        "The browser could not export the change review summary."
+      );
     }
   }
 
@@ -251,7 +448,7 @@ function BlueprintSuiteDiffWorkbench() {
             accept="application/json,.json"
             aria-label="Import baseline suite report"
             className="file-input"
-            disabled={pending}
+            disabled={busy}
             onChange={event => importReport("baseline", event)}
             type="file"
           />
@@ -262,7 +459,7 @@ function BlueprintSuiteDiffWorkbench() {
             accept="application/json,.json"
             aria-label="Import candidate suite report"
             className="file-input"
-            disabled={pending}
+            disabled={busy}
             onChange={event => importReport("candidate", event)}
             type="file"
           />
@@ -270,7 +467,7 @@ function BlueprintSuiteDiffWorkbench() {
         <label className="suite-strict-control">
           <input
             checked={failOnChange}
-            disabled={pending}
+            disabled={busy}
             onChange={changePolicy}
             type="checkbox"
           />
@@ -281,7 +478,7 @@ function BlueprintSuiteDiffWorkbench() {
         </label>
         <button
           className="button button-secondary"
-          disabled={!diff || pending}
+          disabled={!diff || busy}
           onClick={exportDiff}
           type="button"
         >
@@ -289,7 +486,7 @@ function BlueprintSuiteDiffWorkbench() {
         </button>
         <button
           className="button button-secondary"
-          disabled={!diff || pending}
+          disabled={!diff || busy}
           onClick={exportSummary}
           type="button"
         >
@@ -371,6 +568,166 @@ function BlueprintSuiteDiffWorkbench() {
               </tbody>
             </table>
           </div>
+          <section
+            aria-labelledby="suite-change-review-title"
+            className="suite-change-panel"
+          >
+            <div className="suite-change-heading">
+              <div>
+                <p className="panel-label">Declared change intent</p>
+                <h4 id="suite-change-review-title">
+                  Match planned drift without hiding it.
+                </h4>
+              </div>
+              <p>
+                Bind a repository-owned plan to these exact baseline bytes, then
+                fail on undeclared, missing, mismatched, or expired intent.
+                Owner assertions are not authenticated approval.
+              </p>
+            </div>
+            <div className="suite-change-controls">
+              <label className="button button-secondary file-button">
+                Import change plan
+                <input
+                  accept="application/json,.json"
+                  aria-label="Import suite change plan"
+                  className="file-input"
+                  disabled={busy}
+                  onChange={importChangePlan}
+                  type="file"
+                />
+              </label>
+              <label className="suite-change-date">
+                <span>Review date</span>
+                <input
+                  aria-label="Declared change review date"
+                  disabled={busy}
+                  onChange={changeReviewDate}
+                  type="date"
+                  value={reviewDate}
+                />
+                <small>Recorded explicitly; no hidden clock lookup.</small>
+              </label>
+              <button
+                className="button button-secondary"
+                disabled={!changeReview || busy}
+                onClick={exportChangeReview}
+                type="button"
+              >
+                Export change review
+              </button>
+              <button
+                className="button button-secondary"
+                disabled={!changeReview || busy}
+                onClick={exportChangeReviewSummary}
+                type="button"
+              >
+                Export change summary
+              </button>
+            </div>
+            <div className="suite-change-source">
+              <span>Plan</span>
+              <strong>{changePlan?.filename ?? "Not imported"}</strong>
+              <small>
+                {changePlan
+                  ? `${changePlan.plan.owner} · expires ${changePlan.plan.expiresOn}`
+                  : "Exact expected changes, owner assertion, reference, and expiry"}
+              </small>
+            </div>
+            {changeReview ? (
+              <div
+                className={`suite-change-result is-${changeReview.summary.gate}`}
+              >
+                <div className="suite-summary suite-change-summary">
+                  <div>
+                    <span>Intent gate</span>
+                    <strong>{changeReview.summary.gate}</strong>
+                  </div>
+                  <div>
+                    <span>Status</span>
+                    <strong>{changeReview.summary.status}</strong>
+                  </div>
+                  <div>
+                    <span>Comparison gate</span>
+                    <strong>{changeReview.source.comparison.gate}</strong>
+                  </div>
+                  <div>
+                    <span>Matched</span>
+                    <strong>{changeReview.summary.cases.matched}</strong>
+                  </div>
+                  <div>
+                    <span>Unexpected / missing</span>
+                    <strong>
+                      {changeReview.summary.cases.unexpected} /{" "}
+                      {changeReview.summary.cases.missing}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Baseline bound</span>
+                    <strong>
+                      {changeReview.binding.baselineReportSha256.matched
+                        ? "yes"
+                        : "no"}
+                    </strong>
+                  </div>
+                </div>
+                <div className="suite-table-wrap">
+                  <table className="suite-table suite-change-table">
+                    <caption>Declared and actual suite changes</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">Case</th>
+                        <th scope="col">Disposition</th>
+                        <th scope="col">Expected</th>
+                        <th scope="col">Actual</th>
+                        <th scope="col">Dimensions</th>
+                        <th scope="col">Mismatches</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {changeReview.cases.map(entry => (
+                        <tr key={entry.id}>
+                          <th scope="row">{entry.id}</th>
+                          <td>{entry.disposition}</td>
+                          <td>
+                            {entry.expected
+                              ? `${entry.expected.change} / ${entry.expected.impact}`
+                              : "not declared"}
+                          </td>
+                          <td>
+                            {entry.actual
+                              ? `${entry.actual.change} / ${entry.actual.impact}`
+                              : "not observed"}
+                          </td>
+                          <td>
+                            {entry.actual?.dimensions.join(", ") ||
+                              entry.expected?.dimensions.join(", ") ||
+                              "none"}
+                          </td>
+                          <td>
+                            {entry.mismatches.length > 0
+                              ? entry.mismatches.join(", ")
+                              : "none"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="suite-proof-boundary">
+                  {changeReview.proofBoundary}
+                </p>
+              </div>
+            ) : (
+              <p className="suite-change-empty">
+                No declared change review yet. CI can use{" "}
+                <code>pnpm blueprint:suite-change … --plan … --as-of …</code>.
+              </p>
+            )}
+            <p aria-live="polite" className="run-notice workbench-notice">
+              {reviewPending ? "Reviewing declared intent…" : reviewNotice}
+            </p>
+          </section>
           <p className="suite-proof-boundary">{diff.proofBoundary}</p>
         </div>
       ) : (
