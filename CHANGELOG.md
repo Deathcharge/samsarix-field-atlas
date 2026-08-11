@@ -4,6 +4,10 @@ Notable changes to Samsarix Field Atlas are recorded here. This project follows 
 
 ## [Unreleased]
 
+### Added
+
+- Added structured bug, feature-request, and pull-request templates with explicit product, privacy, security-reporting, and contributor-rights boundaries.
+
 ## [1.0.0] - 2026-08-11
 
 ### Added

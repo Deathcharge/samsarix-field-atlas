@@ -1,0 +1,77 @@
+name: Bug report
+description: Report a reproducible problem in the Field Atlas site, server, or CLI.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Samsarix Field Atlas. Do not include credentials, private runtime data, or security exploit details here. Use the private reporting path in `SECURITY.md` for security concerns.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options:
+        - Public or local browser app
+        - Scenario Studio
+        - Blueprint or suite CLI
+        - A2A handoff artifacts
+        - Optional Node server
+        - Documentation or examples
+        - Build or CI
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem summary
+      description: What happened, and why is it a problem?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide the smallest deterministic sequence that reproduces the problem.
+      placeholder: |
+        1. Run ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: input
+    id: revision
+    attributes:
+      label: Version or revision
+      description: Use a release tag, commit SHA, or public Pages URL when possible.
+      placeholder: v1.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include relevant browser, operating system, Node.js, and pnpm versions.
+
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Submission checks
+      options:
+        - label: I removed credentials, private runtime data, and unnecessary personal information.
+          required: true
+        - label: I searched existing issues for the same problem.
+          required: true
+        - label: I agree to follow the Code of Conduct.
+          required: true

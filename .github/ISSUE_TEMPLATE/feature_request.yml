@@ -1,0 +1,59 @@
+name: Feature request
+description: Propose a bounded improvement to the local-first reference product.
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Field Atlas favors a small, auditable, provider-neutral surface. Explain the user decision or review workflow first; an implementation can follow from that evidence.
+
+  - type: textarea
+    id: need
+    attributes:
+      label: User need
+      description: Who needs this, what decision are they trying to make, and what blocks them today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the observable result without prescribing a specific implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence or example
+      description: Link a public standard, workflow, fixture, or reproducible example when available.
+
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Product boundary
+      description: Which boundary best describes the proposal?
+      options:
+        - Fits the current local-first, deterministic reference product
+        - Changes an export schema or compatibility contract
+        - Introduces a remote service, account, model call, or persistence
+        - Unsure
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What can users do today, and why is it insufficient?
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched existing issues and the productization record for related work.
+          required: true
+        - label: I agree to follow the Code of Conduct.
+          required: true
